@@ -1,0 +1,6 @@
+PyQt5
+PyQtWebEngine
+python-docx==1.1.0
+docxcompose==1.4.0
+pillow
+pymupdf

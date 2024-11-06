@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>merge_pdf_view</class>
+ <widget class="QWidget" name="merge_pdf_view">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>239</width>
+    <height>250</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+	background: rgb(238,244,249);
+	border-radius: 10px;
+}
+
+QPushButton{
+    background-color: rgb(250,252,253);
+    border-radius: 5px;
+    padding: 8px;
+    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
+    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
+    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+}
+QPushButton:hover { 
+    background-color: lightgray;
+}
+QCommandLinkButton{
+    background-color: rgb(250,252,253);
+    border-radius: 5px;
+    padding: 8px;
+    border:none;
+}
+QProgressBar{
+    font-family: 'Arial Unicode MS';
+    height:22px;
+    text-align:center;
+    font-size:14px;
+    color:black;
+    border-radius:11px;
+    background:#EBEEF5;
+}
+QProgressBar::chunk{
+    border-radius:11px;
+    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_8">
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>合并多个PDF</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_7">
+     <property name="styleSheet">
+      <string notr="true">border-bottom: 2px solid #888888;</string>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="lineWidth">
+      <number>5</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>选择所需的PDF</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btn_choose_files">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Choose files</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListView" name="list_view">
+     <property name="styleSheet">
+      <string notr="true">QListView {
+    color: black;
+    border: none;
+}
+QListView::item {
+    margin: 0px;
+	border-bottom: 1px solid black;
+}
+QListView::item:hover {
+    background: rgb(230, 235, 240);
+}
+/* 被选中时的背景颜色和左边框颜色 */
+QListView::item:selected {
+    border-radius: 0px;
+    background: rgb(230, 235, 240);
+}
+</string>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btn_order_by_name">
+       <property name="text">
+        <string>按名称排序</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_order_by_time">
+       <property name="text">
+        <string>按日期排序</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_merge">
+       <property name="text">
+        <string>合并</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

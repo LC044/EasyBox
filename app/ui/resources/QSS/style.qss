@@ -1,0 +1,266 @@
+QPushButton#border{
+    border-radius: 5px;
+    padding: 8px;
+    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
+    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
+    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+}
+QPushButton#border:hover {
+    background-color: lightgray;
+}
+QMessageBox QPushButton{
+    background-color: rgb(250,252,253);
+    border-radius: 5px;
+    padding: 8px;
+    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
+    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
+    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+}
+QPushButton{
+    background-color: rgb(238,244,249);
+    border-radius: 5px;
+    padding: 8px;
+}
+QPushButton:hover {
+    background-color: lightgray;
+}
+QWidget{
+    background: rgb(238,244,249);
+}
+/*去掉item虚线边框*/
+QListWidget, QListView, QTreeWidget, QTreeView {
+    outline: 0px;
+}
+
+QMenu::item:selected {
+      color: black;
+      background: rgb(230, 235, 240);
+}
+/*设置左侧选项的最小最大宽度,文字颜色和背景颜色*/
+QListWidget {
+    color: black;
+    border:none;
+}
+QListWidget::item{
+    margin:5px;
+}
+QListWidget::item:hover {
+    background: rgb(230, 235, 240);
+}
+/*被选中时的背景颜色和左边框颜色*/
+QListWidget::item:selected {
+    background: rgb(230, 235, 240);
+    border-left: 2px solid rgb(62, 62, 62);
+    color: black;
+    font-weight: bold;
+}
+QListView {
+    color: black;
+    border:none;
+}
+QListView::item{
+    margin:5px;
+}
+QListView::item:hover {
+    background: rgb(230, 235, 240);
+}
+QListView::item:selected {
+    background: rgb(230, 235, 240);
+    border-left: 2px solid rgb(62, 62, 62);
+    color: black;
+    font-weight: bold;
+}
+/*鼠标悬停颜色*/
+HistoryPanel::item:hover {
+    background: rgb(52, 52, 52);
+}
+
+QCheckBox::indicator {
+    background: rgb(255, 255, 255);
+    Width:20px;
+    Height:20px;
+    border-radius: 10px
+}
+QCheckBox::indicator:unchecked{
+    Width:20px;
+    Height:20px;
+    image: url(:/icons/icons/unselect.svg);
+}
+QCheckBox::indicator:checked{
+    Width:20px;
+    Height:20px;
+    image: url(:/icons/icons/select.svg);
+}
+QScrollBar:vertical {
+    border-width: 0px;
+    border: none;
+    background:rgba(133, 135, 138, 0);
+    width:4px;
+    margin: 0px 0px 0px 0px;
+}
+QScrollBar::handle:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+    stop: 0 rgb(133, 135, 138), stop: 0.5 rgb(133, 135, 138), stop:1 rgb(133, 135, 138));
+    min-height: 20px;
+    max-height: 20px;
+    margin: 0 0px 0 0px;
+    border-radius: 2px;
+}
+QScrollBar::add-line:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+    stop: 0 rgba(133, 135, 138, 0), stop: 0.5 rgba(133, 135, 138, 0),  stop:1 rgba(133, 135, 138, 0));
+    height: 0px;
+    border: none;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+    stop: 0  rgba(133, 135, 138, 0), stop: 0.5 rgba(133, 135, 138, 0),  stop:1 rgba(133, 135, 138, 0));
+    height: 0 px;
+    border: none;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+QScrollBar::sub-page:vertical {
+    background: rgba(133, 135, 138, 0);
+}
+
+QScrollBar::add-page:vertical {
+    background: rgba(133, 135, 138, 0);
+}
+QProgressBar{
+    font-family: 'Arial Unicode MS';
+    height:22px;
+    text-align:center;
+    font-size:14px;
+    color:black;
+    border-radius:11px;
+    background:#EBEEF5;
+}
+QProgressBar::chunk{
+    border-radius:11px;
+    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);
+}
+QComboBox
+{
+    border-radius:3px;
+    border:2px solid rgb(230, 235, 240);
+    padding-top: 2px;
+    padding-left: 2px;
+}
+QComboBox:disabled
+{
+    background-color:rgba(50,50,50,200);
+    color:rgb(160,160,160);
+}
+QComboBox:hover
+{
+    background-color:rgba(230,230,230,200);
+    border:1px solid rgb(31,156,220) ;
+}
+ /*下拉箭头的边框*/
+QComboBox::drop-down
+{
+    border:none;
+}
+
+ /*下拉箭头样式*/
+QComboBox::down-arrow
+{
+    right:0px;/*控制箭头左右偏移*/
+    width: 16px;
+    height: 16px;
+    image: url(:/icons/icons/down.svg);
+}
+ /*下拉箭头点击样式*/
+QComboBox::down-arrow:on
+{
+    width: 16px;
+    height: 16px;
+    image: url(:/icons/icons/up.svg);
+}
+QLineEdit
+{
+    background:transparent;
+    border-radius:10px;
+    border-top: 0px solid #b2e281;
+    border-bottom: 1px solid rgb(227,228,222);
+    border-right: 1px solid rgb(227,228,222);
+    border-left: 0px solid #b2e281;
+    border-style:outset;
+    background-color:rgb(247,248,252);
+}
+QLineEdit:hover
+{
+    background-color:rgb(238,241,248);
+}
+
+QTabBar::tab {
+    background-color:  rgb(238,244,249);  /* 设置导航栏背景颜色 */
+    color: black;               /* 设置导航栏文字颜色 */
+    padding: 8px 16px;          /* 设置导航栏标签内边距 */
+    border-top-left-radius: 4px; /* 设置左上角圆角 */
+    border-top-right-radius: 4px; /* 设置右上角圆角 */
+}
+
+QTabBar::tab:selected {
+    background-color: rgb(230, 235, 240);  /* 设置选中标签的背景颜色 */
+}
+
+QTabWidget::pane {
+    border: 0; /* 去掉TabWidget的边框 */
+}
+
+QSpinBox::up-button{
+    border-image:url(:/icons/icons/加.svg);
+    subcontrol-position:right;
+    width:10px;height:10px;
+}
+QSpinBox::down-button{
+    border-image:url(:/icons/icons/减.svg);
+    subcontrol-position:left;
+    width:10px;height:10px;
+}
+QSpinBox:up-button:pressed{
+    margin-top:4px;
+}
+QSpinBox:down-button:pressed{
+    margin-top:4px;
+}
+QSpinBox:hover {
+    background-color: lightgrey;
+}
+QSpinBox {
+    border-radius: 1px;
+    border:2px solid rgb(230, 235, 240);
+    background-color:rgb(230, 235, 240);
+	font-size: 9pt;
+}
+QSlider::groove:horizontal{
+		height: 12px;
+		left: 0px;
+		right: 0px;
+		border:0px;
+	    border-radius:6px;
+		background:rgba(0,0,0,50);
+ }
+QSlider::handle:horizontal{
+		width:  24px;
+		height: 24px;
+		margin-top: -6px;
+		margin-left: 0px;
+		margin-bottom: -6px;
+		margin-right: 0px;
+		border-image:url(:/icons/icons/dot.svg);
+}
+QSlider::sub-page:horizontal{
+	   background:rgba(80,166,234,1);
+}
+
+#setting-container{
+    background-color:rgb(251,251,251);
+    border-radius: 10px;
+}
