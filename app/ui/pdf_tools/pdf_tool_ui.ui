@@ -156,7 +156,7 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>assistant角色</string>
+             <string>拆分</string>
             </property>
             <property name="icon">
              <iconset>
@@ -181,7 +181,7 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="description">
-             <string/>
+             <string>把一个PDF拆分成多个</string>
             </property>
            </widget>
           </item>

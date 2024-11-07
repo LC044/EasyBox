@@ -15,6 +15,7 @@ from app.ui.components import ScrollBar
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
 from .merge_ui import Ui_merge_pdf_view
+from ...components.file_list_item import FileItemWidget
 from ...components.router import Router
 
 
@@ -48,18 +49,18 @@ class CustomWidget(QWidget):
         self.is_selected = False
         self.label = QLabel(os.path.basename(text))
         # self.label.setStyleSheet("padding: 5px;")
-        self.up_button = QPushButton("↑")
-        self.down_button = QPushButton("↓")
-        self.delete_btn = QPushButton("删除")
+        self.btn_up = QPushButton("↑")
+        self.btn_down= QPushButton("↓")
+        self.btn_delete = QPushButton("删除")
 
         # 创建布局
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         layout.addItem(spacerItem)
-        layout.addWidget(self.up_button)
-        layout.addWidget(self.down_button)
-        layout.addWidget(self.delete_btn)
+        layout.addWidget(self.btn_up)
+        layout.addWidget(self.btn_down)
+        layout.addWidget(self.btn_delete)
         # layout.addStretch(1)  # 确保按钮在一行末尾
         layout.setContentsMargins(0, 0, 10, 0)
         self.setLayout(layout)
@@ -164,14 +165,6 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
     def init_ui(self):
         pixmap = QPixmap(Icon.logo_ico_path)
         icon = QIcon(pixmap)
-        self.setWindowIcon(icon)
-        self.setWindowTitle('合并PDF')
-        style_qss_file = QFile(":/data/QSS/style.qss")
-        if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
-            stream = QTextStream(style_qss_file)
-            style_content = stream.readAll()
-            self.setStyleSheet(style_content)
-            style_qss_file.close()
 
     def on_selection_changed(self, selected):
         for index in selected.indexes():
@@ -244,7 +237,8 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         if not fileinfo:
             return
         text = fileinfo.filename
-        widget = CustomWidget(text)
+        # widget = CustomWidget(text)
+        widget = FileItemWidget(text)
         # self.widgets.append(widget)
         index = self.model.indexFromItem(item)
         self.list_view.setIndexWidget(index, widget)
@@ -254,9 +248,9 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
             Qt.UserRole
         )
         # 连接删除按钮事件
-        widget.delete_btn.clicked.connect(lambda: self.remove_item(item))
-        widget.up_button.clicked.connect(lambda: self.move_item_up(item))
-        widget.down_button.clicked.connect(lambda: self.move_item_down(item))
+        widget.btn_delete.clicked.connect(lambda: self.remove_item(item))
+        widget.btn_up.clicked.connect(lambda: self.move_item_up(item))
+        widget.btn_down.clicked.connect(lambda: self.move_item_down(item))
 
     def remove_item(self, item):
         """从 QListView 中删除项"""

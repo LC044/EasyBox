@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_merge_pdf_view(object):
     def setupUi(self, merge_pdf_view):
         merge_pdf_view.setObjectName("merge_pdf_view")
-        merge_pdf_view.resize(345, 546)
+        merge_pdf_view.resize(668, 614)
         merge_pdf_view.setStyleSheet("QWidget{\n"
 "    background: rgb(238,244,249);\n"
 "    border-radius: 10px;\n"
@@ -23,14 +23,10 @@ class Ui_merge_pdf_view(object):
 "QPushButton{\n"
 "    background-color: rgb(250,252,253);\n"
 "    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
+"    padding:0px;\n"
 "}\n"
-"QPushButton:hover { \n"
-"    background-color: lightgray;\n"
+"QPushButton:hover {\n"
+"    color: rgb(148,133,247)\n"
 "}\n"
 "QCommandLinkButton{\n"
 "    background-color: rgb(250,252,253);\n"
@@ -51,30 +47,126 @@ class Ui_merge_pdf_view(object):
 "    border-radius:11px;\n"
 "    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);\n"
 "}")
-        self.verticalLayout = QtWidgets.QVBoxLayout(merge_pdf_view)
-        self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(merge_pdf_view)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.label_8 = QtWidgets.QLabel(merge_pdf_view)
         font = QtGui.QFont()
         font.setPointSize(20)
         self.label_8.setFont(font)
         self.label_8.setObjectName("label_8")
-        self.verticalLayout.addWidget(self.label_8)
+        self.verticalLayout_3.addWidget(self.label_8)
         self.line_7 = QtWidgets.QFrame(merge_pdf_view)
         self.line_7.setStyleSheet("border-bottom: 2px solid #888888;")
         self.line_7.setFrameShadow(QtWidgets.QFrame.Raised)
         self.line_7.setLineWidth(5)
         self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_7.setObjectName("line_7")
-        self.verticalLayout.addWidget(self.line_7)
+        self.verticalLayout_3.addWidget(self.line_7)
         self.label_7 = QtWidgets.QLabel(merge_pdf_view)
         self.label_7.setObjectName("label_7")
-        self.verticalLayout.addWidget(self.label_7)
-        self.btn_choose_files = QtWidgets.QPushButton(merge_pdf_view)
-        self.btn_choose_files.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_choose_files.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.btn_choose_files.setObjectName("btn_choose_files")
-        self.verticalLayout.addWidget(self.btn_choose_files)
-        self.list_view = QtWidgets.QListView(merge_pdf_view)
+        self.verticalLayout_3.addWidget(self.label_7)
+        self.frame1 = QtWidgets.QFrame(merge_pdf_view)
+        self.frame1.setStyleSheet("QWidget{\n"
+"    background: rgb(248,248,251);\n"
+"    border-radius: 0px;\n"
+"}\n"
+"#frame1{\n"
+"    border: 1px solid #e8e8e8;\n"
+"}")
+        self.frame1.setFrameShape(QtWidgets.QFrame.Box)
+        self.frame1.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame1.setLineWidth(2)
+        self.frame1.setObjectName("frame1")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame1)
+        self.verticalLayout_2.setContentsMargins(9, 0, 9, 0)
+        self.verticalLayout_2.setSpacing(0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(0)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.checkBox_select_all = QtWidgets.QCheckBox(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.checkBox_select_all.sizePolicy().hasHeightForWidth())
+        self.checkBox_select_all.setSizePolicy(sizePolicy)
+        self.checkBox_select_all.setObjectName("checkBox_select_all")
+        self.horizontalLayout_3.addWidget(self.checkBox_select_all)
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.btn_order_inc = QtWidgets.QPushButton(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btn_order_inc.sizePolicy().hasHeightForWidth())
+        self.btn_order_inc.setSizePolicy(sizePolicy)
+        self.btn_order_inc.setObjectName("btn_order_inc")
+        self.verticalLayout.addWidget(self.btn_order_inc)
+        self.btn_order_des = QtWidgets.QPushButton(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btn_order_des.sizePolicy().hasHeightForWidth())
+        self.btn_order_des.setSizePolicy(sizePolicy)
+        self.btn_order_des.setObjectName("btn_order_des")
+        self.verticalLayout.addWidget(self.btn_order_des)
+        self.horizontalLayout_3.addLayout(self.verticalLayout)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem)
+        self.label = QtWidgets.QLabel(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
+        self.label.setMinimumSize(QtCore.QSize(50, 0))
+        self.label.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setObjectName("label")
+        self.horizontalLayout_3.addWidget(self.label)
+        self.label_2 = QtWidgets.QLabel(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
+        self.label_2.setMinimumSize(QtCore.QSize(100, 0))
+        self.label_2.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_3.addWidget(self.label_2)
+        self.label_3 = QtWidgets.QLabel(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy)
+        self.label_3.setMinimumSize(QtCore.QSize(100, 0))
+        self.label_3.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_3.addWidget(self.label_3)
+        self.label_4 = QtWidgets.QLabel(self.frame1)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy)
+        self.label_4.setMinimumSize(QtCore.QSize(100, 0))
+        self.label_4.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_3.addWidget(self.label_4)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.line_8 = QtWidgets.QFrame(self.frame1)
+        self.line_8.setStyleSheet("border-bottom: 2px solid #888888;")
+        self.line_8.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.line_8.setLineWidth(5)
+        self.line_8.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_8.setObjectName("line_8")
+        self.verticalLayout_2.addWidget(self.line_8)
+        self.list_view = QtWidgets.QListView(self.frame1)
         self.list_view.setStyleSheet("QListView {\n"
 "    color: black;\n"
 "    border: none;\n"
@@ -84,21 +176,98 @@ class Ui_merge_pdf_view(object):
 "    border-bottom: 1px solid black;\n"
 "}\n"
 "QListView::item:hover {\n"
-"    background: rgb(230, 235, 240);\n"
+"    background: none;\n"
 "}\n"
 "/* 被选中时的背景颜色和左边框颜色 */\n"
 "QListView::item:selected {\n"
 "    border-radius: 0px;\n"
-"    background: rgb(230, 235, 240);\n"
-"}\n"
-"")
+"    border-left: 0px solid rgb(62, 62, 62);\n"
+"    background: none;\n"
+"}")
         self.list_view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.list_view.setObjectName("list_view")
-        self.verticalLayout.addWidget(self.list_view)
+        self.verticalLayout_2.addWidget(self.list_view)
+        self.widget1 = QtWidgets.QWidget(self.frame1)
+        self.widget1.setStyleSheet("#widget1{\n"
+"    background: rgb(249,250,250);\n"
+"    border-radius: 0px;\n"
+"    border-right: 0px solid rgb(245,245,245);  \n"
+"    border-bottom: 1px solid rgb(245,245,245);\n"
+"    border-left: 0px solid rgb(245,245,245); \n"
+"    border-top: 1px solid rgb(245,245,245);  \n"
+"}\n"
+"QPushButton:hover {\n"
+"    color: rgb(148,133,247)\n"
+"}")
+        self.widget1.setObjectName("widget1")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget1)
+        self.horizontalLayout_2.setContentsMargins(-1, 0, -1, 0)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.btn_remove_selected = QtWidgets.QPushButton(self.widget1)
+        self.btn_remove_selected.setObjectName("btn_remove_selected")
+        self.horizontalLayout_2.addWidget(self.btn_remove_selected)
+        spacerItem1 = QtWidgets.QSpacerItem(243, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem1)
+        self.btn_choose_files = QtWidgets.QPushButton(self.widget1)
+        self.btn_choose_files.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_choose_files.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btn_choose_files.setObjectName("btn_choose_files")
+        self.horizontalLayout_2.addWidget(self.btn_choose_files)
+        spacerItem2 = QtWidgets.QSpacerItem(243, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem2)
+        self.btn_setting = QtWidgets.QPushButton(self.widget1)
+        self.btn_setting.setObjectName("btn_setting")
+        self.horizontalLayout_2.addWidget(self.btn_setting)
+        self.verticalLayout_2.addWidget(self.widget1)
+        self.verticalLayout_3.addWidget(self.frame1)
         self.progressBar = QtWidgets.QProgressBar(merge_pdf_view)
         self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
-        self.verticalLayout.addWidget(self.progressBar)
+        self.verticalLayout_3.addWidget(self.progressBar)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.gridLayout = QtWidgets.QGridLayout()
+        self.gridLayout.setObjectName("gridLayout")
+        self.pushButton_2 = QtWidgets.QPushButton(merge_pdf_view)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.gridLayout.addWidget(self.pushButton_2, 2, 4, 1, 1)
+        self.checkBox_picture_pdf = QtWidgets.QCheckBox(merge_pdf_view)
+        self.checkBox_picture_pdf.setObjectName("checkBox_picture_pdf")
+        self.gridLayout.addWidget(self.checkBox_picture_pdf, 0, 2, 1, 2)
+        self.lineEdit_filename = QtWidgets.QLineEdit(merge_pdf_view)
+        self.lineEdit_filename.setObjectName("lineEdit_filename")
+        self.gridLayout.addWidget(self.lineEdit_filename, 1, 1, 1, 3)
+        self.label_5 = QtWidgets.QLabel(merge_pdf_view)
+        self.label_5.setObjectName("label_5")
+        self.gridLayout.addWidget(self.label_5, 0, 0, 1, 1)
+        self.label_6 = QtWidgets.QLabel(merge_pdf_view)
+        self.label_6.setObjectName("label_6")
+        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
+        self.label_9 = QtWidgets.QLabel(merge_pdf_view)
+        self.label_9.setObjectName("label_9")
+        self.gridLayout.addWidget(self.label_9, 2, 0, 1, 1)
+        self.checkBox_doc_encrypt = QtWidgets.QCheckBox(merge_pdf_view)
+        self.checkBox_doc_encrypt.setObjectName("checkBox_doc_encrypt")
+        self.gridLayout.addWidget(self.checkBox_doc_encrypt, 0, 1, 1, 1)
+        self.label_10 = QtWidgets.QLabel(merge_pdf_view)
+        self.label_10.setObjectName("label_10")
+        self.gridLayout.addWidget(self.label_10, 1, 4, 1, 1)
+        self.checkBox_watermark = QtWidgets.QCheckBox(merge_pdf_view)
+        self.checkBox_watermark.setObjectName("checkBox_watermark")
+        self.gridLayout.addWidget(self.checkBox_watermark, 0, 4, 1, 1)
+        self.comboBox = QtWidgets.QComboBox(merge_pdf_view)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.gridLayout.addWidget(self.comboBox, 2, 1, 1, 1)
+        self.label_output_dir = QtWidgets.QLabel(merge_pdf_view)
+        self.label_output_dir.setObjectName("label_output_dir")
+        self.gridLayout.addWidget(self.label_output_dir, 2, 2, 1, 2)
+        self.horizontalLayout_4.addLayout(self.gridLayout)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem3)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_4)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.btn_order_by_name = QtWidgets.QPushButton(merge_pdf_view)
@@ -110,9 +279,9 @@ class Ui_merge_pdf_view(object):
         self.btn_merge = QtWidgets.QPushButton(merge_pdf_view)
         self.btn_merge.setObjectName("btn_merge")
         self.horizontalLayout.addWidget(self.btn_merge)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem4)
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
 
         self.retranslateUi(merge_pdf_view)
         QtCore.QMetaObject.connectSlotsByName(merge_pdf_view)
@@ -122,7 +291,27 @@ class Ui_merge_pdf_view(object):
         merge_pdf_view.setWindowTitle(_translate("merge_pdf_view", "Form"))
         self.label_8.setText(_translate("merge_pdf_view", "合并多个PDF"))
         self.label_7.setText(_translate("merge_pdf_view", "选择所需的PDF"))
-        self.btn_choose_files.setText(_translate("merge_pdf_view", "Choose files"))
+        self.checkBox_select_all.setText(_translate("merge_pdf_view", "名称"))
+        self.btn_order_inc.setText(_translate("merge_pdf_view", "▲"))
+        self.btn_order_des.setText(_translate("merge_pdf_view", "▼"))
+        self.label.setText(_translate("merge_pdf_view", "页数"))
+        self.label_2.setText(_translate("merge_pdf_view", "输出范围"))
+        self.label_3.setText(_translate("merge_pdf_view", "状态"))
+        self.label_4.setText(_translate("merge_pdf_view", "操作"))
+        self.btn_remove_selected.setText(_translate("merge_pdf_view", "清除选中"))
+        self.btn_choose_files.setText(_translate("merge_pdf_view", "添加文件"))
+        self.btn_setting.setText(_translate("merge_pdf_view", "设置"))
+        self.pushButton_2.setText(_translate("merge_pdf_view", "···"))
+        self.checkBox_picture_pdf.setText(_translate("merge_pdf_view", "图片型PDF"))
+        self.label_5.setText(_translate("merge_pdf_view", "安全设置:"))
+        self.label_6.setText(_translate("merge_pdf_view", "输出名称:"))
+        self.label_9.setText(_translate("merge_pdf_view", "输出目录:"))
+        self.checkBox_doc_encrypt.setText(_translate("merge_pdf_view", "文档加密"))
+        self.label_10.setText(_translate("merge_pdf_view", ".pdf"))
+        self.checkBox_watermark.setText(_translate("merge_pdf_view", "自定义水印"))
+        self.comboBox.setItemText(0, _translate("merge_pdf_view", "PDF相同目录"))
+        self.comboBox.setItemText(1, _translate("merge_pdf_view", "自定义目录"))
+        self.label_output_dir.setText(_translate("merge_pdf_view", "目录"))
         self.btn_order_by_name.setText(_translate("merge_pdf_view", "按名称排序"))
         self.btn_order_by_time.setText(_translate("merge_pdf_view", "按日期排序"))
-        self.btn_merge.setText(_translate("merge_pdf_view", "合并"))
+        self.btn_merge.setText(_translate("merge_pdf_view", "开始合并"))
