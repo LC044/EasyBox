@@ -132,7 +132,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
         self.router = router
-        self.router_path = '合并PDF'
+        self.router_path = self.parent().router_path + '/合并PDF'
         self.child_routes = {}
         self.worker = None
         self.running_flag = False

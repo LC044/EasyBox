@@ -1,11 +1,14 @@
+from PyQt5 import QtWidgets, QtGui
+
 from app.ui import mainwindow
-from PyQt5.QtCore import pyqtSignal, QFile, QIODevice, QTextStream, QSize
+from PyQt5.QtCore import pyqtSignal, QFile, QIODevice, QTextStream, QSize, Qt
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QLabel
+from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QLabel, QPushButton, QSizePolicy, QSplitter
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.components.router import Router
+from app.ui.components import Sidebar, SidebarButton
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
 
 
@@ -19,20 +22,16 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         super(MainWinController, self).__init__(parent)
         self.setupUi(self)
         self.router_list = []
+        self.buttons = []
         self.child_routes = {}
         self.router_path = ''
-        self.router = Router(self.stackedWidget)
-        self.router.route_changed.connect(self.setCurrentClick)
-        self.btn_back.clicked.connect(self.router.turn_back)
-        self.listWidget.currentRowChanged.connect(self.setCurrentIndex)
         self.init_ui()
-        self.router.navigate('PDF工具箱')
 
     def init_ui(self):
         self.initCursor([':/icons/icons/Cursors/%d.png' %
                          i for i in range(8)], self)
         self.setCursorTimeout(100)
-        self.btn_setting.setObjectName('border')
+        # self.btn_setting.setObjectName('border')
         pixmap = QPixmap(Icon.logo_ico_path)
         icon = QIcon(pixmap)
         self.setWindowIcon(icon)
@@ -44,7 +43,28 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
             self.setStyleSheet(style_content)
             style_qss_file.close()
 
-        self.listWidget.clear()
+        self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
+        self.stackedWidget.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(15)
+        font.setBold(False)
+        font.setWeight(50)
+        self.stackedWidget.setFont(font)
+        self.stackedWidget.setObjectName("stackedWidget")
+
+        self.router = Router(self.stackedWidget)
+        self.sidebar = Sidebar(self.stackedWidget, parent=self)
+        self.sidebar.btn_back.clicked.connect(self.router.turn_back)
+        self.router.history_changed.connect(self.sidebar.set_turn_back_enable)
+        self.horizontalLayout.addWidget(self.sidebar)
+        self.horizontalLayout.addWidget(self.stackedWidget)
+        self.horizontalLayout.setStretch(0, 1)
+        self.horizontalLayout.setStretch(1, 10)
 
         pdf_view = PDFToolControl(self.router, parent=self)
         self.add_widget(Icon.Tool_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
@@ -58,35 +78,24 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         l3 = QLabel('留痕增强', self)
         self.add_widget(Icon.Home_Icon, '留痕增强', '留痕增强', l3)
 
+        # 连接信号槽：切换选中按钮样式
+        self.router.route_changed.connect(self.sidebar.update_sidebar_selection)
+        self.router.navigate(pdf_view.router_path)  # 初始页面
+
     def add_widget(self, icon, text, router_path, widget):
-        item = QListWidgetItem(icon, text, self.listWidget)
-        index = self.router.add_route(router_path, widget)
-        self.router_list.append(router_path)
+        # return
+        # """ 创建侧边栏按钮并连接路径导航 """
+
+        self.sidebar.add_nav_button(icon, text, router_path, action=lambda: self.router.navigate(router_path))
         self.child_routes[router_path] = len(self.router_list) - 1
-        try:
-            widget.childRouterSignal.connect(self.add_child_router)
-        except:
-            pass
-        try:
-            for router in widget.child_routes.keys():
-                self.child_routes[router] = index
-        except:
-            pass
-
-    def setCurrentIndex(self, row):
-        self.router.navigate(self.router_list[row])
-
-    def setCurrentClick(self, path):
-        if path in self.child_routes:
-            row = self.child_routes[path]
-            self.listWidget.currentRowChanged.disconnect()
-            self.listWidget.setCurrentRow(row)
-            self.listWidget.currentRowChanged.connect(self.setCurrentIndex)
+        index = self.router.add_route(router_path, widget)
 
     def add_child_router(self, path):
         path = path.strip('/')
         root = path.split('/')
         self.child_routes[root[-1]] = self.child_routes[root[0]]
+
+
 
     def turn_back(self):
         self.router.turn_back()
