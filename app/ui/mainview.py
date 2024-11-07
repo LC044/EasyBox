@@ -21,9 +21,6 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
     def __init__(self, parent=None):
         super(MainWinController, self).__init__(parent)
         self.setupUi(self)
-        self.router_list = []
-        self.buttons = []
-        self.child_routes = {}
         self.router_path = ''
         self.init_ui()
 
@@ -31,7 +28,6 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.initCursor([':/icons/icons/Cursors/%d.png' %
                          i for i in range(8)], self)
         self.setCursorTimeout(100)
-        # self.btn_setting.setObjectName('border')
         pixmap = QPixmap(Icon.logo_ico_path)
         icon = QIcon(pixmap)
         self.setWindowIcon(icon)
@@ -44,11 +40,7 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
             style_qss_file.close()
 
         self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(1)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
-        self.stackedWidget.setSizePolicy(sizePolicy)
+        self.stackedWidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # C尽可能挤压B
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(15)
@@ -63,39 +55,25 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.router.history_changed.connect(self.sidebar.set_turn_back_enable)
         self.horizontalLayout.addWidget(self.sidebar)
         self.horizontalLayout.addWidget(self.stackedWidget)
-        self.horizontalLayout.setStretch(0, 1)
-        self.horizontalLayout.setStretch(1, 10)
 
         pdf_view = PDFToolControl(self.router, parent=self)
         self.add_widget(Icon.Tool_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
 
         l1 = QLabel('聊天', self)
-        self.add_widget(Icon.Chat_Icon, '聊天', '聊天', l1)
+        self.add_widget(Icon.Chat_Icon, '聊天', '/聊天', l1)
 
         l2 = QLabel('好友', self)
-        self.add_widget(Icon.Contact_Icon, '好友', '好友', l2)
+        self.add_widget(Icon.Contact_Icon, '好友', '/好友', l2)
 
         l3 = QLabel('留痕增强', self)
-        self.add_widget(Icon.Home_Icon, '留痕增强', '留痕增强', l3)
+        self.add_widget(Icon.Home_Icon, '留痕增强', '/留痕增强', l3)
 
         # 连接信号槽：切换选中按钮样式
         self.router.route_changed.connect(self.sidebar.update_sidebar_selection)
         self.router.navigate(pdf_view.router_path)  # 初始页面
 
     def add_widget(self, icon, text, router_path, widget):
-        # return
         # """ 创建侧边栏按钮并连接路径导航 """
 
         self.sidebar.add_nav_button(icon, text, router_path, action=lambda: self.router.navigate(router_path))
-        self.child_routes[router_path] = len(self.router_list) - 1
         index = self.router.add_route(router_path, widget)
-
-    def add_child_router(self, path):
-        path = path.strip('/')
-        root = path.split('/')
-        self.child_routes[root[-1]] = self.child_routes[root[0]]
-
-
-
-    def turn_back(self):
-        self.router.turn_back()

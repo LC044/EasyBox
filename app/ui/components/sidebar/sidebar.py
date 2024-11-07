@@ -9,7 +9,7 @@
 @Description : 
 """
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QSizePolicy
-from PyQt5.QtCore import QSize, QRect, QPropertyAnimation
+from PyQt5.QtCore import QSize, QRect, QPropertyAnimation, QTimer
 from PyQt5.QtGui import QIcon
 
 from app.ui.components.router import Router
@@ -63,17 +63,18 @@ class Sidebar(QWidget, Ui_Form):
     def __init__(self, stack, parent):
         super().__init__(parent)
         self.setupUi(self)
-        self.expanded = True
-        self.default_width = 150  # 展开时的宽度
-        self.collapsed_width = 60  # 折叠时的宽度
-        self.router = Router(stack)
-        self.buttons = []
-        self.btn_back.clicked.connect(self.router.turn_back)
-        self.btn_back.setEnabled(False)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)  # B尽可能小
         self.btn_setting.setObjectName('border')
+
+        self.expanded = True
+        self.default_width = 120  # 展开时的宽度
+        self.collapsed_width = 60  # 折叠时的宽度
+        self.buttons = []
+        self.btn_back.setEnabled(False)
         self.listWidget.clear()
         self.btn_toggle.clicked.connect(self.toggle_sidebar)
-        self.setMinimumWidth(self.default_width)
+
+        self.setFixedWidth(self.default_width)
 
     def set_turn_back_enable(self, flag):
         """
@@ -104,24 +105,6 @@ class Sidebar(QWidget, Ui_Form):
         self.listWidget.setItemWidget(item, button)
         button.clicked.connect(action)
 
-    def toggle_sidebar(self):
-        if not self.expanded:
-            self.setMinimumWidth(self.default_width)
-            self.btn_toggle.setText("折叠")
-            # 恢复文字
-            for i in range(self.listWidget.count()):
-                item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
-                item_widget.setText(item_widget._text)
-        else:
-            self.btn_toggle.setText("展开")
-            self.setMinimumWidth(self.collapsed_width)
-            # 隐藏文字
-            for i in range(self.listWidget.count()):
-                item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
-                item_widget.setText("")
-        # 切换状态
-        self.expanded = not self.expanded
-
     def update_sidebar_selection(self, path):
         """ 根据当前路由层级自动选择父级路径 """
         # 解析并选择父路径（仅主路径）
@@ -136,6 +119,57 @@ class Sidebar(QWidget, Ui_Form):
         if '/' in path:
             return '/' + path.split('/')[1]
         return path
+
+    def toggle_sidebar(self):
+        if not self.expanded:
+            # self.setFixedWidth(self.default_width)
+            self.btn_toggle.setText("折叠")
+            # 恢复文字
+            for i in range(self.listWidget.count()):
+                item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
+                item_widget.setText(item_widget._text)
+        else:
+            self.btn_toggle.setText("展开")
+            # self.setFixedWidth(self.collapsed_width)
+            # 隐藏文字
+            for i in range(self.listWidget.count()):
+                item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
+                item_widget.setText("")
+
+        self.start_update_window_width()
+        # 切换状态
+        self.expanded = not self.expanded
+
+    def start_update_window_width(self):
+        # 设置目标宽度
+        target_width = self.collapsed_width if self.expanded else self.default_width
+        current_width = self.width()
+
+        # 计算宽度变化量
+        step = (target_width - current_width) / 30  # 每次变化的宽度（30步动画）
+
+        # 定义一个计时器来逐步调整宽度
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_width)
+        self.timer.start(10)  # 每20毫秒触发一次，模拟动画
+
+        # 设置初始值
+        self.current_width = current_width
+        self.step = step
+        self.target_width = target_width
+
+    def update_width(self):
+        # 更新宽度
+        self.current_width += self.step
+        if (self.step > 0 and self.current_width >= self.target_width) or (
+                self.step < 0 and self.current_width <= self.target_width):
+            self.current_width = self.target_width
+            self.timer.stop()
+        # 设置新的宽度
+        self.setFixedWidth(int(self.current_width))
+
+        # 强制更新布局
+        self.layout().update()
 
 
 if __name__ == '__main__':
