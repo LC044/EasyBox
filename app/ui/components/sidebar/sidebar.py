@@ -71,6 +71,7 @@ class Sidebar(QWidget, Ui_Form):
         self.collapsed_width = 60  # 折叠时的宽度
         self.buttons = []
         self.btn_back.setEnabled(False)
+        self.btn_back.setWhatsThis('返回')
         self.listWidget.clear()
         self.btn_toggle.clicked.connect(self.toggle_sidebar)
 
@@ -99,8 +100,10 @@ class Sidebar(QWidget, Ui_Form):
 
     def add_nav_button(self, icon, text, router_path, action):
         item = QListWidgetItem()
+        item.setWhatsThis(text)
         button = SidebarButton(icon, text)
         self.add_button(button)
+        button.setWhatsThis(text)
         self.buttons.append((button, router_path))
         self.listWidget.setItemWidget(item, button)
         button.clicked.connect(action)

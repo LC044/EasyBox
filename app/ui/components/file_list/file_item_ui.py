@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_file_item_widget(object):
     def setupUi(self, file_item_widget):
         file_item_widget.setObjectName("file_item_widget")
-        file_item_widget.resize(668, 34)
+        file_item_widget.resize(668, 33)
         file_item_widget.setAcceptDrops(True)
         file_item_widget.setStyleSheet("QWidget{\n"
 "    background: rgb(248,248,251);\n"
@@ -160,6 +160,9 @@ class Ui_file_item_widget(object):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.verticalLayout_2.addLayout(self.verticalLayout_4)
         self.btn_up = QtWidgets.QPushButton(self.widget_2)
         self.btn_up.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_up.setObjectName("btn_up")
@@ -168,6 +171,9 @@ class Ui_file_item_widget(object):
         self.btn_down.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_down.setObjectName("btn_down")
         self.verticalLayout_2.addWidget(self.btn_down)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.verticalLayout_2.addLayout(self.verticalLayout_3)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
         self.btn_delete = QtWidgets.QPushButton(self.widget_2)
         self.btn_delete.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -187,6 +193,13 @@ class Ui_file_item_widget(object):
         self.label_2.setText(_translate("file_item_widget", "-"))
         self.label_result.setText(_translate("file_item_widget", "TextLabel"))
         self.btn_open.setText(_translate("file_item_widget", "✘"))
+        self.btn_up.setToolTip(_translate("file_item_widget", "上移"))
+        self.btn_up.setWhatsThis(_translate("file_item_widget", "上移"))
         self.btn_up.setText(_translate("file_item_widget", "▲"))
+        self.btn_down.setToolTip(_translate("file_item_widget", "下移"))
+        self.btn_down.setWhatsThis(_translate("file_item_widget", "下移"))
         self.btn_down.setText(_translate("file_item_widget", "▼"))
+        self.btn_delete.setToolTip(_translate("file_item_widget", "取消"))
+        self.btn_delete.setStatusTip(_translate("file_item_widget", "取消"))
+        self.btn_delete.setWhatsThis(_translate("file_item_widget", "删除这个元素"))
         self.btn_delete.setText(_translate("file_item_widget", "✘"))

@@ -46,8 +46,35 @@ class Ui_merge_pdf_view(object):
 "QProgressBar::chunk{\n"
 "    border-radius:11px;\n"
 "    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);\n"
+"}\n"
+"QMessageBox QPushButton{\n"
+"    background-color: rgb(250,252,253);\n"
+"    border-radius: 5px;\n"
+"    padding: 8px;\n"
+"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
+"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
+"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
+"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
+"}\n"
+"QListView {\n"
+"    color: black;\n"
+"    border: none;\n"
+"}\n"
+"QListView::item {\n"
+"    margin: 0px;\n"
+"    border-bottom: 1px solid black;\n"
+"}\n"
+"QListView::item:hover {\n"
+"    background: none;\n"
+"}\n"
+"/* 被选中时的背景颜色和左边框颜色 */\n"
+"QListView::item:selected {\n"
+"    border-radius: 0px;\n"
+"    border-left: 0px solid rgb(62, 62, 62);\n"
+"    background: none;\n"
 "}")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(merge_pdf_view)
+        self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.label_8 = QtWidgets.QLabel(merge_pdf_view)
         font = QtGui.QFont()
@@ -166,28 +193,8 @@ class Ui_merge_pdf_view(object):
         self.line_8.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_8.setObjectName("line_8")
         self.verticalLayout_2.addWidget(self.line_8)
-        self.list_view = QtWidgets.QListView(self.frame1)
-        self.list_view.setStyleSheet("QListView {\n"
-"    color: black;\n"
-"    border: none;\n"
-"}\n"
-"QListView::item {\n"
-"    margin: 0px;\n"
-"    border-bottom: 1px solid black;\n"
-"}\n"
-"QListView::item:hover {\n"
-"    background: none;\n"
-"}\n"
-"/* 被选中时的背景颜色和左边框颜色 */\n"
-"QListView::item:selected {\n"
-"    border-radius: 0px;\n"
-"    border-left: 0px solid rgb(62, 62, 62);\n"
-"    background: none;\n"
-"}")
-        self.list_view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.list_view.setObjectName("list_view")
-        self.verticalLayout_2.addWidget(self.list_view)
-        self.widget1 = QtWidgets.QWidget(self.frame1)
+        self.verticalLayout_3.addWidget(self.frame1)
+        self.widget1 = QtWidgets.QWidget(merge_pdf_view)
         self.widget1.setStyleSheet("#widget1{\n"
 "    background: rgb(249,250,250);\n"
 "    border-radius: 0px;\n"
@@ -219,8 +226,7 @@ class Ui_merge_pdf_view(object):
         self.btn_setting = QtWidgets.QPushButton(self.widget1)
         self.btn_setting.setObjectName("btn_setting")
         self.horizontalLayout_2.addWidget(self.btn_setting)
-        self.verticalLayout_2.addWidget(self.widget1)
-        self.verticalLayout_3.addWidget(self.frame1)
+        self.verticalLayout_3.addWidget(self.widget1)
         self.progressBar = QtWidgets.QProgressBar(merge_pdf_view)
         self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
@@ -313,5 +319,6 @@ class Ui_merge_pdf_view(object):
         self.comboBox.setItemText(1, _translate("merge_pdf_view", "自定义目录"))
         self.label_output_dir.setText(_translate("merge_pdf_view", "目录"))
         self.btn_order_by_name.setText(_translate("merge_pdf_view", "按名称排序"))
+        self.btn_order_by_time.setWhatsThis(_translate("merge_pdf_view", "按日期排序"))
         self.btn_order_by_time.setText(_translate("merge_pdf_view", "按日期排序"))
         self.btn_merge.setText(_translate("merge_pdf_view", "开始合并"))

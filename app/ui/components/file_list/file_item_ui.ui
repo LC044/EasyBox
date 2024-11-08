@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>668</width>
-    <height>34</height>
+    <height>33</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -358,9 +358,18 @@ QProgressBar::chunk{
          <number>0</number>
         </property>
         <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4"/>
+        </item>
+        <item>
          <widget class="QPushButton" name="btn_up">
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>上移</string>
+          </property>
+          <property name="whatsThis">
+           <string>上移</string>
           </property>
           <property name="text">
            <string>▲</string>
@@ -372,10 +381,19 @@ QProgressBar::chunk{
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
+          <property name="toolTip">
+           <string>下移</string>
+          </property>
+          <property name="whatsThis">
+           <string>下移</string>
+          </property>
           <property name="text">
            <string>▼</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3"/>
         </item>
        </layout>
       </item>
@@ -383,6 +401,15 @@ QProgressBar::chunk{
        <widget class="QPushButton" name="btn_delete">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>取消</string>
+        </property>
+        <property name="statusTip">
+         <string>取消</string>
+        </property>
+        <property name="whatsThis">
+         <string>删除这个元素</string>
         </property>
         <property name="text">
          <string>✘</string>
