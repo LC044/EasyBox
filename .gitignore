@@ -141,6 +141,7 @@ fabric.properties
 *.iml
 out
 gen
-
+dist
+build
 *test*
 *.log
