@@ -5,17 +5,13 @@ import sys
 import traceback
 
 import fitz
-from PyQt5.QtCore import pyqtSignal, QThread, QFile, QIODevice, QTextStream, QUrl, Qt, QSize, QMimeData, QPoint
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QStandardItemModel, QStandardItem, QDrag
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QLabel, QPushButton, QHBoxLayout, \
-    QStyledItemDelegate, QListView
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-from app.ui.components import ScrollBar
+from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
+from app.util import common
 from .merge_ui import Ui_merge_pdf_view
-from ...components.file_list import FileItemWidget
 from ...components.file_list import FileListView
 from ...components.router import Router
 
@@ -31,6 +27,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
+        self.output_filename = '合并PDF'
         self.router = router
         self.router_path = self.parent().router_path + '/合并PDF'
         self.child_routes = {}
@@ -49,6 +46,10 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.btn_setting.clicked.connect(self.list_view.print)
         self.btn_order_inc.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=False))
         self.btn_order_des.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=True))
+        self.checkBox_select_all.clicked.connect(self.select_all)
+        self.btn_remove_selected.setEnabled(False)
+        self.btn_remove_selected.clicked.connect(self.remove_selected)
+        self.lineEdit_filename.textChanged.connect(self.change_output_filename)
         self.verticalLayout_2.addWidget(self.list_view)
 
         self.input_files = []
@@ -57,12 +58,31 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
     def init_ui(self):
         pixmap = QPixmap(Icon.logo_ico_path)
         icon = QIcon(pixmap)
+        self.lineEdit_filename.setText(self.output_filename)
 
     def on_selection_changed(self, selected):
         for index in selected.indexes():
             print("Selected item:", index.data(Qt.UserRole))
             widget = self.list_view.indexWidget(index)
             # widget.is_select = True
+
+    def select_all(self):
+        if self.checkBox_select_all.isChecked():
+            self.list_view.select_all()
+        else:
+            self.list_view.dis_select_all()
+
+    def remove_selected(self):
+        reply = QMessageBox.question(self, '温馨提示', '确定删除选中的文件？', QMessageBox.No | QMessageBox.Yes,
+                                     QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            pass
+        else:
+            return
+        self.list_view.remove_select()
+
+    def change_output_filename(self):
+        self.output_filename = common.correct_filename(self.lineEdit_filename.text())
 
     def open_file_dialog(self):
         # 打开文件对话框，设置多文件选择和 PDF 文件过滤
@@ -72,22 +92,20 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
             self.input_files = files
             for index, file in enumerate(files):
                 self.add_item(file, index)
+            self.btn_remove_selected.setEnabled(True)
+            self.checkBox_select_all.setChecked(True)
 
     def merge(self):
-        items = [self.model.item(i).data(Qt.UserRole).filename for i in range(self.model.rowCount())]
-        self.input_files = items
-        print(items)
-        if len(self.input_files) < 2:
+        input_files = self.list_view.get_data()
+
+        if len(input_files) < 2:
             QMessageBox.information(self, '温馨提示', "请至少选择两个文件")
             return
-        root_path = os.path.dirname(self.input_files[0])
-        output = QFileDialog.getSaveFileName(None, "save file", os.path.join(root_path, '合并.PDF'),
-                                             "csv files (*.csv);;all files(*.*)")
-        if not output[0]:
-            return
-        self.output_path = output[0]
+        fileinfo = input_files[0]
+        self.output_path = os.path.join(os.path.dirname(fileinfo.filepath), self.output_filename + '.pdf')
+        self.output_path = common.usable_filepath(self.output_path)
         self.startBusy()
-        self.worker = MergeThread(self.input_files, self.output_path)
+        self.worker = MergeThread(input_files, self.output_path)
         self.worker.okSignal.connect(self.merge_finish)
         self.worker.progressSignal.connect(self.update_progress)
         self.worker.start()
@@ -96,7 +114,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.progressBar.setValue(value)
 
     def merge_finish(self, success):
-        self.worker = None
+
         self.stopBusy()
         reply = QMessageBox(self)
         reply.setIcon(QMessageBox.Information)
@@ -112,7 +130,9 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         reply.addButton("确认", QMessageBox.AcceptRole)
         reply.addButton("取消", QMessageBox.RejectRole)
         api = reply.exec_()
-        self.close()
+        # self.close()
+        self.list_view.clear()
+        self.worker = None
 
     def add_item(self, text, index):
         """添加自定义组件到 QListView"""
@@ -147,25 +167,32 @@ class MergeThread(QThread):
         toc = []  # 记录合并PDF的书签
         toc_set = set()
         try:
-            for index, pdf_path in enumerate(self.input_paths):
+            for index, fileinfo in enumerate(self.input_paths):
+                pdf_path = fileinfo.filepath
                 if not os.path.isfile(pdf_path):
                     print(f"文件未找到: {pdf_path}")
                     continue
 
                 try:
                     pdf_document = fitz.open(pdf_path)
-                    # 合并当前PDF的书签
+                    # 合并当前PDF的书签,下标从1开始
                     tmp_toc = pdf_document.get_toc()  # 获取书签目录
+                    start_page_num = fileinfo.start_page_num - 1
+                    end_page_num = fileinfo.end_page_num - 1
                     if tmp_toc:
                         for entry in tmp_toc:
                             tmp_entry = (entry[0], entry[1])
-                            if tmp_entry not in toc_set:
-                                toc.append((entry[0], entry[1], entry[2] + current_page_offset))
-                                toc_set.add(tmp_entry)
+                            if start_page_num+1 <= entry[2] <= end_page_num+1:
+                                if tmp_entry not in toc_set:
+                                    toc.append((entry[0], entry[1], entry[2] + current_page_offset))
+                                    toc_set.add(tmp_entry)
 
                     # 遍历当前文件的每一页
                     for page_num in range(pdf_document.page_count):
-                        merged_pdf.insert_pdf(pdf_document, from_page=page_num, to_page=page_num)
+                        if page_num + start_page_num > end_page_num:
+                            break
+                        merged_pdf.insert_pdf(pdf_document, from_page=start_page_num + page_num,
+                                              to_page=start_page_num + page_num)
                         page_count += 1
                         current_page_offset += 1
                         # 每达到设定页数（save_interval）保存一次
@@ -197,7 +224,8 @@ class MergeThread(QThread):
 
             # 删除临时文件
             for i in range(2):
-                os.remove(output_path + f"{i % 2}.tmp")
+                if os.path.exists(output_path + f"{i % 2}.tmp"):
+                    os.remove(output_path + f"{i % 2}.tmp")
 
         except Exception as e:
             print(f"合并过程中出错: {e}")

@@ -105,8 +105,17 @@ QProgressBar::chunk{
        <pointsize>8</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="text">
-      <string>size</string>
+      <string>0M</string>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -133,7 +142,7 @@ QProgressBar::chunk{
       </font>
      </property>
      <property name="text">
-      <string>页数</string>
+      <string>0</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -144,13 +153,13 @@ QProgressBar::chunk{
     <widget class="QWidget" name="widget_3" native="true">
      <property name="minimumSize">
       <size>
-       <width>100</width>
+       <width>99</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>99</width>
        <height>16777215</height>
       </size>
      </property>
@@ -264,13 +273,13 @@ QProgressBar::chunk{
     <widget class="QWidget" name="widget" native="true">
      <property name="minimumSize">
       <size>
-       <width>100</width>
+       <width>99</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>99</width>
        <height>16777215</height>
       </size>
      </property>
@@ -316,13 +325,13 @@ QProgressBar::chunk{
     <widget class="QWidget" name="widget_2" native="true">
      <property name="minimumSize">
       <size>
-       <width>100</width>
+       <width>99</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>99</width>
        <height>16777215</height>
       </size>
      </property>
@@ -346,6 +355,9 @@ QProgressBar::chunk{
        <widget class="QPushButton" name="btn_open">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>打开文件</string>
         </property>
         <property name="text">
          <string>✘</string>

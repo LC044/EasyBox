@@ -10,7 +10,10 @@
 """
 import os
 import re
+from typing import List
 
+import fitz
+import pymupdf
 from PyQt5.QtCore import pyqtSignal, QThread, QFile, QIODevice, QTextStream, QUrl, Qt, QSize, QMimeData, QPoint
 from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QStandardItemModel, QStandardItem, QDrag
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QLabel, QPushButton, QHBoxLayout, \
@@ -22,13 +25,69 @@ from app.ui.components.file_list.file_item_ui import Ui_file_item_widget
 
 
 class FileItemWidget(QWidget, Ui_file_item_widget):
-    def __init__(self, text, parent=None):
+    dataChanged = pyqtSignal(bool)
+
+    def __init__(self, filepath, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.checkBox_name.setText(os.path.basename(text))
+        self.filepath = filepath
+        self.checkBox_name.setText(os.path.basename(filepath))
+        self.checkBox_name.setToolTip(filepath)
+        self.checkBox_name.clicked.connect(self.dataChanged)
         self.progressBar.setVisible(False)
         self.label_result.setVisible(False)
-        self.btn_open.setVisible(False)
+        # self.btn_open.setVisible(False)
+        self.spinBox_start.valueChanged.connect(self.update_page_range)
+        self.spinBox_end.valueChanged.connect(self.update_page_range)
+        if os.path.exists(filepath):
+            # 设置文件大小
+            file_size = os.path.getsize(filepath) / (1024 * 1024)
+            file_size = int(round(file_size, 0))
+            if file_size < 1:
+                self.label_size.setText(
+                    "<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, 255);text-shadow: 2px "
+                    "2px 4px rgba(0, 0, 0, 0.5);'>1M</span>")
+            elif file_size < 100:
+                self.label_size.setText(
+                    f"<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, 255);text-shadow: 2px "
+                    f"2px 4px rgba(0, 0, 0, 0.5);'>{file_size}M</span>")
+            else:
+                self.label_size.setText("<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, "
+                                        "255);text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);'>99</span>")
+            # 设置页码范围
+            try:
+                with pymupdf.open(filepath) as doc:
+                    page_num = len(doc)
+                    self.label_page_num.setText(str(page_num))
+                    self.spinBox_start.setMaximum(page_num)
+                    self.spinBox_end.setMaximum(page_num)
+                    self.spinBox_end.setValue(page_num)
+            except:
+                pass
+            self.checkBox_name.setChecked(True)
+        self.btn_open.clicked.connect(self.open_folder)
+
+    def open_folder(self):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(self.filepath))
+
+    def update_page_range(self):
+        sv = self.spinBox_start.value()
+        ev = self.spinBox_end.value()
+        if self.sender() == self.spinBox_start:
+            if sv > ev:
+                self.spinBox_end.setValue(sv)
+        else:
+            if sv > ev:
+                self.spinBox_start.setValue(ev)
+        self.dataChanged.emit(True)
+
+    def select(self):
+        self.checkBox_name.setChecked(True)
+        self.dataChanged.emit(True)
+
+    def dis_select(self):
+        self.checkBox_name.setChecked(False)
+        self.dataChanged.emit(True)
 
 
 Stylesheet = """
@@ -115,12 +174,18 @@ class FileInfo:
         self.filename = os.path.basename(file)
         self.filepath = file
         self.index = index
+        self.start_page_num = 1
+        self.end_page_num = 1
+        self.selected = True
+
+    def copy(self):
+        return FileInfo(self.filepath, self.index)
 
     def __str__(self):
-        return f"FileInfo(filename={self.filename}, index={self.index})"
+        return f"FileInfo(filename={self.filename}, index={self.index}, (s_num,e_num)={(self.start_page_num, self.end_page_num)}) {self.selected}"
 
     def __repr__(self):
-        return f"FileInfo(filename={self.filename}, index={self.index})"
+        return f"FileInfo(filename={self.filename}, index={self.index}, (s_num,e_num)={(self.start_page_num, self.end_page_num)}) {self.selected}"
 
     def __eq__(self, other):
         return format_numbers(self.filename) == format_numbers(other.filename)
@@ -135,9 +200,9 @@ class FileInfo:
 class FileItem(QStandardItem):
     """自定义的 QStandardItem 用于存储小部件的文本内容"""
 
-    def __init__(self, filename, index):
+    def __init__(self, fileinfo):
         super(FileItem, self).__init__()
-        self.setData(FileInfo(filename, index), Qt.UserRole)  # 存储自定义文本数据
+        self.setData(fileinfo, Qt.UserRole)  # 存储自定义文本数据
 
     def get_filename(self):
         """读取存储的数据"""
@@ -219,7 +284,7 @@ class FileListView(QListView):
                 # 获取源项内容
                 source_item = self.model.item(source_row)
                 # 创建新项并复制源项的数据
-                new_item = FileItem(source_item.data(Qt.UserRole).filename, source_item.data(Qt.UserRole).index)
+                new_item = source_item.data(Qt.UserRole).copy()
                 new_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
                 # 从模型中移除源项
                 self.model.removeRow(source_row)
@@ -236,7 +301,7 @@ class FileListView(QListView):
 
     def add_item(self, text, index):
         """添加自定义组件到 QListView"""
-        item = FileItem(text, index)
+        item = FileItem(FileInfo(text, index))
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
         self.model.appendRow(item)
         self.set_item_widget(item)
@@ -250,29 +315,54 @@ class FileListView(QListView):
             return
         text = fileinfo.filename
         # widget = CustomWidget(text)
-        widget = FileItemWidget(text)
+        widget = FileItemWidget(fileinfo.filepath)
         # self.widgets.append(widget)
         index = self.model.indexFromItem(item)
         self.setIndexWidget(index, widget)
-        self.model.setData(
-            index,
-            FileInfo(item.data(Qt.UserRole).filename, index.row()),
-            Qt.UserRole
-        )
         # 连接删除按钮事件
         widget.btn_delete.clicked.connect(lambda: self.remove_item(item))
         widget.btn_up.clicked.connect(lambda: self.move_item_up(item))
         widget.btn_down.clicked.connect(lambda: self.move_item_down(item))
+        widget.dataChanged.connect(lambda: self.update_item_data(item))
+
+    def update_item_data(self, item):
+        """
+        更新item的数据
+        :param item:
+        :return:
+        """
+        old_file_info = item.data(Qt.UserRole)
+        row = item.row()
+        index = item.index()
+        widget = self.indexWidget(index)
+        start_page_num = widget.spinBox_start.value()
+        end_page_num = widget.spinBox_end.value()
+        fileinfo = FileInfo(old_file_info.filepath, old_file_info.index)
+        fileinfo.start_page_num = start_page_num
+        fileinfo.end_page_num = end_page_num
+        fileinfo.selected = widget.checkBox_name.isChecked()
+        print(start_page_num, end_page_num, fileinfo.selected)
+        self.model.setData(index, fileinfo, Qt.UserRole)
 
     def remove_item(self, item):
         """从 QListView 中删除项"""
         self.model.removeRow(item.row())
 
+    def remove_select(self):
+        """
+        删除选中的项
+        :return:
+        """
+        items = [(self.model.item(i).data(Qt.UserRole), self.model.item(i)) for i in range(self.model.rowCount())]
+        for fileinfo, item in items:
+            if fileinfo.selected:
+                self.remove_item(item)
+
     def move_item_up(self, item):
         """将项向上移动"""
         row = item.row()  # 获取项的当前行号
         if row > 0:  # 确保当前项不是第一行
-            new_item = FileItem(item.data(Qt.UserRole).filename, item.data(Qt.UserRole).index)
+            new_item = FileItem(item.data(Qt.UserRole).copy())
             new_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
             self.model.removeRow(item.row())
             self.model.insertRow(row - 1, new_item)
@@ -284,7 +374,7 @@ class FileListView(QListView):
         index = self.model.indexFromItem(item)  # 获取该项的索引
         row = item.row()  # 获取项的当前行号
         if row < self.model.rowCount() - 1:  # 确保当前项不是最后一行
-            new_item = FileItem(item.data(Qt.UserRole).filename, item.data(Qt.UserRole).index)
+            new_item = FileItem(item.data(Qt.UserRole).copy())
             new_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
             self.model.removeRow(item.row())
             self.model.insertRow(row + 1, new_item)
@@ -297,17 +387,6 @@ class FileListView(QListView):
             item = self.model.item(row)
             self.set_item_widget(item)
 
-    def sort_alphabetical(self):
-        """按字母顺序排序"""
-        items = [self.model.item(i).data(Qt.UserRole) for i in range(self.model.rowCount())]
-        print(items)
-        items.sort()
-        print(items)
-        # 重新排序模型中的项
-        self.model.clear()
-        for index, fileinfo in enumerate(items):
-            self.add_item(fileinfo.filename, index)
-
     def sort_by_name(self, reverse=False):
         """
         根据文件名排序
@@ -318,17 +397,32 @@ class FileListView(QListView):
         items.sort(reverse=reverse)
         self.model.clear()
         for index, fileinfo in enumerate(items):
-            self.add_item(fileinfo.filename, index)
-
-    def sort_by_order(self):
-        """按添加顺序排序，假设项目初始顺序是 'Item 1', 'Item 2'..."""
-        self.model.clear()
-        for i in range(5):
-            self.add_item(f"Item {i + 1}", i)
+            self.add_item(fileinfo.filepath, index)
 
     def print(self):
         items = [self.model.item(i).data(Qt.UserRole) for i in range(self.model.rowCount())]
         print(items)
+
+    def select_all(self):
+        for row in range(self.model.rowCount()):
+            widget = self.indexWidget(self.model.index(row, 0))
+            widget.select()
+
+    def dis_select_all(self):
+        for row in range(self.model.rowCount()):
+            widget = self.indexWidget(self.model.index(row, 0))
+            widget.dis_select()
+
+    def get_data(self) -> List[FileInfo]:
+        items_data = [self.model.item(i).data(Qt.UserRole) for i in range(self.model.rowCount())]
+        return items_data
+
+    def clear(self):
+        """
+        清空视图
+        :return:
+        """
+        self.model.clear()
 
 
 if __name__ == '__main__':
