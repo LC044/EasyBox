@@ -7,6 +7,7 @@ from app.ui.Icon import Icon
 
 widget = None
 
+
 def excepthook(exc_type, exc_value, traceback_):
     # 将异常信息转为字符串
     # 在这里处理全局异常

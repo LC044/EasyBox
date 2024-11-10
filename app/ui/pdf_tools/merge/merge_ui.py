@@ -15,9 +15,23 @@ class Ui_merge_pdf_view(object):
     def setupUi(self, merge_pdf_view):
         merge_pdf_view.setObjectName("merge_pdf_view")
         merge_pdf_view.resize(668, 614)
-        merge_pdf_view.setStyleSheet("QWidget{\n"
-"    background: rgb(238,244,249);\n"
-"    border-radius: 10px;\n"
+        merge_pdf_view.setStyleSheet("")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(merge_pdf_view)
+        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label_8 = QtWidgets.QLabel(merge_pdf_view)
+        font = QtGui.QFont()
+        font.setPointSize(20)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.verticalLayout_3.addWidget(self.label_8)
+        self.frame1 = QtWidgets.QFrame(merge_pdf_view)
+        self.frame1.setStyleSheet("QWidget{\n"
+"    background: rgb(248,248,251);\n"
+"    border-radius: 0px;\n"
+"}\n"
+"#frame1{\n"
+"    border: 1px solid #e8e8e8;\n"
 "}\n"
 "\n"
 "QPushButton{\n"
@@ -72,33 +86,6 @@ class Ui_merge_pdf_view(object):
 "    border-radius: 0px;\n"
 "    border-left: 0px solid rgb(62, 62, 62);\n"
 "    background: none;\n"
-"}")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(merge_pdf_view)
-        self.verticalLayout_3.setSpacing(0)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.label_8 = QtWidgets.QLabel(merge_pdf_view)
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        self.label_8.setFont(font)
-        self.label_8.setObjectName("label_8")
-        self.verticalLayout_3.addWidget(self.label_8)
-        self.line_7 = QtWidgets.QFrame(merge_pdf_view)
-        self.line_7.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_7.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_7.setLineWidth(5)
-        self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_7.setObjectName("line_7")
-        self.verticalLayout_3.addWidget(self.line_7)
-        self.label_7 = QtWidgets.QLabel(merge_pdf_view)
-        self.label_7.setObjectName("label_7")
-        self.verticalLayout_3.addWidget(self.label_7)
-        self.frame1 = QtWidgets.QFrame(merge_pdf_view)
-        self.frame1.setStyleSheet("QWidget{\n"
-"    background: rgb(248,248,251);\n"
-"    border-radius: 0px;\n"
-"}\n"
-"#frame1{\n"
-"    border: 1px solid #e8e8e8;\n"
 "}")
         self.frame1.setFrameShape(QtWidgets.QFrame.Box)
         self.frame1.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -205,6 +192,64 @@ class Ui_merge_pdf_view(object):
 "}\n"
 "QPushButton:hover {\n"
 "    color: rgb(148,133,247)\n"
+"}\n"
+"QWidget{\n"
+"    background: rgb(238,244,249);\n"
+"    border-radius: 10px;\n"
+"}\n"
+"\n"
+"QPushButton{\n"
+"    background-color: rgb(250,252,253);\n"
+"    border-radius: 5px;\n"
+"    padding:0px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    color: rgb(148,133,247)\n"
+"}\n"
+"QCommandLinkButton{\n"
+"    background-color: rgb(250,252,253);\n"
+"    border-radius: 5px;\n"
+"    padding: 8px;\n"
+"    border:none;\n"
+"}\n"
+"QProgressBar{\n"
+"    font-family: \'Arial Unicode MS\';\n"
+"    height:22px;\n"
+"    text-align:center;\n"
+"    font-size:14px;\n"
+"    color:black;\n"
+"    border-radius:11px;\n"
+"    background:#EBEEF5;\n"
+"}\n"
+"QProgressBar::chunk{\n"
+"    border-radius:11px;\n"
+"    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);\n"
+"}\n"
+"QMessageBox QPushButton{\n"
+"    background-color: rgb(250,252,253);\n"
+"    border-radius: 5px;\n"
+"    padding: 8px;\n"
+"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
+"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
+"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
+"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
+"}\n"
+"QListView {\n"
+"    color: black;\n"
+"    border: none;\n"
+"}\n"
+"QListView::item {\n"
+"    margin: 0px;\n"
+"    border-bottom: 1px solid black;\n"
+"}\n"
+"QListView::item:hover {\n"
+"    background: none;\n"
+"}\n"
+"/* 被选中时的背景颜色和左边框颜色 */\n"
+"QListView::item:selected {\n"
+"    border-radius: 0px;\n"
+"    border-left: 0px solid rgb(62, 62, 62);\n"
+"    background: none;\n"
 "}")
         self.widget1.setObjectName("widget1")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget1)
@@ -286,11 +331,12 @@ class Ui_merge_pdf_view(object):
         self.btn_order_by_time = QtWidgets.QPushButton(merge_pdf_view)
         self.btn_order_by_time.setObjectName("btn_order_by_time")
         self.horizontalLayout.addWidget(self.btn_order_by_time)
-        self.btn_merge = QtWidgets.QPushButton(merge_pdf_view)
-        self.btn_merge.setObjectName("btn_merge")
-        self.horizontalLayout.addWidget(self.btn_merge)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
+        self.btn_merge = QtWidgets.QPushButton(merge_pdf_view)
+        self.btn_merge.setMinimumSize(QtCore.QSize(60, 40))
+        self.btn_merge.setObjectName("btn_merge")
+        self.horizontalLayout.addWidget(self.btn_merge)
         self.verticalLayout_3.addLayout(self.horizontalLayout)
 
         self.retranslateUi(merge_pdf_view)
@@ -300,7 +346,6 @@ class Ui_merge_pdf_view(object):
         _translate = QtCore.QCoreApplication.translate
         merge_pdf_view.setWindowTitle(_translate("merge_pdf_view", "Form"))
         self.label_8.setText(_translate("merge_pdf_view", "合并多个PDF"))
-        self.label_7.setText(_translate("merge_pdf_view", "选择所需的PDF"))
         self.checkBox_select_all.setText(_translate("merge_pdf_view", "名称"))
         self.btn_order_inc.setText(_translate("merge_pdf_view", "▲"))
         self.btn_order_des.setText(_translate("merge_pdf_view", "▼"))

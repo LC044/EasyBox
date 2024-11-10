@@ -101,7 +101,7 @@ class Sidebar(QWidget, Ui_Form):
     def add_nav_button(self, icon, text, router_path, action):
         item = QListWidgetItem()
         item.setWhatsThis(text)
-        button = SidebarButton(icon, text)
+        button = SidebarButton(icon, text, self)
         self.add_button(button)
         button.setWhatsThis(text)
         self.buttons.append((button, router_path))

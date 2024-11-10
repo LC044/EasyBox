@@ -3,17 +3,19 @@ import os.path
 import re
 import sys
 import traceback
+from typing import List
 
 import fitz
-from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
+from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
+from app.ui.pdf_tools.merge.encrypt_dialog import EncryptControl
 from app.util import common
-from .merge_ui import Ui_merge_pdf_view
-from ...components.file_list import FileListView
-from ...components.router import Router
+from app.ui.pdf_tools.merge.merge_ui import Ui_merge_pdf_view
+from app.ui.components.file_list import FileListView, FileInfo
+from app.ui.components.router import Router
 
 
 def open_file_explorer(path):
@@ -27,9 +29,11 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
+        self.encryption_options = {}
+        self.dialog = None
         self.output_filename = '合并PDF'
         self.router = router
-        self.router_path = self.parent().router_path + '/合并PDF'
+        self.router_path = (self.parent().router_path if self.parent() else '') + '/合并PDF'
         self.child_routes = {}
         self.worker = None
         self.running_flag = False
@@ -43,6 +47,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.btn_merge.clicked.connect(self.merge)
 
         self.list_view = FileListView(self)
+        self.checkBox_doc_encrypt.clicked.connect(self.set_encrypt_option)
         self.btn_setting.clicked.connect(self.list_view.print)
         self.btn_order_inc.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=False))
         self.btn_order_des.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=True))
@@ -56,8 +61,18 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.output_path = ''
 
     def init_ui(self):
-        pixmap = QPixmap(Icon.logo_ico_path)
-        icon = QIcon(pixmap)
+        self.btn_merge.setObjectName('border')
+        if not self.parent():
+            pixmap = QPixmap(Icon.logo_ico_path)
+            icon = QIcon(pixmap)
+            self.setWindowIcon(icon)
+            self.setWindowTitle('合并PDF')
+            style_qss_file = QFile(":/data/QSS/style.qss")
+            if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
+                stream = QTextStream(style_qss_file)
+                style_content = stream.readAll()
+                self.setStyleSheet(style_content)
+                style_qss_file.close()
         self.lineEdit_filename.setText(self.output_filename)
 
     def on_selection_changed(self, selected):
@@ -101,11 +116,16 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         if len(input_files) < 2:
             QMessageBox.information(self, '温馨提示', "请至少选择两个文件")
             return
+
+        self.btn_merge.setEnabled(False)
+
         fileinfo = input_files[0]
         self.output_path = os.path.join(os.path.dirname(fileinfo.filepath), self.output_filename + '.pdf')
         self.output_path = common.usable_filepath(self.output_path)
         self.startBusy()
-        self.worker = MergeThread(input_files, self.output_path)
+        output_info = FileInfo(self.output_path,0)
+        output_info.encryption_options = self.encryption_options
+        self.worker = MergeThread(input_files, output_info)
         self.worker.okSignal.connect(self.merge_finish)
         self.worker.progressSignal.connect(self.update_progress)
         self.worker.start()
@@ -131,7 +151,9 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         reply.addButton("取消", QMessageBox.RejectRole)
         api = reply.exec_()
         # self.close()
+        self.btn_merge.setEnabled(True)
         self.list_view.clear()
+        self.progressBar.setValue(0)
         self.worker = None
 
     def add_item(self, text, index):
@@ -145,29 +167,41 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         super().closeEvent(a0)
         self.okSignal.emit(True)
 
+    def set_encrypt_option(self):
+        if self.dialog is None:
+            self.dialog = EncryptControl(self)
+        relay = self.dialog.exec_()
+        if relay == QDialog.Accepted:
+            self.encryption_options = self.dialog.get_data()
+            self.checkBox_doc_encrypt.setChecked(True)
+        else:
+            self.dialog = None
+            self.encryption_options = {}
+            self.checkBox_doc_encrypt.setChecked(False)
+
 
 class MergeThread(QThread):
     okSignal = pyqtSignal(bool)
     progressSignal = pyqtSignal(int)
 
-    def __init__(self, input_paths, output_path):
+    def __init__(self, input_file_infos:List[FileInfo], output_file_info:FileInfo):
         super().__init__()
-        self.input_paths = input_paths
-        self.output_path = output_path
+        self.input_file_infos = input_file_infos
+        self.output_file_info = output_file_info
 
     def run(self):
         # 创建一个新的空白 PDF 文件
         # 创建一个用于合并的PDF对象
         merged_pdf = fitz.open()
         save_interval = 100
-        output_path = self.output_path
+        output_path = self.output_file_info.filepath
         page_count = 0  # 记录合并的总页数
         tmp_count = 0  # 记录临时文件的个数
         current_page_offset = 0  # 用于书签偏移
         toc = []  # 记录合并PDF的书签
         toc_set = set()
         try:
-            for index, fileinfo in enumerate(self.input_paths):
+            for index, fileinfo in enumerate(self.input_file_infos):
                 pdf_path = fileinfo.filepath
                 if not os.path.isfile(pdf_path):
                     print(f"文件未找到: {pdf_path}")
@@ -182,7 +216,7 @@ class MergeThread(QThread):
                     if tmp_toc:
                         for entry in tmp_toc:
                             tmp_entry = (entry[0], entry[1])
-                            if start_page_num+1 <= entry[2] <= end_page_num+1:
+                            if start_page_num + 1 <= entry[2] <= end_page_num + 1:
                                 if tmp_entry not in toc_set:
                                     toc.append((entry[0], entry[1], entry[2] + current_page_offset))
                                     toc_set.add(tmp_entry)
@@ -212,12 +246,12 @@ class MergeThread(QThread):
                 except Exception as e:
                     print(f"合并文件 {pdf_path} 时出错: {e}")
                     continue
-                self.progressSignal.emit(min((index + 1) * 100 // len(self.input_paths), 99))
+                self.progressSignal.emit(min((index + 1) * 100 // len(self.input_file_infos), 99))
             # 最后一次保存合并结果
             print(toc)
             self.progressSignal.emit(99)
             merged_pdf.set_toc(toc)
-            merged_pdf.save(output_path, garbage=4, deflate_images=True)
+            merged_pdf.save(output_path, garbage=4, deflate_images=True, **self.output_file_info.encryption_options)
             merged_pdf.close()
             self.progressSignal.emit(100)
             print(f"合并完成，已生成文件: {output_path}")
@@ -234,3 +268,19 @@ class MergeThread(QThread):
             if 'merged_pdf' in locals() and not merged_pdf.is_closed:
                 merged_pdf.close()
         self.okSignal.emit(True)
+
+
+if __name__ == '__main__':
+    from PyQt5.QtWidgets import QWidget, QApplication
+    import sys
+    from PyQt5.QtGui import QFont, QPixmap, QIcon
+    from PyQt5.QtCore import Qt
+
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    app = QApplication(sys.argv)
+    font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
+    app.setFont(font)
+    view = MergeControl(None)
+    view.show()
+    sys.exit(app.exec_())

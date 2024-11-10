@@ -12,7 +12,6 @@ import os
 import re
 from typing import List
 
-import fitz
 import pymupdf
 from PyQt5.QtCore import pyqtSignal, QThread, QFile, QIODevice, QTextStream, QUrl, Qt, QSize, QMimeData, QPoint
 from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QStandardItemModel, QStandardItem, QDrag
@@ -22,73 +21,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from app.ui.components import ScrollBar
 from app.ui.components.file_list.file_item_ui import Ui_file_item_widget
-
-
-class FileItemWidget(QWidget, Ui_file_item_widget):
-    dataChanged = pyqtSignal(bool)
-
-    def __init__(self, filepath, parent=None):
-        super().__init__(parent)
-        self.setupUi(self)
-        self.filepath = filepath
-        self.checkBox_name.setText(os.path.basename(filepath))
-        self.checkBox_name.setToolTip(filepath)
-        self.checkBox_name.clicked.connect(self.dataChanged)
-        self.progressBar.setVisible(False)
-        self.label_result.setVisible(False)
-        # self.btn_open.setVisible(False)
-        self.spinBox_start.valueChanged.connect(self.update_page_range)
-        self.spinBox_end.valueChanged.connect(self.update_page_range)
-        if os.path.exists(filepath):
-            # 设置文件大小
-            file_size = os.path.getsize(filepath) / (1024 * 1024)
-            file_size = int(round(file_size, 0))
-            if file_size < 1:
-                self.label_size.setText(
-                    "<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, 255);text-shadow: 2px "
-                    "2px 4px rgba(0, 0, 0, 0.5);'>1M</span>")
-            elif file_size < 100:
-                self.label_size.setText(
-                    f"<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, 255);text-shadow: 2px "
-                    f"2px 4px rgba(0, 0, 0, 0.5);'>{file_size}M</span>")
-            else:
-                self.label_size.setText("<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, "
-                                        "255);text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);'>99</span>")
-            # 设置页码范围
-            try:
-                with pymupdf.open(filepath) as doc:
-                    page_num = len(doc)
-                    self.label_page_num.setText(str(page_num))
-                    self.spinBox_start.setMaximum(page_num)
-                    self.spinBox_end.setMaximum(page_num)
-                    self.spinBox_end.setValue(page_num)
-            except:
-                pass
-            self.checkBox_name.setChecked(True)
-        self.btn_open.clicked.connect(self.open_folder)
-
-    def open_folder(self):
-        QDesktopServices.openUrl(QUrl.fromLocalFile(self.filepath))
-
-    def update_page_range(self):
-        sv = self.spinBox_start.value()
-        ev = self.spinBox_end.value()
-        if self.sender() == self.spinBox_start:
-            if sv > ev:
-                self.spinBox_end.setValue(sv)
-        else:
-            if sv > ev:
-                self.spinBox_start.setValue(ev)
-        self.dataChanged.emit(True)
-
-    def select(self):
-        self.checkBox_name.setChecked(True)
-        self.dataChanged.emit(True)
-
-    def dis_select(self):
-        self.checkBox_name.setChecked(False)
-        self.dataChanged.emit(True)
-
 
 Stylesheet = """
 QWidget,QLabel{
@@ -176,7 +108,32 @@ class FileInfo:
         self.index = index
         self.start_page_num = 1
         self.end_page_num = 1
+        self.page_num = -1
         self.selected = True
+        self.file_size = 0
+        self.encryption = None
+        self.owner_pw = None
+        self.user_pw = None
+        self.permissions = set()
+        self.encryption_options = {}
+        """
+        {
+            "encryption": fitz.PDF_ENCRYPT_AES_256,  # 使用 AES-256 加密
+            "owner_pw": owner_password,              # 管理员密码
+            "user_pw": user_password,                # 用户密码
+            "permissions": permissions               # 权限设置
+        }
+        """
+        if os.path.exists(file):
+            # 设置文件大小
+            self.file_size = os.path.getsize(file)
+            # 设置页码范围
+            try:
+                with pymupdf.open(file) as doc:
+                    self.page_num = len(doc)
+                    self.end_page_num = self.page_num
+            except:
+                pass
 
     def copy(self):
         return FileInfo(self.filepath, self.index)
@@ -216,6 +173,66 @@ class FileItem(QStandardItem):
 
     def __lt__(self, other):
         return self.data(Qt.UserRole) < other.data(Qt.UserRole)
+
+
+class FileItemWidget(QWidget, Ui_file_item_widget):
+    dataChanged = pyqtSignal(bool)
+
+    def __init__(self, fileinfo: FileInfo, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.filepath = fileinfo.filepath
+        self.checkBox_name.setText(fileinfo.filename)
+        self.checkBox_name.setToolTip(fileinfo.filepath)
+        self.checkBox_name.clicked.connect(self.dataChanged)
+        self.progressBar.setVisible(False)
+        self.label_result.setVisible(False)
+        # self.btn_open.setVisible(False)
+        self.spinBox_start.valueChanged.connect(self.update_page_range)
+        self.spinBox_end.valueChanged.connect(self.update_page_range)
+        # 设置文件大小
+        file_size = fileinfo.file_size / (1024 * 1024)
+        file_size = int(round(file_size, 0))
+        if file_size < 1:
+            self.label_size.setText(
+                "<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, 255);text-shadow: 2px "
+                "2px 4px rgba(0, 0, 0, 0.5);'>1M</span>")
+        elif file_size < 100:
+            self.label_size.setText(
+                f"<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, 255);text-shadow: 2px "
+                f"2px 4px rgba(0, 0, 0, 0.5);'>{file_size}M</span>")
+        else:
+            self.label_size.setText("<span style='background-color: rgb(162, 172, 188); color: rgb(255, 255, "
+                                    "255);text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);'>&gt;99M</span>")
+        # 设置页码范围
+        self.label_page_num.setText(str(fileinfo.page_num))
+        self.spinBox_start.setMaximum(fileinfo.page_num)
+        self.spinBox_end.setMaximum(fileinfo.page_num)
+        self.spinBox_end.setValue(fileinfo.page_num)
+        self.checkBox_name.setChecked(True)
+        self.btn_open.clicked.connect(self.open_folder)
+
+    def open_folder(self):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(self.filepath))
+
+    def update_page_range(self):
+        sv = self.spinBox_start.value()
+        ev = self.spinBox_end.value()
+        if self.sender() == self.spinBox_start:
+            if sv > ev:
+                self.spinBox_end.setValue(sv)
+        else:
+            if sv > ev:
+                self.spinBox_start.setValue(ev)
+        self.dataChanged.emit(True)
+
+    def select(self):
+        self.checkBox_name.setChecked(True)
+        self.dataChanged.emit(True)
+
+    def dis_select(self):
+        self.checkBox_name.setChecked(False)
+        self.dataChanged.emit(True)
 
 
 class FileListView(QListView):
@@ -315,7 +332,7 @@ class FileListView(QListView):
             return
         text = fileinfo.filename
         # widget = CustomWidget(text)
-        widget = FileItemWidget(fileinfo.filepath)
+        widget = FileItemWidget(fileinfo)
         # self.widgets.append(widget)
         index = self.model.indexFromItem(item)
         self.setIndexWidget(index, widget)

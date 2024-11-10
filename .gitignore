@@ -145,3 +145,5 @@ dist
 build
 *test*
 *.log
+*.c
+*.pyd

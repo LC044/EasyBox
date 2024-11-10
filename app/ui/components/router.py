@@ -7,6 +7,10 @@ class Router(QObject):
     history_changed = pyqtSignal(int)
 
     def __init__(self, stack):
+        """
+
+        :param stack: 存储页面的stackWidget组件，可通过索引直接显示某个页面，如果为None则直接调用页面的show方法显示到独立窗口上
+        """
         super(Router, self).__init__()
         self.stack = stack
         self.routes = {}
@@ -15,8 +19,12 @@ class Router(QObject):
 
     def add_route(self, path, widget):
         """添加路径和页面的映射"""
-        index = self.stack.addWidget(widget)
-        self.routes[path] = index
+        if self.stack is not None:
+            index = self.stack.addWidget(widget)
+            self.routes[path] = index
+        else:
+            self.routes[path] = widget
+            index = len(self.routes)
         return index
 
     def navigate(self, path, turn_back=False):
@@ -30,9 +38,13 @@ class Router(QObject):
             self.history.append(self.now_router_path)
             self.history_changed.emit(len(self.history))
         if path in self.routes:
-            self.stack.setCurrentIndex(self.routes[path])
+            if self.stack is not None:
+                self.stack.setCurrentIndex(self.routes[path])
+            else:
+                self.routes[path].show()
             self.route_changed.emit(path)
             self.now_router_path = path
+            print('页面切换：',self.now_router_path)
         else:
             print(f"Route '{path}' not found")
 

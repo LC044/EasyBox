@@ -1,19 +1,11 @@
-import json
-import os.path
-import re
-import sys
-import traceback
-from urllib.parse import urljoin
+from PyQt5.QtCore import pyqtSignal, QThread, QSize, QFile, QIODevice, QTextStream
+from PyQt5.QtWidgets import QWidget
 
-from PyQt5.QtCore import pyqtSignal, QThread
-from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
+from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
-from app import config
-from app.log import logger
-from .merge.merge import MergeControl
-from .pdf_tool_ui import Ui_Form
-from ..components.router import Router
+from app.ui.pdf_tools.merge import MergeControl
+from app.ui.pdf_tools.pdf_tool_ui import Ui_Form
+from app.ui.components.router import Router
 
 
 class PDFToolControl(QWidget, Ui_Form, QCursorGif):
@@ -25,7 +17,7 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
     def __init__(self, router: Router, parent=None):
         super(PDFToolControl, self).__init__(parent)
         self.router = router
-        self.router_path = self.parent().router_path + '/PDF工具箱'
+        self.router_path = (self.parent().router_path if self.parent() else '') + '/PDF工具箱'
         self.child_routes = {}
         self.merge_view = None
         self.running_flag = False
@@ -37,11 +29,23 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
         self.init_ui()
 
     def init_ui(self):
+        if not self.parent():
+            pixmap = QPixmap(Icon.logo_ico_path)
+            icon = QIcon(pixmap)
+            self.setWindowIcon(icon)
+            self.setWindowTitle('PDF工具箱')
+            style_qss_file = QFile(":/data/QSS/style.qss")
+            if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
+                stream = QTextStream(style_qss_file)
+                style_content = stream.readAll()
+                self.setStyleSheet(style_content)
+                style_qss_file.close()
         self.commandLinkButton_merge_pdf.clicked.connect(self.merge_pdf)
+        self.resize(QSize(640, 480))
 
     def merge_pdf(self):
         if not self.merge_view:
-            self.merge_view = MergeControl(router=self.router, parent=self)
+            self.merge_view = MergeControl(router=self.router, parent=self if self.parent() else None)
             self.merge_view.okSignal.connect(self.merge_finish)
             self.router.add_route(self.merge_view.router_path, self.merge_view)
             self.child_routes[self.merge_view.router_path] = 0
@@ -55,3 +59,20 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
 
     def __del__(self):
         self.merge_view = None
+
+
+if __name__ == '__main__':
+    from PyQt5.QtWidgets import QWidget, QApplication
+    import sys
+    from PyQt5.QtGui import QFont, QPixmap, QIcon
+    from PyQt5.QtCore import Qt
+
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    app = QApplication(sys.argv)
+    font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
+    app.setFont(font)
+    router = Router(None)
+    view = PDFToolControl(router)
+    view.show()
+    sys.exit(app.exec_())
