@@ -44,7 +44,7 @@ QListWidget {
     border:none;
 }
 QListWidget::item{
-    margin:5px;
+    margin-left:5px;
 }
 QListWidget::item:hover {
     background: rgb(230, 235, 240);

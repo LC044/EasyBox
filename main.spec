@@ -120,12 +120,4 @@ coll2 = COLLECT(
     name='EasyBox',
 )
 
-coll3 = COLLECT(
-    exe3,
-    a3.binaries,
-    a3.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='PDF合并',
-)
+

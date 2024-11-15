@@ -6,7 +6,7 @@
 @Author      : SiYuan 
 @Email       : 863909694@qq.com 
 @File        : EasyBox-__init__.py.py 
-@Description : 
+@Description : pyqt5实现的自定义文件列表，可自由拖拽排序，点击上下移动
 """
 import os
 import re
@@ -301,7 +301,7 @@ class FileListView(QListView):
                 # 获取源项内容
                 source_item = self.model.item(source_row)
                 # 创建新项并复制源项的数据
-                new_item = source_item.data(Qt.UserRole).copy()
+                new_item = FileItem(source_item.data(Qt.UserRole).copy())
                 new_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
                 # 从模型中移除源项
                 self.model.removeRow(source_row)
@@ -443,4 +443,18 @@ class FileListView(QListView):
 
 
 if __name__ == '__main__':
-    pass
+    from PyQt5.QtWidgets import QWidget, QApplication
+    import sys
+    from PyQt5.QtGui import QFont, QPixmap, QIcon
+    from PyQt5.QtCore import Qt
+
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    app = QApplication(sys.argv)
+    font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
+    app.setFont(font)
+    view = FileListView()
+    for i in range(5):
+        view.add_item(f'Item {i + 1}', i)
+    view.show()
+    sys.exit(app.exec_())

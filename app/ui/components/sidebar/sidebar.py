@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLi
 from PyQt5.QtCore import QSize, QRect, QPropertyAnimation, QTimer
 from PyQt5.QtGui import QIcon
 
+from app.ui.Icon import Icon
 from app.ui.components.router import Router
 
 try:
@@ -22,19 +23,21 @@ except:
 
 class SidebarButton(QPushButton):
     def __init__(self, icon, text, parent=None):
-        super(SidebarButton, self).__init__(icon, text, parent)
+        super(SidebarButton, self).__init__(icon=icon, text=text, parent=parent)
         self._text = text
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setStyleSheet(self.default_style())
+        self.setToolTip(text)
+        self.setObjectName('123')
 
     def sizeHint(self):
-        return QSize(100, 60)  # 设置合适的宽高
+        return QSize(100, 40)  # 设置合适的宽高
 
     def default_style(self):
         return """
             QPushButton {
                 border-radius: 0px;
-                padding: 10px;
+                padding: 0px;
                 border: none;
                 text-align: left;
             }
@@ -64,14 +67,16 @@ class Sidebar(QWidget, Ui_Form):
         super().__init__(parent)
         self.setupUi(self)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)  # B尽可能小
-        self.btn_setting.setObjectName('border')
+        # self.btn_setting.setObjectName('border')
 
         self.expanded = True
         self.default_width = 120  # 展开时的宽度
-        self.collapsed_width = 60  # 折叠时的宽度
+        self.collapsed_width = 40  # 折叠时的宽度
         self.buttons = []
         self.btn_back.setEnabled(False)
         self.btn_back.setWhatsThis('返回')
+        # self.btn_toggle.setText('')
+        self.btn_toggle.setIcon(Icon.Exp_left_Icon)
         self.listWidget.clear()
         self.btn_toggle.clicked.connect(self.toggle_sidebar)
 
@@ -127,14 +132,20 @@ class Sidebar(QWidget, Ui_Form):
         if not self.expanded:
             # self.setFixedWidth(self.default_width)
             self.btn_toggle.setText("折叠")
+            self.btn_toggle.setToolTip('折叠')
+            self.btn_toggle.setIcon(Icon.Exp_left_Icon)
+            self.btn_setting.setText('设置')
             # 恢复文字
             for i in range(self.listWidget.count()):
                 item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
                 item_widget.setText(item_widget._text)
         else:
-            self.btn_toggle.setText("展开")
+            self.btn_toggle.setText("")
+            self.btn_toggle.setIcon(Icon.Exp_right_Icon)
+            self.btn_toggle.setToolTip('展开')
             # self.setFixedWidth(self.collapsed_width)
             # 隐藏文字
+            self.btn_setting.setText('')
             for i in range(self.listWidget.count()):
                 item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
                 item_widget.setText("")

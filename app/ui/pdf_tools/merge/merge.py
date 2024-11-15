@@ -44,6 +44,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.setCursorTimeout(100)
         self.init_ui()
         self.btn_choose_files.clicked.connect(self.open_file_dialog)
+        self.btn_choose_files.setIcon(Icon.Add_Icon)
         self.btn_merge.clicked.connect(self.merge)
 
         self.list_view = FileListView(self)

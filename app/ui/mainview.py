@@ -51,6 +51,9 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
         self.router = Router(self.stackedWidget)
         self.sidebar = Sidebar(self.stackedWidget, parent=self)
+        self.sidebar.btn_back.setText('')
+        self.sidebar.btn_setting.setIcon(Icon.Setting_Icon)
+        self.sidebar.btn_back.setIcon(Icon.Back)
         self.sidebar.btn_back.clicked.connect(self.router.turn_back)
         self.router.history_changed.connect(self.sidebar.set_turn_back_enable)
         self.horizontalLayout.addWidget(self.sidebar)
@@ -59,14 +62,15 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         pdf_view = PDFToolControl(self.router, parent=self)
         self.add_widget(Icon.Tool_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
 
-        l1 = QLabel('聊天', self)
-        self.add_widget(Icon.Chat_Icon, '聊天', '/聊天', l1)
+        l1 = QLabel('文档转换', self)
+        self.add_widget(Icon.Tool_Icon, '文档转换', '/文档转换', l1)
 
-        l2 = QLabel('好友', self)
-        self.add_widget(Icon.Contact_Icon, '好友', '/好友', l2)
-
+        l2 = QLabel('图片工具', self)
+        self.add_widget(Icon.Tool_Icon, '图片工具', '/图片工具', l2)
+        l4 = QLabel('批量操作', self)
+        self.add_widget(Icon.Tool_Icon, '批量操作', '/批量操作', l4)
         l3 = QLabel('留痕增强', self)
-        self.add_widget(Icon.Home_Icon, '留痕增强', '/留痕增强', l3)
+        self.add_widget(Icon.Tool_Icon, '留痕增强', '/留痕增强', l3)
 
         # 连接信号槽：切换选中按钮样式
         self.router.route_changed.connect(self.sidebar.update_sidebar_selection)
