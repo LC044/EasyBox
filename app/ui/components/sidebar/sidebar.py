@@ -50,7 +50,7 @@ class SidebarButton(QPushButton):
         return """
             QPushButton {
                 border-radius: 0px;
-                border-left: 3px solid rgb(133,135,138);
+                border-left: 2px solid rgb(133,135,138);
                 text-align: left;
             }
         """

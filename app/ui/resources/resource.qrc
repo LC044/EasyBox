@@ -10,11 +10,16 @@
         <file>icons/down.svg</file>
         <file>icons/up.svg</file>
         <file>icons/增加.svg</file>
+        <file>icons/批量添加.svg</file>
         <file>icons/加.svg</file>
         <file>icons/减.svg</file>
         <file>icons/工具箱.svg</file>
         <file>icons/左展开.svg</file>
         <file>icons/右展开.svg</file>
+        <file>icons/图片.svg</file>
+        <file>icons/pdf.svg</file>
+        <file>icons/文档转换.svg</file>
+        <file>icons/批量操作.svg</file>
     </qresource>
     <qresource prefix="/data">
         <file>QSS/style.qss</file>

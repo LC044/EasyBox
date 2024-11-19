@@ -60,15 +60,17 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.horizontalLayout.addWidget(self.stackedWidget)
 
         pdf_view = PDFToolControl(self.router, parent=self)
-        self.add_widget(Icon.Tool_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
+        self.add_widget(Icon.PDF_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
 
         l1 = QLabel('文档转换', self)
-        self.add_widget(Icon.Tool_Icon, '文档转换', '/文档转换', l1)
+        self.add_widget(Icon.Doc_Transfer_Icon, '文档转换', '/文档转换', l1)
 
         l2 = QLabel('图片工具', self)
-        self.add_widget(Icon.Tool_Icon, '图片工具', '/图片工具', l2)
+        self.add_widget(Icon.Img_Icon, '图片工具', '/图片工具', l2)
+
         l4 = QLabel('批量操作', self)
-        self.add_widget(Icon.Tool_Icon, '批量操作', '/批量操作', l4)
+        self.add_widget(Icon.Batch_Icon, '批量操作', '/批量操作', l4)
+
         l3 = QLabel('留痕增强', self)
         self.add_widget(Icon.Tool_Icon, '留痕增强', '/留痕增强', l3)
 
