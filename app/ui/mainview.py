@@ -9,6 +9,7 @@ from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.components.router import Router
 from app.ui.components import Sidebar, SidebarButton
+from app.ui.doc_convert.doc_convert import DocConvertControl
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
 
 
@@ -62,8 +63,9 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         pdf_view = PDFToolControl(self.router, parent=self)
         self.add_widget(Icon.PDF_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
 
-        l1 = QLabel('文档转换', self)
-        self.add_widget(Icon.Doc_Transfer_Icon, '文档转换', '/文档转换', l1)
+        # l1 = QLabel('文档转换', self)
+        doc_view = DocConvertControl(self.router, parent=self)
+        self.add_widget(Icon.Doc_Transfer_Icon, '文档转换', '/文档转换', doc_view )
 
         l2 = QLabel('图片工具', self)
         self.add_widget(Icon.Img_Icon, '图片工具', '/图片工具', l2)
