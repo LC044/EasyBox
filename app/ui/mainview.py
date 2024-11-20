@@ -10,6 +10,7 @@ from app.ui.components.QCursorGif import QCursorGif
 from app.ui.components.router import Router
 from app.ui.components import Sidebar, SidebarButton
 from app.ui.doc_convert.doc_convert import DocConvertControl
+from app.ui.memotrace_enhance.enhance import EnhanceControl
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
 
 
@@ -73,8 +74,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         l4 = QLabel('批量操作', self)
         self.add_widget(Icon.Batch_Icon, '批量操作', '/批量操作', l4)
 
-        l3 = QLabel('留痕增强', self)
-        self.add_widget(Icon.Tool_Icon, '留痕增强', '/留痕增强', l3)
+        enhance_view = EnhanceControl(self.router, parent=self)
+        self.add_widget(Icon.Tool_Icon, '留痕增强', '/留痕增强', enhance_view)
 
         # 连接信号槽：切换选中按钮样式
         self.router.route_changed.connect(self.sidebar.update_sidebar_selection)

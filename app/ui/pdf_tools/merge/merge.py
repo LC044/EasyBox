@@ -9,12 +9,14 @@ import fitz
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
 from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
+
+from app.model import PdfFile
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
 from app.ui.pdf_tools.merge.encrypt_dialog import EncryptControl
 from app.util import common
 from app.ui.pdf_tools.merge.merge_ui import Ui_merge_pdf_view
-from app.ui.components.file_list import FileListView, FileInfo
+from app.ui.components.file_list import FileListView
 from app.ui.components.router import Router
 
 
@@ -121,10 +123,10 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.btn_merge.setEnabled(False)
 
         fileinfo = input_files[0]
-        self.output_path = os.path.join(os.path.dirname(fileinfo.filepath), self.output_filename + '.pdf')
+        self.output_path = os.path.join(os.path.dirname(fileinfo.file_path), self.output_filename + '.pdf')
         self.output_path = common.usable_filepath(self.output_path)
         self.startBusy()
-        output_info = FileInfo(self.output_path,0)
+        output_info = PdfFile(self.output_path)
         output_info.encryption_options = self.encryption_options
         self.worker = MergeThread(input_files, output_info)
         self.worker.okSignal.connect(self.merge_finish)
@@ -185,7 +187,7 @@ class MergeThread(QThread):
     okSignal = pyqtSignal(bool)
     progressSignal = pyqtSignal(int)
 
-    def __init__(self, input_file_infos:List[FileInfo], output_file_info:FileInfo):
+    def __init__(self, input_file_infos: List[PdfFile], output_file_info: PdfFile):
         super().__init__()
         self.input_file_infos = input_file_infos
         self.output_file_info = output_file_info
@@ -195,7 +197,7 @@ class MergeThread(QThread):
         # 创建一个用于合并的PDF对象
         merged_pdf = fitz.open()
         save_interval = 100
-        output_path = self.output_file_info.filepath
+        output_path = self.output_file_info.file_path
         page_count = 0  # 记录合并的总页数
         tmp_count = 0  # 记录临时文件的个数
         current_page_offset = 0  # 用于书签偏移
@@ -203,7 +205,7 @@ class MergeThread(QThread):
         toc_set = set()
         try:
             for index, fileinfo in enumerate(self.input_file_infos):
-                pdf_path = fileinfo.filepath
+                pdf_path = fileinfo.file_path
                 if not os.path.isfile(pdf_path):
                     print(f"文件未找到: {pdf_path}")
                     continue

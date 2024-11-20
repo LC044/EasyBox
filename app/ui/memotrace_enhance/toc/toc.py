@@ -1,17 +1,19 @@
 import os.path
 import os
+import re
 from multiprocessing import Process, Queue
 from typing import List
 
+import pymupdf
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices,QPixmap,QIcon
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
 
 from app.model import PdfFile
+from app.ui.memotrace_enhance.toc.toc_ui import Ui_toc_view
 from pdf2docx import Converter
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
-from app.ui.doc_convert.pdf2wordui.pdf2word_ui import Ui_pdf2word_view
 from app.util import common
 from app.ui.components.file_list import FileListView
 from app.ui.components.router import Router
@@ -22,7 +24,7 @@ def open_file_explorer(path):
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
-class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
+class TocControl(QWidget, Ui_toc_view, QCursorGif):
     okSignal = pyqtSignal(bool)
     childRouterSignal = pyqtSignal(str)
 
@@ -32,7 +34,7 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         self.dialog = None
         self.output_filename = '合并PDF'
         self.router = router
-        self.router_path = (self.parent().router_path if self.parent() else '') + '/PDF转Word'
+        self.router_path = (self.parent().router_path if self.parent() else '') + '/生成PDF目录'
         self.child_routes = {}
         self.worker = None
         self.running_flag = False
@@ -54,7 +56,6 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         self.checkBox_select_all.clicked.connect(self.select_all)
         self.btn_remove_selected.setEnabled(False)
         self.btn_remove_selected.clicked.connect(self.remove_selected)
-        self.lineEdit_filename.textChanged.connect(self.change_output_filename)
         self.verticalLayout_2.addWidget(self.list_view)
 
         self.input_files = []
@@ -66,14 +67,13 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
             pixmap = QPixmap(Icon.logo_ico_path)
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
-            self.setWindowTitle('合并PDF')
+            self.setWindowTitle('生成PDF目录')
             style_qss_file = QFile(":/data/QSS/style.qss")
             if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
                 stream = QTextStream(style_qss_file)
                 style_content = stream.readAll()
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
-        self.lineEdit_filename.setText(self.output_filename)
 
     def on_selection_changed(self, selected):
         for index in selected.indexes():
@@ -224,15 +224,33 @@ class Pdf2WordThread(QThread):
                     result_queue.put({"status": "error", "error": "文件未找到", "filepath": pdf_path})
                     continue
 
-                start_page_num = fileinfo.start_page_num
-                end_page_num = fileinfo.end_page_num
+                # 打开 PDF 文件
+                pdf = pymupdf.open(pdf_path)
+                # 定义符合 'YYYY-MM-DD HH:MM:SS' 格式的正则表达式
+                date_pattern = r"(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}"
+                page_year = set()
+                page_month = set()
+                page_day = set()
+                toc = []  # [level, title, page num]
 
+                for page_num in range(len(pdf)):
+                    page = pdf[page_num]
+                    text = page.get_text()
+                    # 查找匹配的日期
+                    matches = re.findall(date_pattern, text)
+                    for year, month, day in matches:
+                        if year not in page_year:
+                            toc.append([1, year, page_num + 1])
+                            page_year.add(year)
+                        if f'{year}-{month}' not in page_month:
+                            toc.append([2, f'{year}-{month}', page_num + 1])
+                            page_month.add(f'{year}-{month}')
+                        if f'{year}-{month}-{day}' not in page_day:
+                            toc.append([3, f'{year}-{month}-{day}', page_num + 1])
+                            page_day.add(f'{year}-{month}-{day}')
                 try:
-                    cv = Converter(pdf_path)
-                    output_path = pdf_path + '.docx'
-                    cv.convert(output_path, start=start_page_num - 1, end=end_page_num)
-                    cv.close()
-
+                    pdf.set_toc(toc)
+                    pdf.saveIncr()
                     result_queue.put({"status": "success", "filepath": pdf_path})
                 except Exception as e:
                     result_queue.put({"status": "error", "error": str(e), "filepath": pdf_path})
@@ -252,6 +270,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
-    view = Pdf2WordControl(None)
+    view = TocControl(None)
     view.show()
     sys.exit(app.exec_())

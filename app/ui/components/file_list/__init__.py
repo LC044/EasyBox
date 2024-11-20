@@ -12,13 +12,13 @@ import os
 import re
 from typing import List
 
-import pymupdf
-from PyQt5.QtCore import pyqtSignal, QThread, QFile, QIODevice, QTextStream, QUrl, Qt, QSize, QMimeData, QPoint
+from PyQt5.QtCore import pyqtSignal, QUrl, Qt, QSize, QMimeData
 from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QStandardItemModel, QStandardItem, QDrag
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QAbstractItemView, QLabel, QPushButton, QHBoxLayout, \
+from PyQt5.QtWidgets import QWidget, QAbstractItemView, QLabel, QPushButton, QHBoxLayout, \
     QStyledItemDelegate, QListView
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from app.model import PdfFile
 from app.ui.components import ScrollBar
 from app.ui.components.file_list.file_item_ui import Ui_file_item_widget
 
@@ -101,59 +101,6 @@ def format_numbers(s):
     return re.sub(r'\d+', format_match, s)
 
 
-class FileInfo:
-    def __init__(self, file, index):
-        self.filename = os.path.basename(file)
-        self.filepath = file
-        self.index = index
-        self.start_page_num = 1
-        self.end_page_num = 1
-        self.page_num = -1
-        self.selected = True
-        self.file_size = 0
-        self.encryption = None
-        self.owner_pw = None
-        self.user_pw = None
-        self.permissions = set()
-        self.encryption_options = {}
-        """
-        {
-            "encryption": fitz.PDF_ENCRYPT_AES_256,  # 使用 AES-256 加密
-            "owner_pw": owner_password,              # 管理员密码
-            "user_pw": user_password,                # 用户密码
-            "permissions": permissions               # 权限设置
-        }
-        """
-        if os.path.exists(file):
-            # 设置文件大小
-            self.file_size = os.path.getsize(file)
-            # 设置页码范围
-            try:
-                with pymupdf.open(file) as doc:
-                    self.page_num = len(doc)
-                    self.end_page_num = self.page_num
-            except:
-                pass
-
-    def copy(self):
-        return FileInfo(self.filepath, self.index)
-
-    def __str__(self):
-        return f"FileInfo(filename={self.filename}, index={self.index}, (s_num,e_num)={(self.start_page_num, self.end_page_num)}) {self.selected}"
-
-    def __repr__(self):
-        return f"FileInfo(filename={self.filename}, index={self.index}, (s_num,e_num)={(self.start_page_num, self.end_page_num)}) {self.selected}"
-
-    def __eq__(self, other):
-        return format_numbers(self.filename) == format_numbers(other.filename)
-
-    def __lt__(self, other):
-        return format_numbers(self.filename) < format_numbers(other.filename)
-
-    def __gt__(self, other):
-        return format_numbers(self.filename) > format_numbers(other.filename)
-
-
 class FileItem(QStandardItem):
     """自定义的 QStandardItem 用于存储小部件的文本内容"""
 
@@ -165,9 +112,6 @@ class FileItem(QStandardItem):
         """读取存储的数据"""
         return self.data(Qt.UserRole).filename
 
-    def get_index(self):
-        return self.data(Qt.UserRole).index
-
     def __eq__(self, other):
         return self.data(Qt.UserRole) == other.data(Qt.UserRole)
 
@@ -178,12 +122,12 @@ class FileItem(QStandardItem):
 class FileItemWidget(QWidget, Ui_file_item_widget):
     dataChanged = pyqtSignal(bool)
 
-    def __init__(self, fileinfo: FileInfo, parent=None):
+    def __init__(self, fileinfo: PdfFile, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.filepath = fileinfo.filepath
-        self.checkBox_name.setText(fileinfo.filename)
-        self.checkBox_name.setToolTip(fileinfo.filepath)
+        self.filepath = fileinfo.file_path
+        self.checkBox_name.setText(fileinfo.file_name)
+        self.checkBox_name.setToolTip(fileinfo.file_path)
         self.checkBox_name.clicked.connect(self.dataChanged)
         self.progressBar.setVisible(False)
         self.label_result.setVisible(False)
@@ -318,7 +262,7 @@ class FileListView(QListView):
 
     def add_item(self, text, index):
         """添加自定义组件到 QListView"""
-        item = FileItem(FileInfo(text, index))
+        item = FileItem(PdfFile(text))
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
         self.model.appendRow(item)
         self.set_item_widget(item)
@@ -328,9 +272,9 @@ class FileListView(QListView):
             return
         """设置或更新QListView中的自定义小部件"""
         fileinfo = item.data(Qt.UserRole)
-        if not fileinfo:
+        if not fileinfo or not isinstance(fileinfo,PdfFile):
             return
-        text = fileinfo.filename
+        text = fileinfo.file_name
         # widget = CustomWidget(text)
         widget = FileItemWidget(fileinfo)
         # self.widgets.append(widget)
@@ -354,7 +298,7 @@ class FileListView(QListView):
         widget = self.indexWidget(index)
         start_page_num = widget.spinBox_start.value()
         end_page_num = widget.spinBox_end.value()
-        fileinfo = FileInfo(old_file_info.filepath, old_file_info.index)
+        fileinfo = PdfFile(old_file_info.filepath)
         fileinfo.start_page_num = start_page_num
         fileinfo.end_page_num = end_page_num
         fileinfo.selected = widget.checkBox_name.isChecked()
@@ -414,7 +358,7 @@ class FileListView(QListView):
         items.sort(reverse=reverse)
         self.model.clear()
         for index, fileinfo in enumerate(items):
-            self.add_item(fileinfo.filepath, index)
+            self.add_item(fileinfo.file_path, index)
 
     def print(self):
         items = [self.model.item(i).data(Qt.UserRole) for i in range(self.model.rowCount())]
@@ -430,7 +374,7 @@ class FileListView(QListView):
             widget = self.indexWidget(self.model.index(row, 0))
             widget.dis_select()
 
-    def get_data(self) -> List[FileInfo]:
+    def get_data(self) -> List[PdfFile]:
         items_data = [self.model.item(i).data(Qt.UserRole) for i in range(self.model.rowCount())]
         return items_data
 
