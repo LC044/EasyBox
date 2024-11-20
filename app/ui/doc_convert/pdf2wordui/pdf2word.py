@@ -1,21 +1,19 @@
 import os.path
 import os
 from multiprocessing import Process, Queue
-from PyQt5.QtCore import QThread, pyqtSignal
-from typing import List
-
 from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtGui import QDesktopServices,QPixmap,QIcon
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
-from pdf2docx import Converter
 
+from app.model import PdfFile
+from pdf2docx import Converter
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
 from app.ui.doc_convert.pdf2wordui.pdf2word_ui import Ui_pdf2word_view
 from app.util import common
-from app.ui.components.file_list import FileListView, FileInfo
+from app.ui.components.file_list import FileListView
 from app.ui.components.router import Router
 
 
@@ -118,10 +116,10 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         self.btn_merge.setEnabled(False)
 
         fileinfo = input_files[0]
-        self.output_path = os.path.join(os.path.dirname(fileinfo.filepath), self.output_filename + '.pdf')
+        self.output_path = os.path.join(os.path.dirname(fileinfo.file_path), self.output_filename + '.pdf')
         self.output_path = common.usable_filepath(self.output_path)
         self.startBusy()
-        output_info = FileInfo(self.output_path, 0)
+        output_info = PdfFile(self.output_path)
         output_info.encryption_options = self.encryption_options
         self.worker = Pdf2WordThread(input_files, output_info)
         self.worker.okSignal.connect(self.merge_finish)
@@ -170,7 +168,7 @@ class Pdf2WordThread(QThread):
     okSignal = pyqtSignal(bool)
     progressSignal = pyqtSignal(int)
 
-    def __init__(self, input_file_infos: List[FileInfo], output_file_info: FileInfo):
+    def __init__(self, input_file_infos: List[PdfFile], output_file_info: PdfFile):
         super().__init__()
         self.input_file_infos = input_file_infos
         self.output_file_info = output_file_info
@@ -204,7 +202,7 @@ class Pdf2WordThread(QThread):
                     print(f"处理文件出错: {result['error']} 文件: {result['filepath']}")
 
             self.progressSignal.emit(100)
-            print(f"合并完成，已生成文件: {self.output_file_info.filepath}")
+            print(f"合并完成，已生成文件: {self.output_file_info.file_path}")
 
         except Exception as e:
             print(f"合并过程中出错: {e}")
@@ -219,7 +217,7 @@ class Pdf2WordThread(QThread):
         while not task_queue.empty():
             try:
                 fileinfo = task_queue.get_nowait()
-                pdf_path = fileinfo.filepath
+                pdf_path = fileinfo.file_path
 
                 if not os.path.isfile(pdf_path):
                     result_queue.put({"status": "error", "error": "文件未找到", "filepath": pdf_path})

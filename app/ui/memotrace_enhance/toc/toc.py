@@ -1,21 +1,20 @@
-import json
 import os.path
+import os
 import re
-import sys
-import traceback
+from multiprocessing import Process, Queue
 from typing import List
 
-import fitz
+import pymupdf
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
 
 from app.model import PdfFile
+from app.ui.memotrace_enhance.toc.toc_ui import Ui_toc_view
+from pdf2docx import Converter
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
-from app.ui.pdf_tools.merge.encrypt_dialog import EncryptControl
 from app.util import common
-from app.ui.pdf_tools.merge.merge_ui import Ui_merge_pdf_view
 from app.ui.components.file_list import FileListView
 from app.ui.components.router import Router
 
@@ -25,7 +24,7 @@ def open_file_explorer(path):
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
-class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
+class TocControl(QWidget, Ui_toc_view, QCursorGif):
     okSignal = pyqtSignal(bool)
     childRouterSignal = pyqtSignal(str)
 
@@ -35,7 +34,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.dialog = None
         self.output_filename = '合并PDF'
         self.router = router
-        self.router_path = (self.parent().router_path if self.parent() else '') + '/合并PDF'
+        self.router_path = (self.parent().router_path if self.parent() else '') + '/生成PDF目录'
         self.child_routes = {}
         self.worker = None
         self.running_flag = False
@@ -50,14 +49,13 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.btn_merge.clicked.connect(self.merge)
 
         self.list_view = FileListView(self)
-        self.checkBox_doc_encrypt.clicked.connect(self.set_encrypt_option)
+
         self.btn_setting.clicked.connect(self.list_view.print)
         self.btn_order_inc.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=False))
         self.btn_order_des.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=True))
         self.checkBox_select_all.clicked.connect(self.select_all)
         self.btn_remove_selected.setEnabled(False)
         self.btn_remove_selected.clicked.connect(self.remove_selected)
-        self.lineEdit_filename.textChanged.connect(self.change_output_filename)
         self.verticalLayout_2.addWidget(self.list_view)
 
         self.input_files = []
@@ -69,14 +67,13 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
             pixmap = QPixmap(Icon.logo_ico_path)
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
-            self.setWindowTitle('合并PDF')
+            self.setWindowTitle('生成PDF目录')
             style_qss_file = QFile(":/data/QSS/style.qss")
             if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
                 stream = QTextStream(style_qss_file)
                 style_content = stream.readAll()
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
-        self.lineEdit_filename.setText(self.output_filename)
 
     def on_selection_changed(self, selected):
         for index in selected.indexes():
@@ -116,10 +113,6 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
     def merge(self):
         input_files = self.list_view.get_data()
 
-        if len(input_files) < 2:
-            QMessageBox.information(self, '温馨提示', "请至少选择两个文件")
-            return
-
         self.btn_merge.setEnabled(False)
 
         fileinfo = input_files[0]
@@ -128,7 +121,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.startBusy()
         output_info = PdfFile(self.output_path)
         output_info.encryption_options = self.encryption_options
-        self.worker = MergeThread(input_files, output_info)
+        self.worker = Pdf2WordThread(input_files, output_info)
         self.worker.okSignal.connect(self.merge_finish)
         self.worker.progressSignal.connect(self.update_progress)
         self.worker.start()
@@ -170,20 +163,8 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         super().closeEvent(a0)
         self.okSignal.emit(True)
 
-    def set_encrypt_option(self):
-        if self.dialog is None:
-            self.dialog = EncryptControl(self)
-        relay = self.dialog.exec_()
-        if relay == QDialog.Accepted:
-            self.encryption_options = self.dialog.get_data()
-            self.checkBox_doc_encrypt.setChecked(True)
-        else:
-            self.dialog = None
-            self.encryption_options = {}
-            self.checkBox_doc_encrypt.setChecked(False)
 
-
-class MergeThread(QThread):
+class Pdf2WordThread(QThread):
     okSignal = pyqtSignal(bool)
     progressSignal = pyqtSignal(int)
 
@@ -193,84 +174,88 @@ class MergeThread(QThread):
         self.output_file_info = output_file_info
 
     def run(self):
-        # 创建一个新的空白 PDF 文件
-        # 创建一个用于合并的PDF对象
-        merged_pdf = fitz.open()
-        save_interval = 100
-        output_path = self.output_file_info.file_path
-        page_count = 0  # 记录合并的总页数
-        tmp_count = 0  # 记录临时文件的个数
-        current_page_offset = 0  # 用于书签偏移
-        toc = []  # 记录合并PDF的书签
-        toc_set = set()
+        task_queue = Queue()
+        result_queue = Queue()
+        processes = []
+
         try:
-            for index, fileinfo in enumerate(self.input_file_infos):
-                pdf_path = fileinfo.file_path
-                if not os.path.isfile(pdf_path):
-                    print(f"文件未找到: {pdf_path}")
-                    continue
+            # 创建多进程任务
+            for fileinfo in self.input_file_infos:
+                task_queue.put(fileinfo)
 
-                try:
-                    pdf_document = fitz.open(pdf_path)
-                    # 合并当前PDF的书签,下标从1开始
-                    tmp_toc = pdf_document.get_toc()  # 获取书签目录
-                    start_page_num = fileinfo.start_page_num - 1
-                    end_page_num = fileinfo.end_page_num - 1
-                    if tmp_toc:
-                        for entry in tmp_toc:
-                            tmp_entry = (entry[0], entry[1])
-                            if start_page_num + 1 <= entry[2] <= end_page_num + 1:
-                                if tmp_entry not in toc_set:
-                                    toc.append((entry[0], entry[1], entry[2] + current_page_offset))
-                                    toc_set.add(tmp_entry)
+            num_processes = min(len(self.input_file_infos), os.cpu_count())
+            for _ in range(num_processes):
+                p = Process(target=self.process_task, args=(task_queue, result_queue))
+                p.start()
+                processes.append(p)
 
-                    # 遍历当前文件的每一页
-                    for page_num in range(pdf_document.page_count):
-                        if page_num + start_page_num > end_page_num:
-                            break
-                        merged_pdf.insert_pdf(pdf_document, from_page=start_page_num + page_num,
-                                              to_page=start_page_num + page_num)
-                        page_count += 1
-                        current_page_offset += 1
-                        # 每达到设定页数（save_interval）保存一次
-                        if page_count % save_interval == 0:
-                            tmp_count += 1
-                            # 保存并清理无用对象
-                            temp_output = output_path + f"{tmp_count % 2}.tmp"
-                            merged_pdf.save(temp_output, garbage=4, deflate_images=True)
-                            print(f"中间保存 {page_count} 页至文件: {temp_output}")
-                            # 关闭并重新打开文件以释放内存
-                            merged_pdf.close()
-                            merged_pdf = fitz.open(temp_output)
+            completed_tasks = 0
+            total_tasks = len(self.input_file_infos)
 
-                    pdf_document.close()
-                    print(f"已成功添加文件: {pdf_path}")
+            while completed_tasks < total_tasks:
+                result = result_queue.get()
+                if result["status"] == "success":
+                    completed_tasks += 1
+                    progress = min(completed_tasks * 100 // total_tasks, 99)
+                    self.progressSignal.emit(progress)
+                else:
+                    print(f"处理文件出错: {result['error']} 文件: {result['filepath']}")
 
-                except Exception as e:
-                    print(f"合并文件 {pdf_path} 时出错: {e}")
-                    continue
-                self.progressSignal.emit(min((index + 1) * 100 // len(self.input_file_infos), 99))
-            # 最后一次保存合并结果
-            print(toc)
-            self.progressSignal.emit(99)
-            merged_pdf.set_toc(toc)
-            merged_pdf.save(output_path, garbage=4, deflate_images=True, **self.output_file_info.encryption_options)
-            merged_pdf.close()
             self.progressSignal.emit(100)
-            print(f"合并完成，已生成文件: {output_path}")
-
-            # 删除临时文件
-            for i in range(2):
-                if os.path.exists(output_path + f"{i % 2}.tmp"):
-                    os.remove(output_path + f"{i % 2}.tmp")
+            print(f"合并完成，已生成文件: {self.output_file_info.file_path}")
 
         except Exception as e:
             print(f"合并过程中出错: {e}")
         finally:
-            # 确保释放资源
-            if 'merged_pdf' in locals() and not merged_pdf.is_closed:
-                merged_pdf.close()
+            for p in processes:
+                p.join()
+
         self.okSignal.emit(True)
+
+    @staticmethod
+    def process_task(task_queue: Queue, result_queue: Queue):
+        while not task_queue.empty():
+            try:
+                fileinfo = task_queue.get_nowait()
+                pdf_path = fileinfo.file_path
+
+                if not os.path.isfile(pdf_path):
+                    result_queue.put({"status": "error", "error": "文件未找到", "filepath": pdf_path})
+                    continue
+
+                # 打开 PDF 文件
+                pdf = pymupdf.open(pdf_path)
+                # 定义符合 'YYYY-MM-DD HH:MM:SS' 格式的正则表达式
+                date_pattern = r"(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}"
+                page_year = set()
+                page_month = set()
+                page_day = set()
+                toc = []  # [level, title, page num]
+
+                for page_num in range(len(pdf)):
+                    page = pdf[page_num]
+                    text = page.get_text()
+                    # 查找匹配的日期
+                    matches = re.findall(date_pattern, text)
+                    for year, month, day in matches:
+                        if year not in page_year:
+                            toc.append([1, year, page_num + 1])
+                            page_year.add(year)
+                        if f'{year}-{month}' not in page_month:
+                            toc.append([2, f'{year}-{month}', page_num + 1])
+                            page_month.add(f'{year}-{month}')
+                        if f'{year}-{month}-{day}' not in page_day:
+                            toc.append([3, f'{year}-{month}-{day}', page_num + 1])
+                            page_day.add(f'{year}-{month}-{day}')
+                try:
+                    pdf.set_toc(toc)
+                    pdf.saveIncr()
+                    result_queue.put({"status": "success", "filepath": pdf_path})
+                except Exception as e:
+                    result_queue.put({"status": "error", "error": str(e), "filepath": pdf_path})
+
+            except Exception as e:
+                result_queue.put({"status": "error", "error": str(e), "filepath": None})
 
 
 if __name__ == '__main__':
@@ -284,6 +269,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
-    view = MergeControl(None)
+    view = TocControl(None)
     view.show()
     sys.exit(app.exec_())

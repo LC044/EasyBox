@@ -4,4 +4,3 @@ python-docx
 docxcompose
 pillow
 pymupdf
-pdf2docx
