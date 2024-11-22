@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>448</width>
-    <height>839</height>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@ QPushButton:pressed {
 	border: 2px solid #888888;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="frameShape">
@@ -63,20 +63,169 @@ QPushButton:pressed {
         <x>0</x>
         <y>0</y>
         <width>430</width>
-        <height>821</height>
+        <height>498</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
-        <widget class="QWidget" name="widget_4" native="true">
-         <property name="styleSheet">
-          <string notr="true"/>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>从PDF转换</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0" colspan="2">
+           <widget class="Line" name="line_5">
+            <property name="styleSheet">
+             <string notr="true">border-bottom: 2px solid #888888;</string>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>5</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_pdf2txt">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="tabletTracking">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::DefaultContextMenu</enum>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>PDF转文本</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../resources/icons/random.svg</normaloff>../../../resources/icons/random.svg</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="description">
+             <string>将PDF转换为文本格式</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCommandLinkButton" name="commandLinkButton_pdf2excel">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="tabletTracking">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::DefaultContextMenu</enum>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>PDF转Excel</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../resources/icons/ratio.svg</normaloff>../../../resources/icons/ratio.svg</iconset>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="description">
+             <string>提取出PDF中的表格并将其转换为Excel</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QCommandLinkButton" name="commandLinkButton_pdf2img">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
@@ -135,7 +284,7 @@ QPushButton:pressed {
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -191,147 +340,39 @@ QPushButton:pressed {
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="Line" name="line_8">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCommandLinkButton" name="commandLinkButton_pdf2txt">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="tabletTracking">
-             <bool>false</bool>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
-            </property>
-            <property name="toolTipDuration">
-             <number>-1</number>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>转换成PDF</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="1" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_md2pdf">
             <property name="text">
-             <string>PDF转文本</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/random.svg</normaloff>../../../resources/icons/random.svg</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoRepeat">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="description">
-             <string>将PDF转换为文本格式</string>
+             <string>Markdown转PDF</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QCommandLinkButton" name="commandLinkButton_pdf2excel">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="tabletTracking">
-             <bool>false</bool>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
-            </property>
-            <property name="toolTipDuration">
-             <number>-1</number>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
+          <item row="0" column="1">
+           <widget class="QCommandLinkButton" name="commandLinkButton_web2pdf">
             <property name="text">
-             <string>PDF转Excel</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/ratio.svg</normaloff>../../../resources/icons/ratio.svg</iconset>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoRepeat">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="description">
-             <string>提取出PDF中的表格并将其转换为Excel</string>
+             <string>网页转PDF</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="Line" name="line_5">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="0" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_img2pdf">
+            <property name="text">
+             <string>图片转PDF</string>
             </property>
            </widget>
           </item>

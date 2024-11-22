@@ -6,6 +6,7 @@ from app.ui.components.QCursorGif import QCursorGif
 from app.ui.doc_convert.pdf2wordui.pdf2word import Pdf2WordControl
 from app.ui.doc_convert.doc_convert_ui import Ui_Form
 from app.ui.components.router import Router
+from app.ui.global_signal import globalSignals
 
 
 class DocConvertControl(QWidget, Ui_Form, QCursorGif):
@@ -41,6 +42,14 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
         self.commandLinkButton_pdf2word.clicked.connect(self.pdf2word)
+
+        self.commandLinkButton_pdf2img.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_pdf2txt.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_pdf2excel.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_md2pdf.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_web2pdf.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_img2pdf.clicked.connect(globalSignals.not_support)
+
         self.resize(QSize(640, 480))
 
     def pdf2word(self):

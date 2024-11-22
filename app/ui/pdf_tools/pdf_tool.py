@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
+from app.ui.global_signal import globalSignals
 from app.ui.pdf_tools.merge import MergeControl
 from app.ui.pdf_tools.pdf_tool_ui import Ui_Form
 from app.ui.components.router import Router
@@ -41,6 +42,13 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
         self.commandLinkButton_merge_pdf.clicked.connect(self.merge_pdf)
+
+        self.commandLinkButton_split_pdf.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_encrypt.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_decrypt.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_delete_blank_pages.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_add_watermark.clicked.connect(globalSignals.not_support)
+
         self.resize(QSize(640, 480))
 
     def merge_pdf(self):

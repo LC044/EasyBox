@@ -3,15 +3,17 @@ from PyQt5 import QtWidgets, QtGui
 from app.ui import mainwindow
 from PyQt5.QtCore import pyqtSignal, QFile, QIODevice, QTextStream, QSize, Qt
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QLabel, QPushButton, QSizePolicy, QSplitter
+from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QLabel, QPushButton, QSizePolicy, QSplitter, QMessageBox
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.components.router import Router
 from app.ui.components import Sidebar, SidebarButton
 from app.ui.doc_convert.doc_convert import DocConvertControl
+from app.ui.global_signal import globalSignals
 from app.ui.memotrace_enhance.enhance import EnhanceControl
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
+from app.ui.setting.setting import SettingWindow
 
 
 class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
@@ -25,6 +27,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.setupUi(self)
         self.router_path = ''
         self.init_ui()
+        globalSignals.not_support.connect(self.show_not_support)
+        globalSignals.information.connect(self.show_information)
 
     def init_ui(self):
         self.initCursor([':/icons/icons/Cursors/%d.png' %
@@ -53,6 +57,7 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
         self.router = Router(self.stackedWidget)
         self.sidebar = Sidebar(self.stackedWidget, parent=self)
+        self.sidebar.btn_setting.clicked.connect(self.show_setting)
         self.sidebar.btn_back.setText('')
         self.sidebar.btn_setting.setIcon(Icon.Setting_Icon)
         self.sidebar.btn_back.setIcon(Icon.Back)
@@ -61,12 +66,14 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.horizontalLayout.addWidget(self.sidebar)
         self.horizontalLayout.addWidget(self.stackedWidget)
 
+        self.setting_view = SettingWindow()
+
         pdf_view = PDFToolControl(self.router, parent=self)
         self.add_widget(Icon.PDF_Icon, 'PDF工具', pdf_view.router_path, pdf_view)
 
         # l1 = QLabel('文档转换', self)
         doc_view = DocConvertControl(self.router, parent=self)
-        self.add_widget(Icon.Doc_Transfer_Icon, '文档转换', '/文档转换', doc_view )
+        self.add_widget(Icon.Doc_Transfer_Icon, '文档转换', '/文档转换', doc_view)
 
         l2 = QLabel('图片工具', self)
         self.add_widget(Icon.Img_Icon, '图片工具', '/图片工具', l2)
@@ -86,3 +93,12 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
         self.sidebar.add_nav_button(icon, text, router_path, action=lambda: self.router.navigate(router_path))
         index = self.router.add_route(router_path, widget)
+
+    def show_setting(self):
+        self.setting_view.show()
+
+    def show_not_support(self, a):
+        self.show_information('暂不支持该功能！')
+
+    def show_information(self, msg):
+        QMessageBox.information(self, '温馨提示', msg)

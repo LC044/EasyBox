@@ -1,7 +1,7 @@
-version = '0.0.1'
+version = '0.1.0'
 contact = ''
 github = ''
-website = 'https://memotrace.cn/'
+website = 'https://memotrace.cn/tools/'
 copyright = '© 2022-2024 SiYuan'
 license = ''
 description = [

@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(448, 839)
+        Form.resize(448, 292)
         Form.setStyleSheet("")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -24,7 +24,7 @@ class Ui_Form(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 430, 821))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 430, 274))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
@@ -62,6 +62,87 @@ class Ui_Form(object):
         self.widget_4.setObjectName("widget_4")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.widget_4)
         self.gridLayout_3.setObjectName("gridLayout_3")
+        self.line_5 = QtWidgets.QFrame(self.widget_4)
+        self.line_5.setStyleSheet("border-bottom: 2px solid #888888;")
+        self.line_5.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.line_5.setLineWidth(5)
+        self.line_5.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_5.setObjectName("line_5")
+        self.gridLayout_3.addWidget(self.line_5, 3, 0, 1, 2)
+        self.line_7 = QtWidgets.QFrame(self.widget_4)
+        self.line_7.setStyleSheet("border-bottom: 2px solid #888888;")
+        self.line_7.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.line_7.setLineWidth(5)
+        self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_7.setObjectName("line_7")
+        self.gridLayout_3.addWidget(self.line_7, 6, 0, 1, 2)
+        self.commandLinkButton_encrypt = QtWidgets.QCommandLinkButton(self.widget_4)
+        self.commandLinkButton_encrypt.setEnabled(True)
+        self.commandLinkButton_encrypt.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.commandLinkButton_encrypt.setTabletTracking(False)
+        self.commandLinkButton_encrypt.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.commandLinkButton_encrypt.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        self.commandLinkButton_encrypt.setToolTipDuration(-1)
+        self.commandLinkButton_encrypt.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.commandLinkButton_encrypt.setAutoFillBackground(False)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("../../../resources/icons/random.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.commandLinkButton_encrypt.setIcon(icon)
+        self.commandLinkButton_encrypt.setCheckable(True)
+        self.commandLinkButton_encrypt.setChecked(False)
+        self.commandLinkButton_encrypt.setAutoRepeat(False)
+        self.commandLinkButton_encrypt.setAutoExclusive(False)
+        self.commandLinkButton_encrypt.setAutoDefault(False)
+        self.commandLinkButton_encrypt.setDefault(False)
+        self.commandLinkButton_encrypt.setObjectName("commandLinkButton_encrypt")
+        self.gridLayout_3.addWidget(self.commandLinkButton_encrypt, 2, 0, 1, 1)
+        self.commandLinkButton_decrypt = QtWidgets.QCommandLinkButton(self.widget_4)
+        self.commandLinkButton_decrypt.setEnabled(True)
+        self.commandLinkButton_decrypt.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.commandLinkButton_decrypt.setTabletTracking(False)
+        self.commandLinkButton_decrypt.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.commandLinkButton_decrypt.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        self.commandLinkButton_decrypt.setToolTipDuration(-1)
+        self.commandLinkButton_decrypt.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.commandLinkButton_decrypt.setAutoFillBackground(False)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("../../../resources/icons/ratio.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.commandLinkButton_decrypt.setIcon(icon1)
+        self.commandLinkButton_decrypt.setCheckable(False)
+        self.commandLinkButton_decrypt.setChecked(False)
+        self.commandLinkButton_decrypt.setAutoRepeat(False)
+        self.commandLinkButton_decrypt.setAutoExclusive(False)
+        self.commandLinkButton_decrypt.setAutoDefault(False)
+        self.commandLinkButton_decrypt.setDefault(False)
+        self.commandLinkButton_decrypt.setObjectName("commandLinkButton_decrypt")
+        self.gridLayout_3.addWidget(self.commandLinkButton_decrypt, 2, 1, 1, 1)
+        self.commandLinkButton_delete_blank_pages = QtWidgets.QCommandLinkButton(self.widget_4)
+        self.commandLinkButton_delete_blank_pages.setEnabled(True)
+        self.commandLinkButton_delete_blank_pages.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.commandLinkButton_delete_blank_pages.setTabletTracking(False)
+        self.commandLinkButton_delete_blank_pages.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.commandLinkButton_delete_blank_pages.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        self.commandLinkButton_delete_blank_pages.setToolTipDuration(-1)
+        self.commandLinkButton_delete_blank_pages.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.commandLinkButton_delete_blank_pages.setAutoFillBackground(False)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("../../../resources/icons/strategy.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.commandLinkButton_delete_blank_pages.setIcon(icon2)
+        self.commandLinkButton_delete_blank_pages.setCheckable(True)
+        self.commandLinkButton_delete_blank_pages.setChecked(False)
+        self.commandLinkButton_delete_blank_pages.setAutoRepeat(False)
+        self.commandLinkButton_delete_blank_pages.setAutoExclusive(False)
+        self.commandLinkButton_delete_blank_pages.setAutoDefault(False)
+        self.commandLinkButton_delete_blank_pages.setDefault(False)
+        self.commandLinkButton_delete_blank_pages.setObjectName("commandLinkButton_delete_blank_pages")
+        self.gridLayout_3.addWidget(self.commandLinkButton_delete_blank_pages, 5, 0, 1, 1)
+        self.line_8 = QtWidgets.QFrame(self.widget_4)
+        self.line_8.setStyleSheet("border-bottom: 2px solid #888888;")
+        self.line_8.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.line_8.setLineWidth(5)
+        self.line_8.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_8.setObjectName("line_8")
+        self.gridLayout_3.addWidget(self.line_8, 1, 0, 1, 2)
         self.commandLinkButton_merge_pdf = QtWidgets.QCommandLinkButton(self.widget_4)
         self.commandLinkButton_merge_pdf.setEnabled(True)
         self.commandLinkButton_merge_pdf.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -71,9 +152,9 @@ class Ui_Form(object):
         self.commandLinkButton_merge_pdf.setToolTipDuration(-1)
         self.commandLinkButton_merge_pdf.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.commandLinkButton_merge_pdf.setAutoFillBackground(False)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../resources/icons/PDF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.commandLinkButton_merge_pdf.setIcon(icon)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap("../../../resources/icons/PDF.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.commandLinkButton_merge_pdf.setIcon(icon3)
         self.commandLinkButton_merge_pdf.setCheckable(True)
         self.commandLinkButton_merge_pdf.setChecked(False)
         self.commandLinkButton_merge_pdf.setAutoRepeat(False)
@@ -82,366 +163,30 @@ class Ui_Form(object):
         self.commandLinkButton_merge_pdf.setDefault(False)
         self.commandLinkButton_merge_pdf.setObjectName("commandLinkButton_merge_pdf")
         self.gridLayout_3.addWidget(self.commandLinkButton_merge_pdf, 0, 0, 1, 1)
-        self.commandLinkButton_user = QtWidgets.QCommandLinkButton(self.widget_4)
-        self.commandLinkButton_user.setEnabled(True)
-        self.commandLinkButton_user.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.commandLinkButton_user.setTabletTracking(False)
-        self.commandLinkButton_user.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.commandLinkButton_user.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.commandLinkButton_user.setToolTipDuration(-1)
-        self.commandLinkButton_user.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.commandLinkButton_user.setAutoFillBackground(False)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../../../resources/icons/strategy.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.commandLinkButton_user.setIcon(icon1)
-        self.commandLinkButton_user.setCheckable(True)
-        self.commandLinkButton_user.setChecked(False)
-        self.commandLinkButton_user.setAutoRepeat(False)
-        self.commandLinkButton_user.setAutoExclusive(False)
-        self.commandLinkButton_user.setAutoDefault(False)
-        self.commandLinkButton_user.setDefault(False)
-        self.commandLinkButton_user.setObjectName("commandLinkButton_user")
-        self.gridLayout_3.addWidget(self.commandLinkButton_user, 0, 1, 1, 1)
-        self.line_8 = QtWidgets.QFrame(self.widget_4)
-        self.line_8.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_8.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_8.setLineWidth(5)
-        self.line_8.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_8.setObjectName("line_8")
-        self.gridLayout_3.addWidget(self.line_8, 1, 0, 1, 2)
-        self.commandLinkButton_shuffle = QtWidgets.QCommandLinkButton(self.widget_4)
-        self.commandLinkButton_shuffle.setEnabled(True)
-        self.commandLinkButton_shuffle.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.commandLinkButton_shuffle.setTabletTracking(False)
-        self.commandLinkButton_shuffle.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.commandLinkButton_shuffle.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.commandLinkButton_shuffle.setToolTipDuration(-1)
-        self.commandLinkButton_shuffle.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.commandLinkButton_shuffle.setAutoFillBackground(False)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("../../../resources/icons/random.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.commandLinkButton_shuffle.setIcon(icon2)
-        self.commandLinkButton_shuffle.setCheckable(True)
-        self.commandLinkButton_shuffle.setChecked(False)
-        self.commandLinkButton_shuffle.setAutoRepeat(False)
-        self.commandLinkButton_shuffle.setAutoExclusive(False)
-        self.commandLinkButton_shuffle.setAutoDefault(False)
-        self.commandLinkButton_shuffle.setDefault(False)
-        self.commandLinkButton_shuffle.setDescription("")
-        self.commandLinkButton_shuffle.setObjectName("commandLinkButton_shuffle")
-        self.gridLayout_3.addWidget(self.commandLinkButton_shuffle, 2, 0, 1, 1)
-        self.commandLinkButton_train_ratio = QtWidgets.QCommandLinkButton(self.widget_4)
-        self.commandLinkButton_train_ratio.setEnabled(True)
-        self.commandLinkButton_train_ratio.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.commandLinkButton_train_ratio.setTabletTracking(False)
-        self.commandLinkButton_train_ratio.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.commandLinkButton_train_ratio.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.commandLinkButton_train_ratio.setToolTipDuration(-1)
-        self.commandLinkButton_train_ratio.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.commandLinkButton_train_ratio.setAutoFillBackground(False)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("../../../resources/icons/ratio.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.commandLinkButton_train_ratio.setIcon(icon3)
-        self.commandLinkButton_train_ratio.setCheckable(False)
-        self.commandLinkButton_train_ratio.setChecked(False)
-        self.commandLinkButton_train_ratio.setAutoRepeat(False)
-        self.commandLinkButton_train_ratio.setAutoExclusive(False)
-        self.commandLinkButton_train_ratio.setAutoDefault(False)
-        self.commandLinkButton_train_ratio.setDefault(False)
-        self.commandLinkButton_train_ratio.setDescription("")
-        self.commandLinkButton_train_ratio.setObjectName("commandLinkButton_train_ratio")
-        self.gridLayout_3.addWidget(self.commandLinkButton_train_ratio, 2, 1, 1, 1)
-        self.line_5 = QtWidgets.QFrame(self.widget_4)
-        self.line_5.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_5.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_5.setLineWidth(5)
-        self.line_5.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_5.setObjectName("line_5")
-        self.gridLayout_3.addWidget(self.line_5, 3, 0, 1, 2)
-        self.commandLinkButton_strategy = QtWidgets.QCommandLinkButton(self.widget_4)
-        self.commandLinkButton_strategy.setEnabled(True)
-        self.commandLinkButton_strategy.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.commandLinkButton_strategy.setTabletTracking(False)
-        self.commandLinkButton_strategy.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.commandLinkButton_strategy.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.commandLinkButton_strategy.setToolTipDuration(-1)
-        self.commandLinkButton_strategy.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.commandLinkButton_strategy.setAutoFillBackground(False)
-        self.commandLinkButton_strategy.setIcon(icon1)
-        self.commandLinkButton_strategy.setCheckable(True)
-        self.commandLinkButton_strategy.setChecked(False)
-        self.commandLinkButton_strategy.setAutoRepeat(False)
-        self.commandLinkButton_strategy.setAutoExclusive(False)
-        self.commandLinkButton_strategy.setAutoDefault(False)
-        self.commandLinkButton_strategy.setDefault(False)
-        self.commandLinkButton_strategy.setDescription("")
-        self.commandLinkButton_strategy.setObjectName("commandLinkButton_strategy")
-        self.gridLayout_3.addWidget(self.commandLinkButton_strategy, 4, 0, 1, 1)
-        self.line_6 = QtWidgets.QFrame(self.widget_4)
-        self.line_6.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_6.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_6.setLineWidth(5)
-        self.line_6.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_6.setObjectName("line_6")
-        self.gridLayout_3.addWidget(self.line_6, 5, 0, 1, 2)
-        self.line_7 = QtWidgets.QFrame(self.widget_4)
-        self.line_7.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_7.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_7.setLineWidth(5)
-        self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_7.setObjectName("line_7")
-        self.gridLayout_3.addWidget(self.line_7, 6, 0, 1, 2)
+        self.commandLinkButton_split_pdf = QtWidgets.QCommandLinkButton(self.widget_4)
+        self.commandLinkButton_split_pdf.setEnabled(True)
+        self.commandLinkButton_split_pdf.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.commandLinkButton_split_pdf.setTabletTracking(False)
+        self.commandLinkButton_split_pdf.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.commandLinkButton_split_pdf.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        self.commandLinkButton_split_pdf.setToolTipDuration(-1)
+        self.commandLinkButton_split_pdf.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.commandLinkButton_split_pdf.setAutoFillBackground(False)
+        self.commandLinkButton_split_pdf.setIcon(icon2)
+        self.commandLinkButton_split_pdf.setCheckable(True)
+        self.commandLinkButton_split_pdf.setChecked(False)
+        self.commandLinkButton_split_pdf.setAutoRepeat(False)
+        self.commandLinkButton_split_pdf.setAutoExclusive(False)
+        self.commandLinkButton_split_pdf.setAutoDefault(False)
+        self.commandLinkButton_split_pdf.setDefault(False)
+        self.commandLinkButton_split_pdf.setObjectName("commandLinkButton_split_pdf")
+        self.gridLayout_3.addWidget(self.commandLinkButton_split_pdf, 0, 1, 1, 1)
+        self.commandLinkButton_add_watermark = QtWidgets.QCommandLinkButton(self.widget_4)
+        self.commandLinkButton_add_watermark.setObjectName("commandLinkButton_add_watermark")
+        self.gridLayout_3.addWidget(self.commandLinkButton_add_watermark, 5, 1, 1, 1)
         self.verticalLayout_8.addWidget(self.widget_4)
-        self.widget = QtWidgets.QWidget(self.scrollAreaWidgetContents)
-        self.widget.setStyleSheet("QWidget{\n"
-"   background-color:rgb(251,251,251);\n"
-"    border-radius: 10px;\n"
-"}\n"
-"\n"
-"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"}\n"
-"QPushButton:hover { \n"
-"    background-color: lightgray;\n"
-"}\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border:none;\n"
-"}")
-        self.widget.setObjectName("widget")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.label = QtWidgets.QLabel(self.widget)
-        self.label.setStyleSheet("")
-        self.label.setObjectName("label")
-        self.verticalLayout_2.addWidget(self.label)
-        self.line = QtWidgets.QFrame(self.widget)
-        self.line.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line.setLineWidth(5)
-        self.line.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line.setObjectName("line")
-        self.verticalLayout_2.addWidget(self.line)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.widget)
-        self.plainTextEdit.setMinimumSize(QtCore.QSize(300, 0))
-        self.plainTextEdit.setMaximumSize(QtCore.QSize(16777215, 100))
-        self.plainTextEdit.setFrameShape(QtWidgets.QFrame.Box)
-        self.plainTextEdit.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.plainTextEdit.setObjectName("plainTextEdit")
-        self.horizontalLayout.addWidget(self.plainTextEdit)
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.btn_set_prompt = QtWidgets.QPushButton(self.widget)
-        self.btn_set_prompt.setObjectName("btn_set_prompt")
-        self.verticalLayout.addWidget(self.btn_set_prompt)
-        self.btn_help = QtWidgets.QPushButton(self.widget)
-        self.btn_help.setObjectName("btn_help")
-        self.verticalLayout.addWidget(self.btn_help)
-        self.horizontalLayout.addLayout(self.verticalLayout)
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
-        self.verticalLayout_8.addWidget(self.widget)
-        self.widget_6 = QtWidgets.QWidget(self.scrollAreaWidgetContents)
-        self.widget_6.setStyleSheet("QWidget{\n"
-"   background-color:rgb(251,251,251);\n"
-"    border-radius: 10px;\n"
-"}\n"
-"\n"
-"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"}\n"
-"QPushButton:hover { \n"
-"    background-color: lightgray;\n"
-"}\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border:none;\n"
-"}\n"
-"QCommandLinkButton:hover { \n"
-"    background-color: rgb(250,252,253);\n"
-"}")
-        self.widget_6.setObjectName("widget_6")
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget_6)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.label_3 = QtWidgets.QLabel(self.widget_6)
-        self.label_3.setObjectName("label_3")
-        self.verticalLayout_4.addWidget(self.label_3)
-        self.line_2 = QtWidgets.QFrame(self.widget_6)
-        self.line_2.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_2.setLineWidth(5)
-        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_2.setObjectName("line_2")
-        self.verticalLayout_4.addWidget(self.line_2)
-        self.gridLayout_2 = QtWidgets.QGridLayout()
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.label_4 = QtWidgets.QLabel(self.widget_6)
-        self.label_4.setObjectName("label_4")
-        self.gridLayout_2.addWidget(self.label_4, 0, 0, 1, 1)
-        self.spinBox_span = QtWidgets.QSpinBox(self.widget_6)
-        self.spinBox_span.setStyleSheet("QSpinBox {\n"
-"    border-radius: 0px;\n"
-"}")
-        self.spinBox_span.setWrapping(False)
-        self.spinBox_span.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-        self.spinBox_span.setPrefix("")
-        self.spinBox_span.setMinimum(60)
-        self.spinBox_span.setMaximum(10000)
-        self.spinBox_span.setSingleStep(60)
-        self.spinBox_span.setProperty("value", 300)
-        self.spinBox_span.setObjectName("spinBox_span")
-        self.gridLayout_2.addWidget(self.spinBox_span, 0, 1, 1, 1)
-        self.verticalLayout_4.addLayout(self.gridLayout_2)
-        self.verticalLayout_8.addWidget(self.widget_6)
-        self.widget_7 = QtWidgets.QWidget(self.scrollAreaWidgetContents)
-        self.widget_7.setStyleSheet("QWidget{\n"
-"   background-color:rgb(251,251,251);\n"
-"    border-radius: 10px;\n"
-"}\n"
-"\n"
-"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"}\n"
-"QPushButton:hover { \n"
-"    background-color: lightgray;\n"
-"}\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border:none;\n"
-"}\n"
-"QCommandLinkButton:hover { \n"
-"    background-color: rgb(250,252,253);\n"
-"}")
-        self.widget_7.setObjectName("widget_7")
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget_7)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.label_11 = QtWidgets.QLabel(self.widget_7)
-        self.label_11.setObjectName("label_11")
-        self.verticalLayout_5.addWidget(self.label_11)
-        self.line_3 = QtWidgets.QFrame(self.widget_7)
-        self.line_3.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_3.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_3.setLineWidth(5)
-        self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_3.setObjectName("line_3")
-        self.verticalLayout_5.addWidget(self.line_3)
-        self.gridLayout_4 = QtWidgets.QGridLayout()
-        self.gridLayout_4.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
-        self.gridLayout_4.setObjectName("gridLayout_4")
-        self.spinBox_intervals = QtWidgets.QSpinBox(self.widget_7)
-        self.spinBox_intervals.setStyleSheet("QSpinBox {\n"
-"    border-radius: 0px;\n"
-"}")
-        self.spinBox_intervals.setWrapping(False)
-        self.spinBox_intervals.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-        self.spinBox_intervals.setMinimum(1)
-        self.spinBox_intervals.setMaximum(10000)
-        self.spinBox_intervals.setSingleStep(60)
-        self.spinBox_intervals.setProperty("value", 120)
-        self.spinBox_intervals.setObjectName("spinBox_intervals")
-        self.gridLayout_4.addWidget(self.spinBox_intervals, 0, 1, 1, 1)
-        self.label_9 = QtWidgets.QLabel(self.widget_7)
-        self.label_9.setObjectName("label_9")
-        self.gridLayout_4.addWidget(self.label_9, 0, 0, 1, 1)
-        self.verticalLayout_5.addLayout(self.gridLayout_4)
-        self.verticalLayout_8.addWidget(self.widget_7)
-        self.widget_8 = QtWidgets.QWidget(self.scrollAreaWidgetContents)
-        self.widget_8.setStyleSheet("QWidget{\n"
-"   background-color:rgb(251,251,251);\n"
-"    border-radius: 10px;\n"
-"}\n"
-"\n"
-"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
-"    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */\n"
-"}\n"
-"QPushButton:hover { \n"
-"    background-color: lightgray;\n"
-"}\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border:none;\n"
-"}\n"
-"QCommandLinkButton:hover { \n"
-"    background-color: rgb(250,252,253);\n"
-"}")
-        self.widget_8.setObjectName("widget_8")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.widget_8)
-        self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.label_2 = QtWidgets.QLabel(self.widget_8)
-        self.label_2.setObjectName("label_2")
-        self.verticalLayout_6.addWidget(self.label_2)
-        self.line_4 = QtWidgets.QFrame(self.widget_8)
-        self.line_4.setStyleSheet("border-bottom: 2px solid #888888;")
-        self.line_4.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.line_4.setLineWidth(5)
-        self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_4.setObjectName("line_4")
-        self.verticalLayout_6.addWidget(self.line_4)
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
-        self.label_5 = QtWidgets.QLabel(self.widget_8)
-        self.label_5.setObjectName("label_5")
-        self.gridLayout.addWidget(self.label_5, 0, 0, 1, 1)
-        self.spinBox_window = QtWidgets.QSpinBox(self.widget_8)
-        self.spinBox_window.setStyleSheet("QSpinBox {\n"
-"    border-radius: 0px;\n"
-"}")
-        self.spinBox_window.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-        self.spinBox_window.setMinimum(4)
-        self.spinBox_window.setMaximum(10086)
-        self.spinBox_window.setSingleStep(10)
-        self.spinBox_window.setProperty("value", 10)
-        self.spinBox_window.setObjectName("spinBox_window")
-        self.gridLayout.addWidget(self.spinBox_window, 0, 1, 1, 1)
-        self.label_6 = QtWidgets.QLabel(self.widget_8)
-        self.label_6.setObjectName("label_6")
-        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
-        self.spinBox_step = QtWidgets.QSpinBox(self.widget_8)
-        self.spinBox_step.setStyleSheet("QSpinBox {\n"
-"    border-radius: 0px;\n"
-"}")
-        self.spinBox_step.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-        self.spinBox_step.setMinimum(1)
-        self.spinBox_step.setMaximum(10086)
-        self.spinBox_step.setSingleStep(10)
-        self.spinBox_step.setProperty("value", 3)
-        self.spinBox_step.setObjectName("spinBox_step")
-        self.gridLayout.addWidget(self.spinBox_step, 1, 1, 1, 1)
-        self.verticalLayout_6.addLayout(self.gridLayout)
-        self.verticalLayout_8.addWidget(self.widget_8)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_8.addItem(spacerItem)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout_3.addWidget(self.scrollArea)
 
@@ -451,25 +196,15 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
+        self.commandLinkButton_encrypt.setText(_translate("Form", "PDF加密"))
+        self.commandLinkButton_encrypt.setDescription(_translate("Form", "设置PDF打开、编辑密码"))
+        self.commandLinkButton_decrypt.setText(_translate("Form", "PDF解密"))
+        self.commandLinkButton_decrypt.setDescription(_translate("Form", "从PDF文档中移除密码保护"))
+        self.commandLinkButton_delete_blank_pages.setText(_translate("Form", "删除空白页"))
+        self.commandLinkButton_delete_blank_pages.setDescription(_translate("Form", "批量删除PDF文件中的空白页"))
         self.commandLinkButton_merge_pdf.setText(_translate("Form", "合并"))
         self.commandLinkButton_merge_pdf.setDescription(_translate("Form", "合并多个PDF为一个"))
-        self.commandLinkButton_user.setText(_translate("Form", "拆分"))
-        self.commandLinkButton_user.setDescription(_translate("Form", "把一个PDF拆分成多个"))
-        self.commandLinkButton_shuffle.setText(_translate("Form", "随机打乱数据集"))
-        self.commandLinkButton_train_ratio.setText(_translate("Form", "训练集占比"))
-        self.commandLinkButton_strategy.setText(_translate("Form", "导出策略"))
-        self.label.setText(_translate("Form", "文本框里输入系统promot"))
-        self.plainTextEdit.setPlainText(_translate("Form", "你是{{name}}，一个聪明、热情、善良的人，后面的对话来自你的朋友，你要认真地回答他"))
-        self.btn_set_prompt.setText(_translate("Form", "设置prompt"))
-        self.btn_help.setText(_translate("Form", "使用说明"))
-        self.label_3.setText(_translate("Form", "策略1"))
-        self.label_4.setText(_translate("Form", "每轮对话最大时间跨度"))
-        self.spinBox_span.setSuffix(_translate("Form", "s"))
-        self.label_11.setText(_translate("Form", "策略2"))
-        self.spinBox_intervals.setSuffix(_translate("Form", "s"))
-        self.label_9.setText(_translate("Form", "相邻两条消息最大时间间隔"))
-        self.label_2.setText(_translate("Form", "策略3"))
-        self.label_5.setText(_translate("Form", "窗口大小"))
-        self.spinBox_window.setSuffix(_translate("Form", "条"))
-        self.label_6.setText(_translate("Form", "步长"))
-        self.spinBox_step.setSuffix(_translate("Form", "条"))
+        self.commandLinkButton_split_pdf.setText(_translate("Form", "拆分"))
+        self.commandLinkButton_split_pdf.setDescription(_translate("Form", "把一个PDF拆分成多个"))
+        self.commandLinkButton_add_watermark.setText(_translate("Form", "添加水印"))
+        self.commandLinkButton_add_watermark.setDescription(_translate("Form", "在PDF中添加自定义水印"))

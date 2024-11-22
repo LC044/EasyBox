@@ -28,6 +28,7 @@
         <file>icons/pdf.svg</file>
         <file>icons/文档转换.svg</file>
         <file>icons/批量操作.svg</file>
+        <file>icons/weixin.png</file>
     </qresource>
     <qresource prefix="/data">
         <file>QSS/style.qss</file>

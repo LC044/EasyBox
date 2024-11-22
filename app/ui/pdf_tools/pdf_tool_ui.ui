@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>448</width>
-    <height>839</height>
+    <height>292</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
         <x>0</x>
         <y>0</y>
         <width>430</width>
-        <height>821</height>
+        <height>274</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -73,6 +73,222 @@ QPushButton:pressed {
 }</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="3" column="0" colspan="2">
+           <widget class="Line" name="line_5">
+            <property name="styleSheet">
+             <string notr="true">border-bottom: 2px solid #888888;</string>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>5</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="Line" name="line_7">
+            <property name="styleSheet">
+             <string notr="true">border-bottom: 2px solid #888888;</string>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>5</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_encrypt">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="tabletTracking">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::DefaultContextMenu</enum>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>PDF加密</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../resources/icons/random.svg</normaloff>../../../resources/icons/random.svg</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="description">
+             <string>设置PDF打开、编辑密码</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCommandLinkButton" name="commandLinkButton_decrypt">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="tabletTracking">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::DefaultContextMenu</enum>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>PDF解密</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../resources/icons/ratio.svg</normaloff>../../../resources/icons/ratio.svg</iconset>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="description">
+             <string>从PDF文档中移除密码保护</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_delete_blank_pages">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="tabletTracking">
+             <bool>false</bool>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::DefaultContextMenu</enum>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>删除空白页</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../resources/icons/strategy.svg</normaloff>../../../resources/icons/strategy.svg</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="description">
+             <string>批量删除PDF文件中的空白页</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="Line" name="line_8">
+            <property name="styleSheet">
+             <string notr="true">border-bottom: 2px solid #888888;</string>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>5</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QCommandLinkButton" name="commandLinkButton_merge_pdf">
             <property name="enabled">
@@ -130,7 +346,7 @@ QPushButton:pressed {
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QCommandLinkButton" name="commandLinkButton_user">
+           <widget class="QCommandLinkButton" name="commandLinkButton_split_pdf">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -185,235 +401,13 @@ QPushButton:pressed {
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="Line" name="line_8">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCommandLinkButton" name="commandLinkButton_shuffle">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="tabletTracking">
-             <bool>false</bool>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
-            </property>
-            <property name="toolTipDuration">
-             <number>-1</number>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
+          <item row="5" column="1">
+           <widget class="QCommandLinkButton" name="commandLinkButton_add_watermark">
             <property name="text">
-             <string>随机打乱数据集</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/random.svg</normaloff>../../../resources/icons/random.svg</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoRepeat">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
+             <string>添加水印</string>
             </property>
             <property name="description">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QCommandLinkButton" name="commandLinkButton_train_ratio">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="tabletTracking">
-             <bool>false</bool>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
-            </property>
-            <property name="toolTipDuration">
-             <number>-1</number>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>训练集占比</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/ratio.svg</normaloff>../../../resources/icons/ratio.svg</iconset>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoRepeat">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="description">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="Line" name="line_5">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QCommandLinkButton" name="commandLinkButton_strategy">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="tabletTracking">
-             <bool>false</bool>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
-            </property>
-            <property name="toolTipDuration">
-             <number>-1</number>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>导出策略</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/strategy.svg</normaloff>../../../resources/icons/strategy.svg</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoRepeat">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-            <property name="default">
-             <bool>false</bool>
-            </property>
-            <property name="description">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="Line" name="line_6">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="Line" name="line_7">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <string>在PDF中添加自定义水印</string>
             </property>
            </widget>
           </item>
@@ -421,439 +415,17 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widget" native="true">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-   background-color:rgb(251,251,251);
-	border-radius: 10px;
-}
-
-QPushButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-}
-QPushButton:hover { 
-    background-color: lightgray;
-}
-QCommandLinkButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border:none;
-}</string>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>文本框里输入系统promot</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QPlainTextEdit" name="plainTextEdit">
-              <property name="minimumSize">
-               <size>
-                <width>300</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>100</height>
-               </size>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Box</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Sunken</enum>
-              </property>
-              <property name="plainText">
-               <string>你是{{name}}，一个聪明、热情、善良的人，后面的对话来自你的朋友，你要认真地回答他</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <item>
-               <widget class="QPushButton" name="btn_set_prompt">
-                <property name="text">
-                 <string>设置prompt</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="btn_help">
-                <property name="text">
-                 <string>使用说明</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="widget_6" native="true">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-   background-color:rgb(251,251,251);
-	border-radius: 10px;
-}
-
-QPushButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-}
-QPushButton:hover { 
-    background-color: lightgray;
-}
-QCommandLinkButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border:none;
-}
-QCommandLinkButton:hover { 
-	background-color: rgb(250,252,253);
-}</string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>策略1</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_2">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>每轮对话最大时间跨度</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="spinBox_span">
-              <property name="styleSheet">
-               <string notr="true">QSpinBox {
-	border-radius: 0px;
-}</string>
-              </property>
-              <property name="wrapping">
-               <bool>false</bool>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::PlusMinus</enum>
-              </property>
-              <property name="suffix">
-               <string>s</string>
-              </property>
-              <property name="prefix">
-               <string/>
-              </property>
-              <property name="minimum">
-               <number>60</number>
-              </property>
-              <property name="maximum">
-               <number>10000</number>
-              </property>
-              <property name="singleStep">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>300</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="widget_7" native="true">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-   background-color:rgb(251,251,251);
-	border-radius: 10px;
-}
-
-QPushButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-}
-QPushButton:hover { 
-    background-color: lightgray;
-}
-QCommandLinkButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border:none;
-}
-QCommandLinkButton:hover { 
-	background-color: rgb(250,252,253);
-}</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>策略2</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_3">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetDefaultConstraint</enum>
-            </property>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="spinBox_intervals">
-              <property name="styleSheet">
-               <string notr="true">QSpinBox {
-	border-radius: 0px;
-}</string>
-              </property>
-              <property name="wrapping">
-               <bool>false</bool>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::PlusMinus</enum>
-              </property>
-              <property name="suffix">
-               <string>s</string>
-              </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>10000</number>
-              </property>
-              <property name="singleStep">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>120</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>相邻两条消息最大时间间隔</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="widget_8" native="true">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-   background-color:rgb(251,251,251);
-	border-radius: 10px;
-}
-
-QPushButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-}
-QPushButton:hover { 
-    background-color: lightgray;
-}
-QCommandLinkButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-    padding: 8px;
-    border:none;
-}
-QCommandLinkButton:hover { 
-	background-color: rgb(250,252,253);
-}</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>策略3</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_4">
-            <property name="styleSheet">
-             <string notr="true">border-bottom: 2px solid #888888;</string>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>5</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>窗口大小</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="spinBox_window">
-              <property name="styleSheet">
-               <string notr="true">QSpinBox {
-	border-radius: 0px;
-}</string>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::PlusMinus</enum>
-              </property>
-              <property name="suffix">
-               <string>条</string>
-              </property>
-              <property name="minimum">
-               <number>4</number>
-              </property>
-              <property name="maximum">
-               <number>10086</number>
-              </property>
-              <property name="singleStep">
-               <number>10</number>
-              </property>
-              <property name="value">
-               <number>10</number>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>步长</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QSpinBox" name="spinBox_step">
-              <property name="styleSheet">
-               <string notr="true">QSpinBox {
-	border-radius: 0px;
-}</string>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::PlusMinus</enum>
-              </property>
-              <property name="suffix">
-               <string>条</string>
-              </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>10086</number>
-              </property>
-              <property name="singleStep">
-               <number>10</number>
-              </property>
-              <property name="value">
-               <number>3</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>

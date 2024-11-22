@@ -264,3 +264,16 @@ QSlider::sub-page:horizontal{
     background-color:rgb(251,251,251);
     border-radius: 10px;
 }
+
+QGroupBox {
+    border: none;   // 边框宽度、颜色
+    border-radius: 8px;         // 圆角半径
+    margin-top: 20px;           // 标题与顶部边框的距离
+}
+QGroupBox::title { "
+    subcontrol-origin: margin;  // 标题的对齐方式，依赖 margin
+    subcontrol-position: top left;  // 标题位置（顶部左对齐）
+    padding: 0 10px;            // 标题与边框的内边距
+    color: #2ecc71;             // 标题文字颜色
+    font-weight: bold;          // 标题文字加粗
+}
