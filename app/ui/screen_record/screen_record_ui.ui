@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>448</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>355</width>
+     <height>124</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="format_label">
+      <property name="text">
+       <string>录制格式：</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="3">
+     <widget class="QComboBox" name="format_combo">
+      <item>
+       <property name="text">
+        <string>mp4</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>avi</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="fps_label">
+      <property name="text">
+       <string>帧率：</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" colspan="3">
+     <widget class="QSpinBox" name="fps_spin"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="path_label">
+      <property name="text">
+       <string>保存路径：</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" colspan="2">
+     <widget class="QLineEdit" name="path_edit"/>
+    </item>
+    <item row="2" column="3">
+     <widget class="QPushButton" name="browse_button">
+      <property name="text">
+       <string>选择路径</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QPushButton" name="start_button">
+      <property name="text">
+       <string>开始录制</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2" colspan="2">
+     <widget class="QPushButton" name="stop_button">
+      <property name="text">
+       <string>结束录制</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

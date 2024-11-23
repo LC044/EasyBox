@@ -21,3 +21,4 @@ class Icon:
     PDF_Icon = QIcon(':/icons/icons/pdf.svg')
     Doc_Transfer_Icon = QIcon(':/icons/icons/文档转换.svg')
     Batch_Icon = QIcon(':/icons/icons/批量操作.svg')
+    Screen_record_Icon = QIcon(':/icons/icons/录屏.svg')
