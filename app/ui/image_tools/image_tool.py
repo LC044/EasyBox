@@ -45,11 +45,8 @@ class ImageToolControl(QWidget, Ui_Form, QCursorGif):
                 style_qss_file.close()
         self.commandLinkButton_modify_date.clicked.connect(self.modify_date)
 
-        self.commandLinkButton_split_pdf.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_encrypt.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_decrypt.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_delete_blank_pages.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_add_watermark.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_modify_name_by_time.clicked.connect(globalSignals.not_support)
+
 
         self.resize(QSize(640, 480))
 

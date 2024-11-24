@@ -44,18 +44,20 @@ def is_within_range(dt, start, end):
     """
     return start <= dt <= end
 
+
 def valid_time(dt):
     if start_time <= dt <= end_time:
         return dt
     else:
         return None
 
+
 def extract_datetime_from_filename(filename) -> datetime | None:
     # 定义正则表达式，匹配常见的时间格式
     patterns = [
         r"(\d{8})_(\d{6})",  # 格式：YYYYMMDD_HHMMSS
         r"(\d{13}|\d{10})",  # 格式：TIMESTAMP (13位毫秒级时间戳)
-        r"(\d{8})_(\d{6}).*?"  # 格式：YYYYMMDD_HHMMSS[其他内容]
+        r"(\d{8})[_|-](\d{6}).*?"  # 格式：YYYYMMDD_HHMMSS[其他内容]
     ]
     result = None
     for pattern in patterns:

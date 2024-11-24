@@ -26,28 +26,8 @@ def open_file_explorer(path):
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
-class ImageFilterProxyModel(QSortFilterProxyModel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
-
-    def filterAcceptsRow(self, source_row, source_parent):
-        """只接受图片文件和包含图片的目录"""
-        model = self.sourceModel()
-        index = model.index(source_row, 0, source_parent)
-
-        # 如果是目录，检查是否有符合条件的子项
-        if model.isDir(index):
-            for row in range(model.rowCount(index)):
-                child_index = model.index(row, 0, index)
-                if self.filterAcceptsRow(row, index):
-                    return True
-            return False
-
-        # 检查文件扩展名
-        file_path = model.filePath(index).lower()
-        return any(file_path.endswith(ext) for ext in self.image_extensions)
-
+image_extensions = ['jpg', 'jpeg', 'bmp', 'riff', 'webp']
+image_extensions_filter = ['*.jpg', '*.jpeg', '*.bmp', '*.riff', '*.webp']
 
 exif_keys = ['DateTime', 'DateTimeOriginal', 'Make', 'Model', 'Software', 'ImageWidth', 'ImageLength']
 
@@ -65,6 +45,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         self.router_path = (self.parent().router_path if self.parent() else '') + '/修改图片拍摄日期'
         self.child_routes = {}
         self.worker = None
+        self.given_date = None
         self.running_flag = False
         self.setupUi(self)
         # 设置忙碌光标图片数组
@@ -74,6 +55,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         self.btn_choose_folder.clicked.connect(self.show_directory_dialog)
         self.comboBox_time_opt.currentIndexChanged.connect(self.set_name_rule)
         self.comboBox_output_opt.activated.connect(self.set_output_opt)
+        self.dateTimeEdit.dateTimeChanged.connect(self.set_given_date)
         self.init_ui()
 
     def init_ui(self):
@@ -98,14 +80,12 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         self.model = QFileSystemModel()
         self.model.setRootPath(QDir.rootPath())  # 设置根路径为系统的根目录
 
-        # 创建自定义过滤器模型
-        self.filter_model = ImageFilterProxyModel()
-        self.filter_model.setSourceModel(self.model)
-
         self.treeView.setSelectionMode(QTreeView.SingleSelection)  # 单选模式
         self.treeView.clicked.connect(self.on_item_clicked)  # 监听点击事件
         self.treeView.setModel(self.model)
         self.treeView.setRootIndex(self.model.index(os.getcwd()))
+        self.model.setNameFilters(image_extensions_filter)
+        self.model.setNameFilterDisables(False)
         # 隐藏/显示列（如隐藏文件大小列等）
         self.treeView.setColumnHidden(1, True)  # 隐藏大小列
         self.treeView.setColumnHidden(2, True)  # 隐藏类型列
@@ -121,8 +101,13 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         print(index, self.comboBox_output_opt.currentText())
         if index == 1:
             self.dateTimeEdit.setVisible(True)
+            self.given_date = self.dateTimeEdit.dateTime().toPyDateTime()
         else:
+            self.given_date = None
             self.dateTimeEdit.setVisible(False)
+
+    def set_given_date(self):
+        self.given_date = self.dateTimeEdit.dateTime().toPyDateTime()
 
     def set_output_opt(self, index):
         """
@@ -142,6 +127,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
                 self.label_output_dir.setText(elided_text)
         else:
             self.output_dir = ''
+            self.label_output_dir.setText('')
 
     def closeEvent(self, a0):
         super().closeEvent(a0)
@@ -172,7 +158,6 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
 
     def is_image(self, file_path):
         """判断文件是否为图片"""
-        image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
         return any(file_path.lower().endswith(ext) for ext in image_extensions)
 
     def display_image(self, file_path):
@@ -188,6 +173,11 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
             self.show_exif_data(file_path)
 
     def show_exif_data(self, file_path):
+        """
+        显示元数据信息
+        :param file_path:
+        :return:
+        """
         print(file_path)
         metadata = {}
         try:
@@ -201,6 +191,8 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
                 for tag, value in exif_dict[ifd_name].items():
                     field_name = piexif.TAGS[ifd_name][tag]["name"]
                     metadata[field_name] = value
+        except FileNotFoundError:
+            pass
         except Exception as e:
             print(f"读取图片元数据失败: {e} {traceback.format_exc()}")
         finally:
@@ -209,7 +201,15 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
             self.show_modify_exif_data(file_path)
 
     def show_modify_exif_data(self, file_path):
-        name_date = common.extract_datetime_from_filename(os.path.basename(file_path))
+        """
+        显示应用修改之后的元数据
+        :param file_path:
+        :return:
+        """
+        if self.given_date:
+            name_date = self.given_date
+        else:
+            name_date = common.extract_datetime_from_filename(os.path.basename(file_path))
         if name_date:
             name_date_str = name_date.strftime('%Y:%m:%d %H:%M:%S')
             # 字段名
@@ -222,6 +222,11 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
             self.tableWidget.setItem(1, 2, field_item)
 
     def populate_table(self, metadata):
+        """
+        在表格里显示元数据
+        :param metadata:
+        :return:
+        """
         # 清空表格
         self.tableWidget.setRowCount(0)
         for row, exif_key in enumerate(exif_keys):
@@ -240,15 +245,20 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
             value_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # 只读
             self.tableWidget.setItem(row, 1, value_item)
             self.tableWidget.setItem(row, 2, value_item.clone())
-            print(row, exif_key, value)
+            # print(row, exif_key, value)
 
     def update_progress(self, value):
         self.progressBar.setValue(value)
 
     def start(self):
         file_fir = self.model.filePath(self.treeView.rootIndex())
-        self.worker = ModifyThread(file_fir, self.output_dir,
-                                   self.checkBox_apply_child.isChecked())
+        self.worker = ModifyThread(
+            file_fir,
+            self.output_dir,
+            self.checkBox_apply_child.isChecked(),
+            self.given_date,
+            self.checkBox_force_modify.isChecked()
+        )
         self.worker.okSignal.connect(self.finish)
         self.worker.progressSignal.connect(self.update_progress)
         self.worker.start()
@@ -281,9 +291,16 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
 
 
 class TaskItem:
-    def __init__(self, image_files: List[ImageFile]):
+    """
+    线程分配的单个任务，
+    包括多个image_files
+    """
+
+    def __init__(self, image_files: List[ImageFile], given_date, is_force):
         self.image_files = image_files
         self.task_num = len(image_files)
+        self.given_date = given_date
+        self.is_force = is_force
 
     def __len__(self):
         return len(self.image_files)
@@ -300,15 +317,17 @@ def get_exif_date(exif_dict, field, key='Exif', default="Unknown"):
         return default
 
 
-def modify_image(image_file: ImageFile):
+def modify_image(image_file: ImageFile, given_date, is_force):
     """
-    :param file_path:
-    :param new_file_path:
+    修改图片的拍摄时间为given_date
+    :param image_file:
     :param given_date:
+    :param is_force: 是否强制设置为given_date,否：取当前图片拍摄时间和给定时间的最小值
     :return:
     """
     file_path = image_file.file_path
-    given_date = image_file.get_file_time_by_name()
+    if not given_date:
+        given_date = image_file.get_file_time_by_name()
     try:
         # 打开图片并加载 EXIF 数据
         img = Image.open(file_path)
@@ -316,9 +335,12 @@ def modify_image(image_file: ImageFile):
             exif_dict = piexif.load(img.info.get("exif", b""))
             # 获取 EXIF 日期
             date_time_original = get_exif_date(exif_dict, piexif.ExifIFD.DateTimeOriginal, 'Exif', None)
-            modify_date = get_exif_date(exif_dict, piexif.ImageIFD.DateTime, '0th', None)
-            dates = [d for d in [date_time_original, modify_date, given_date] if d is not None]
-            earliest_date = min(dates)
+            if is_force:
+                modify_date = get_exif_date(exif_dict, piexif.ImageIFD.DateTime, '0th', None)
+                dates = [d for d in [date_time_original, modify_date, given_date] if d is not None]
+                earliest_date = min(dates)
+            else:
+                earliest_date = given_date
             # 如果 DateTimeOriginal 已经是最早的，则无需修改
             if date_time_original != earliest_date:
                 # 更新 DateTimeOriginal
@@ -351,15 +373,22 @@ def modify_image(image_file: ImageFile):
         print(f"处理图片时出错：{e} {traceback.format_exc()}")
 
 
+def is_image(file_path):
+    """判断文件是否为图片"""
+    return any(file_path.lower().endswith(ext) for ext in image_extensions)
+
+
 class ModifyThread(QThread):
     okSignal = pyqtSignal(bool)
     progressSignal = pyqtSignal(int)
 
-    def __init__(self, file_dir, output_dir, is_apply_child):
+    def __init__(self, file_dir, output_dir, is_apply_child, given_date=None, is_force=False):
         super().__init__()
         self.file_dir = file_dir
         self.output_dir = output_dir
         self.is_apply_child = is_apply_child
+        self.given_date = given_date
+        self.is_force = is_force
 
     def run(self):
         task_queue = Queue()
@@ -375,6 +404,8 @@ class ModifyThread(QThread):
                 filenames = os.listdir(self.file_dir)
                 file_items = []
                 for file in filenames:
+                    if not is_image(file):
+                        continue
                     total_tasks += 1
                     image_file = ImageFile(os.path.join(self.file_dir, file))
                     if self.output_dir:
@@ -383,13 +414,15 @@ class ModifyThread(QThread):
                         image_file
                     )
                     if total_tasks % num_each_process == 0:
-                        task_queue.put(TaskItem(file_items))
+                        task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
                         file_items = []
-                task_queue.put(TaskItem(file_items))
+                task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
             else:
                 file_items = []
                 for filepath, dir, filenames in os.walk(self.file_dir):
                     for filename in filenames:
+                        if not is_image(filename):
+                            continue
                         total_tasks += 1
                         image_file = ImageFile(os.path.join(filepath, filename))
                         if self.output_dir:
@@ -398,9 +431,9 @@ class ModifyThread(QThread):
                             image_file
                         )
                         if total_tasks % num_each_process == 0:
-                            task_queue.put(TaskItem(file_items))
+                            task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
                             file_items = []
-                task_queue.put(TaskItem(file_items))
+                task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
             total_tasks_process = total_tasks // num_each_process + 1
             num_processes = min(total_tasks_process, os.cpu_count())
             for _ in range(num_processes):
@@ -434,10 +467,9 @@ class ModifyThread(QThread):
     def process_task(task_queue: Queue, result_queue: Queue):
         while not task_queue.empty():
             try:
-                task_item = task_queue.get_nowait()
+                task_item: TaskItem = task_queue.get_nowait()
                 for image_file in task_item.image_files:
-                    modify_image(image_file)
-
+                    modify_image(image_file, task_item.given_date, task_item.is_force)
                 try:
                     result_queue.put({"status": "success", "task_num": task_item.task_num})
                 except Exception as e:

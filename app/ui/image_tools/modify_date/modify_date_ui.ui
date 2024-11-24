@@ -47,6 +47,15 @@
      <item>
       <widget class="QDateTimeEdit" name="dateTimeEdit">
        <property name="frame">
+        <bool>true</bool>
+       </property>
+       <property name="accelerated">
+        <bool>false</bool>
+       </property>
+       <property name="keyboardTracking">
+        <bool>true</bool>
+       </property>
+       <property name="showGroupSeparator" stdset="0">
         <bool>false</bool>
        </property>
        <property name="displayFormat">
@@ -257,65 +266,97 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0" colspan="2">
-        <widget class="QCheckBox" name="checkBox_apply_child">
-         <property name="text">
-          <string> 应用到子文件夹</string>
-         </property>
-        </widget>
+      <widget class="QCheckBox" name="checkBox_apply_child">
+       <property name="toolTip">
+        <string>修改当前文件夹及其子文件夹下的所有图片</string>
+       </property>
+       <property name="text">
+        <string> 应用到子文件夹</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_compress">
+       <property name="text">
+        <string>图片压缩</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_force_modify">
+       <property name="toolTip">
+        <string>默认取原拍摄时间和设定拍摄时间的最早时间</string>
+       </property>
+       <property name="text">
+        <string> 强制修改</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>输出位置：</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_output_opt">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>覆盖原图</string>
+        </property>
        </item>
-       <item row="0" column="2" colspan="2">
-        <widget class="QCheckBox" name="checkBox_compress">
-         <property name="text">
-          <string>图片压缩</string>
-         </property>
-        </widget>
+       <item>
+        <property name="text">
+         <string>输出到新文件夹</string>
+        </property>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>输出位置：</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QComboBox" name="comboBox_output_opt">
-         <item>
-          <property name="text">
-           <string>覆盖原图</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>输出到新文件夹</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QLabel" name="label_output_dir">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::TextBrowserInteraction</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_output_dir">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
