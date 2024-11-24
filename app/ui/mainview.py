@@ -11,6 +11,7 @@ from app.ui.components.router import Router
 from app.ui.components import Sidebar, SidebarButton
 from app.ui.doc_convert.doc_convert import DocConvertControl
 from app.ui.global_signal import globalSignals
+from app.ui.image_tools.image_tool import ImageToolControl
 from app.ui.memotrace_enhance.enhance import EnhanceControl
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
 from app.ui.setting.setting import SettingWindow
@@ -76,8 +77,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         doc_view = DocConvertControl(self.router, parent=self)
         self.add_widget(Icon.Doc_Transfer_Icon, '文档转换', '/文档转换', doc_view)
 
-        l2 = QLabel('图片工具', self)
-        self.add_widget(Icon.Img_Icon, '图片工具', '/图片工具', l2)
+        image_view = ImageToolControl(self.router, parent=self)
+        self.add_widget(Icon.Img_Icon, '图片工具', '/图片工具', image_view)
 
         Screen_record_view = ScreenRecordControl(self.router, parent=self)
         self.add_widget(Icon.Screen_record_Icon, '录屏工具', '/录屏工具', Screen_record_view)

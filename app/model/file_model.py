@@ -10,9 +10,16 @@
 """
 import os
 import re
+import shutil
+from datetime import datetime
 from enum import Enum
 
+import piexif
 import pymupdf
+from PIL import Image
+
+from app.log import logger
+from app.util import common
 
 
 class FileType(Enum):
@@ -131,6 +138,35 @@ class PdfFile(FileInfo):
                     self.end_page_num = self.page_num
             except:
                 pass
+
+
+class ImageFile(FileInfo):
+    def __init__(self, file_path):
+        super().__init__(file_path)
+        self.save_path = file_path
+        self.save_inplace = True
+        self.save_fmt = 'auto'
+        self.save_quality = 95
+
+    def get_file_time_by_name(self):
+        return common.extract_datetime_from_filename(self.file_name)
+
+    def copy(self) -> bool:
+        try:
+            if not self.save_inplace:
+                shutil.copy(self.file_path, self.save_path)
+                return True
+        except:
+            logger.error(f'{self.save_path}保存失败')
+            return False
+
+    def save(self, img: Image.Image, exif=None):
+        if not self.save_path:
+            return False
+        img.save(self.save_path, exif=exif, format='jpeg', quality=self.save_quality)
+
+
+
 
 
 if __name__ == '__main__':
