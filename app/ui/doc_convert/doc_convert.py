@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
+from app.ui.doc_convert.pdf2image.pdf2image import Pdf2ImageControl
 from app.ui.doc_convert.pdf2wordui.pdf2word import Pdf2WordControl
 from app.ui.doc_convert.doc_convert_ui import Ui_Form
 from app.ui.components.router import Router
@@ -17,6 +18,7 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super(DocConvertControl, self).__init__(parent)
+        self.pdf2image_view = None
         self.router = router
         self.router_path = (self.parent().router_path if self.parent() else '') + '/文档转换'
         self.child_routes = {}
@@ -43,7 +45,7 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
                 style_qss_file.close()
         self.commandLinkButton_pdf2word.clicked.connect(self.pdf2word)
 
-        self.commandLinkButton_pdf2img.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_pdf2img.clicked.connect(self.pdf2image)
         self.commandLinkButton_pdf2txt.clicked.connect(globalSignals.not_support)
         self.commandLinkButton_pdf2excel.clicked.connect(globalSignals.not_support)
         self.commandLinkButton_md2pdf.clicked.connect(globalSignals.not_support)
@@ -62,6 +64,20 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
             self.router.navigate(self.merge_view.router_path)
         else:
             self.router.navigate(self.merge_view.router_path)
+
+    def pdf2image(self):
+        if not self.pdf2image_view:
+            self.pdf2image_view = Pdf2ImageControl(router=self.router, parent=self if self.parent() else None)
+            self.pdf2image_view.okSignal.connect(self.pdf2image_finish)
+            self.router.add_route(self.pdf2image_view.router_path, self.pdf2image_view)
+            self.child_routes[self.pdf2image_view.router_path] = 0
+            self.childRouterSignal.emit(self.pdf2image_view.router_path)
+            self.router.navigate(self.pdf2image_view.router_path)
+        else:
+            self.router.navigate(self.pdf2image_view.router_path)
+
+    def pdf2image_finish(self):
+        self.pdf2image_view = None
 
     def merge_finish(self):
         self.merge_view = None

@@ -30,6 +30,16 @@ def usable_filepath(filepath: str):
     return ''
 
 
+def usable_dir(dir: str):
+    if not os.path.exists(dir):
+        return dir
+    for i in range(1, 10086):
+        new_dir = dir + f'({i})'
+        if not os.path.exists(new_dir):
+            return new_dir
+    return ''
+
+
 start_time = datetime(1970, 1, 1, 0, 0, 0)
 end_time = datetime(2035, 1, 1, 0, 0, 0)
 

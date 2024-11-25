@@ -298,7 +298,7 @@ class FileListView(QListView):
         widget = self.indexWidget(index)
         start_page_num = widget.spinBox_start.value()
         end_page_num = widget.spinBox_end.value()
-        fileinfo = PdfFile(old_file_info.filepath)
+        fileinfo = PdfFile(old_file_info.file_path)
         fileinfo.start_page_num = start_page_num
         fileinfo.end_page_num = end_page_num
         fileinfo.selected = widget.checkBox_name.isChecked()

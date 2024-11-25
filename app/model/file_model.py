@@ -6,7 +6,7 @@
 @Author      : SiYuan 
 @Email       : 863909694@qq.com 
 @File        : EasyBox-file_model.py 
-@Description : 
+@Description : 描述各种类型的文件
 """
 import os
 import re

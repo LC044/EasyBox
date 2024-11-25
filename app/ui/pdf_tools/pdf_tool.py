@@ -17,6 +17,7 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super(PDFToolControl, self).__init__(parent)
+        self.pdf2image_view = None
         self.router = router
         self.router_path = (self.parent().router_path if self.parent() else '') + '/PDF工具箱'
         self.child_routes = {}
