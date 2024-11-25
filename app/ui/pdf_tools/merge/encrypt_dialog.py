@@ -8,8 +8,6 @@
 @File        : EasyBox-encrypt_dialog.py 
 @Description : 
 """
-import fitz
-import pymupdf
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QDialog, QMessageBox
 from pymupdf import mupdf
