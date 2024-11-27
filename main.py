@@ -1,9 +1,10 @@
-import ctypes
 import sys
 import traceback
 from app.config import version
 from app.log.exception_handling import ExceptionHanding
 from app.ui.Icon import Icon
+from multiprocessing import freeze_support
+
 
 widget = None
 
@@ -93,6 +94,7 @@ class ViewController(QWidget):
 
 
 if __name__ == '__main__':
+    freeze_support()
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
