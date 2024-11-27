@@ -34,7 +34,7 @@ class Ui_Form(object):
         self.gridLayout.addWidget(self.fps_label, 1, 0, 1, 1)
         self.fps_spin = QtWidgets.QSpinBox(self.widget)
         self.fps_spin.setObjectName("fps_spin")
-        self.fps_spin.setRange(1, 60)  # 最小值为 1，最大值为 60
+        self.fps_spin.setRange(1, 30)  # 最小值为 1，最大值为 60
         self.fps_spin.setValue(20)    # 默认值为 30
         self.gridLayout.addWidget(self.fps_spin, 1, 1, 1, 3)
         self.path_label = QtWidgets.QLabel(self.widget)
