@@ -103,12 +103,11 @@ class ScreenRecordControl(QWidget, Ui_Form, QCursorGif):
         # self.timer.start(int(5))
 
     def capture_frames(self):
-        
         next_time = time.perf_counter()
         while not self.stop_event.is_set():
             interval = 1.0 / self.fps  # 每帧的时间间隔
             now = time.perf_counter()
-            if now >= next_time or abs(now - next_time) < 0.02:
+            if now >= next_time or abs(now - next_time) < 0.1 / self.fps:
                 self.record_frame()
                 next_time += interval
             time.sleep(0.001)
