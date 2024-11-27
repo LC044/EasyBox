@@ -8,7 +8,8 @@
 @File        : EasyBox-__init__.py.py 
 @Description : 
 """
-from .file_model import FileInfo, PdfFile, FileType,ImageFile
+from .file_model import FileInfo, PdfFile, FileType, ImageFile
+from .doc_cov_model import Pdf2ImageOpt, Pdf2DocxOpt
 
 if __name__ == '__main__':
     pass

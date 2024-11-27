@@ -40,7 +40,23 @@
    <property name="mouseTracking">
     <bool>true</bool>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch=""/>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>9</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>9</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+   </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="font">

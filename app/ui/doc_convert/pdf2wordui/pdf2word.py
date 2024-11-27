@@ -54,7 +54,6 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         self.checkBox_select_all.clicked.connect(self.select_all)
         self.btn_remove_selected.setEnabled(False)
         self.btn_remove_selected.clicked.connect(self.remove_selected)
-        self.lineEdit_filename.textChanged.connect(self.change_output_filename)
         self.verticalLayout_2.addWidget(self.list_view)
 
         self.input_files = []
@@ -73,7 +72,6 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
                 style_content = stream.readAll()
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
-        self.lineEdit_filename.setText(self.output_filename)
 
     def on_selection_changed(self, selected):
         for index in selected.indexes():
@@ -95,9 +93,6 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         else:
             return
         self.list_view.remove_select()
-
-    def change_output_filename(self):
-        self.output_filename = common.correct_filename(self.lineEdit_filename.text())
 
     def open_file_dialog(self):
         # 打开文件对话框，设置多文件选择和 PDF 文件过滤
@@ -136,7 +131,7 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         reply = QMessageBox(self)
         reply.setIcon(QMessageBox.Information)
         reply.setWindowTitle('OK')
-        reply.setText(f"PDF合并成功")
+        reply.setText(f"完成")
         btn = reply.addButton('打开', QMessageBox.ActionRole)
         btn.clicked.connect(
             lambda x: open_file_explorer(

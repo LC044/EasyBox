@@ -31,7 +31,7 @@ class SidebarButton(QPushButton):
         self.setObjectName('123')
 
     def sizeHint(self):
-        return QSize(100, 40)  # 设置合适的宽高
+        return QSize(100, 50)  # 设置合适的宽高
 
     def default_style(self):
         return """

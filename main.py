@@ -44,7 +44,9 @@ from PyQt5.QtCore import Qt
 from app.log import logger
 from app.ui import mainview
 
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("WeChatReport")
+
+# ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EasyBox")
+
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
