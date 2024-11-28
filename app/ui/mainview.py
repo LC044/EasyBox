@@ -15,7 +15,7 @@ from app.ui.image_tools.image_tool import ImageToolControl
 from app.ui.memotrace_enhance.enhance import EnhanceControl
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
 from app.ui.setting.setting import SettingWindow
-from app.ui.screen_record.screen_record import ScreenRecordControl
+from app.ui.video_tools.video_tool import VideoToolControl
 
 
 class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
@@ -80,8 +80,9 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         image_view = ImageToolControl(self.router, parent=self)
         self.add_widget(Icon.Img_Icon, '图片工具', '/图片工具', image_view)
 
-        Screen_record_view = ScreenRecordControl(self.router, parent=self)
-        self.add_widget(Icon.Screen_record_Icon, '录屏工具', '/录屏工具', Screen_record_view)
+        # Screen_record_view = ScreenRecordControl(self.router, parent=self)
+        Video_view = VideoToolControl(self.router, parent=self)
+        self.add_widget(Icon.Video_Icon, '视频工具', '/视频工具', Video_view)
 
         l4 = QLabel('批量操作', self)
         self.add_widget(Icon.Batch_Icon, '批量操作', '/批量操作', l4)

@@ -30,6 +30,7 @@
         <file>icons/批量操作.svg</file>
         <file>icons/weixin.png</file>
         <file>icons/录屏.svg</file>
+        <file>icons/视频.svg</file>
     </qresource>
     <qresource prefix="/data">
         <file>QSS/style.qss</file>
