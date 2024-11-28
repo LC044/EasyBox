@@ -49,6 +49,7 @@ class FileInfo:
     def __init__(self, file):
         FileInfo.file_id += 1
         self.file_id = FileInfo.file_id
+        self.save_path = file
         self.file_name = os.path.basename(file)  # 文件名
         self.file_path = file  # 文件完整路径
         self.selected = True  # 该文件是否被选中
@@ -139,11 +140,13 @@ class PdfFile(FileInfo):
             except:
                 pass
 
+    def copy(self):
+        return PdfFile(self.file_path)
+
 
 class ImageFile(FileInfo):
     def __init__(self, file_path):
         super().__init__(file_path)
-        self.save_path = file_path
         self.save_inplace = True
         self.save_fmt = 'auto'
         self.save_quality = 95
@@ -164,9 +167,6 @@ class ImageFile(FileInfo):
         if not self.save_path:
             return False
         img.save(self.save_path, exif=exif, format='jpeg', quality=self.save_quality)
-
-
-
 
 
 if __name__ == '__main__':

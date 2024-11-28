@@ -24,7 +24,9 @@
     <widget class="QLabel" name="label_8">
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -482,7 +484,7 @@ QListView::item:selected {
         <number>15</number>
        </property>
        <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="comboBox_output_dir">
          <item>
           <property name="text">
            <string>PDF相同目录</string>
@@ -496,7 +498,7 @@ QListView::item:selected {
         </widget>
        </item>
        <item row="0" column="4">
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="btn_choose_output_dir">
          <property name="text">
           <string>···</string>
          </property>
@@ -511,6 +513,12 @@ QListView::item:selected {
        </item>
        <item row="0" column="2" colspan="2">
         <widget class="QLabel" name="label_output_dir">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>目录</string>
          </property>
@@ -538,6 +546,23 @@ QListView::item:selected {
          <width>60</width>
          <height>40</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #3498db; /* 按钮背景色 */
+    color: white; /* 字体颜色 */
+    border: none;
+    border-radius: 10px;
+}
+
+QPushButton:hover {
+    background-color: #2980b9; /* 悬浮时背景色 */
+}
+
+QPushButton:pressed {
+    background-color: #1c6e91; /* 点击时背景色 */
+}
+</string>
        </property>
        <property name="text">
         <string>开始</string>

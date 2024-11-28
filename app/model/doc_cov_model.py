@@ -11,12 +11,13 @@
 
 
 class Pdf2DocxOpt:
-    def __init__(self):
-        pass
+    def __init__(self, output_path):
+        self.o_dir = output_path
 
 
 class Pdf2ImageOpt:
-    def __init__(self, format_='png', dpi=200):
+    def __init__(self, output_dir, format_='png', dpi=200):
+        self.o_dir = output_dir
         self.o_fmt = format_
         self.o_name = '(转图片)'
         self.o_quality = 100

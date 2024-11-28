@@ -17,6 +17,7 @@ class Ui_modify_date_view(object):
         modify_date_view.resize(600, 662)
         modify_date_view.setStyleSheet("")
         self.verticalLayout = QtWidgets.QVBoxLayout(modify_date_view)
+        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")

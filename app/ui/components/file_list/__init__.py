@@ -238,10 +238,13 @@ class FileListView(QListView):
         if target_index.isValid():
             # 获取源项 (从当前列表中获取被拖拽的项)
             source_index = self.currentIndex()
+            print(source_index, target_index)
             if source_index.isValid() and source_index != target_index:
+                print(source_index, target_index)
                 # 获取源项和目标项的行
                 source_row = source_index.row()
                 target_row = target_index.row()
+                print(source_row, target_row)
                 # 获取源项内容
                 source_item = self.model.item(source_row)
                 # 创建新项并复制源项的数据
@@ -272,7 +275,7 @@ class FileListView(QListView):
             return
         """设置或更新QListView中的自定义小部件"""
         fileinfo = item.data(Qt.UserRole)
-        if not fileinfo or not isinstance(fileinfo,PdfFile):
+        if not fileinfo or not isinstance(fileinfo, PdfFile):
             return
         text = fileinfo.file_name
         # widget = CustomWidget(text)

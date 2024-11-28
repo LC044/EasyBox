@@ -7,7 +7,7 @@ from typing import List
 
 import fitz
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
 
 from app.model import PdfFile
@@ -22,6 +22,8 @@ from app.ui.components.router import Router
 
 def open_file_explorer(path):
     # 使用QDesktopServices打开文件管理器
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
@@ -34,6 +36,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.encryption_options = {}
         self.dialog = None
         self.output_filename = '合并PDF'
+        self.output_dir = ''
         self.router = router
         self.router_path = (self.parent().router_path if self.parent() else '') + '/合并PDF'
         self.child_routes = {}
@@ -56,8 +59,15 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.btn_order_des.clicked.connect(lambda x: self.list_view.sort_by_name(reverse=True))
         self.checkBox_select_all.clicked.connect(self.select_all)
         self.btn_remove_selected.setEnabled(False)
+        self.label_output_dir.setVisible(False)
+        self.btn_choose_output_dir.setVisible(False)
+
         self.btn_remove_selected.clicked.connect(self.remove_selected)
         self.lineEdit_filename.textChanged.connect(self.change_output_filename)
+
+        self.comboBox_output_dir.activated.connect(self.select_output_dir)
+        self.btn_choose_output_dir.clicked.connect(self.set_output_dir)
+
         self.verticalLayout_2.addWidget(self.list_view)
 
         self.input_files = []
@@ -102,6 +112,25 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
     def change_output_filename(self):
         self.output_filename = common.correct_filename(self.lineEdit_filename.text())
 
+    def select_output_dir(self):
+        text = self.comboBox_output_dir.currentText()
+        if text == 'PDF相同目录':
+            self.label_output_dir.setVisible(False)
+            self.btn_choose_output_dir.setVisible(False)
+        elif text == '自定义目录':
+            self.label_output_dir.setVisible(True)
+            self.btn_choose_output_dir.setVisible(True)
+
+    def set_output_dir(self):
+        folder = QFileDialog.getExistingDirectory(self, "选择输出目录")
+        if folder:
+            self.output_dir = folder
+            font_metrics = QFontMetrics(self.label_output_dir.font())
+            # 使用 elidedText 根据按钮宽度生成省略文字
+            elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
+            self.label_output_dir.setText(elided_text)
+            self.label_output_dir.setToolTip(self.output_dir)
+
     def open_file_dialog(self):
         # 打开文件对话框，设置多文件选择和 PDF 文件过滤
         files, _ = QFileDialog.getOpenFileNames(self, "选择 PDF 文件", "", "PDF Files (*.pdf);;All Files (*)")
@@ -112,6 +141,13 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
                 self.add_item(file, index)
             self.btn_remove_selected.setEnabled(True)
             self.checkBox_select_all.setChecked(True)
+        if files and not self.output_dir:
+            self.output_dir = os.path.dirname(files[0])
+            font_metrics = QFontMetrics(self.label_output_dir.font())
+            # 使用 elidedText 根据按钮宽度生成省略文字
+            elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
+            self.label_output_dir.setText(elided_text)
+            self.label_output_dir.setToolTip(self.output_dir)
 
     def merge(self):
         input_files = self.list_view.get_data()
@@ -123,7 +159,10 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         self.btn_merge.setEnabled(False)
 
         fileinfo = input_files[0]
-        self.output_path = os.path.join(os.path.dirname(fileinfo.file_path), self.output_filename + '.pdf')
+        if self.comboBox_output_dir.currentText() == '自定义目录':
+            self.output_path = os.path.join(self.output_dir, self.output_filename + '.pdf')
+        else:
+            self.output_path = os.path.join(os.path.dirname(fileinfo.file_path), self.output_filename + '.pdf')
         self.output_path = common.usable_filepath(self.output_path)
         self.startBusy()
         output_info = PdfFile(self.output_path)
@@ -146,7 +185,7 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
         btn = reply.addButton('打开', QMessageBox.ActionRole)
         btn.clicked.connect(
             lambda x: open_file_explorer(
-                os.path.dirname(self.output_path)
+                self.output_path
             )
         )
         # reply.addButton(btn)

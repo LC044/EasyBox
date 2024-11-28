@@ -4,7 +4,7 @@ from typing import List
 
 import fitz
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
 
 from app.model import PdfFile
@@ -20,6 +20,8 @@ from app.ui.components.router import Router
 
 def open_file_explorer(path):
     # 使用QDesktopServices打开文件管理器
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
@@ -29,6 +31,7 @@ class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
+        self.output_dir = ''
         self.encryption_options = {}
         self.dialog = None
         self.output_filename = '合并PDF'
@@ -52,6 +55,12 @@ class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
         self.btn_remove_selected.setEnabled(False)
         self.btn_remove_selected.clicked.connect(self.remove_selected)
 
+        self.label_output_dir.setVisible(False)
+        self.btn_choose_output_dir.setVisible(False)
+
+        self.comboBox_output_dir.activated.connect(self.select_output_dir)
+        self.btn_choose_output_dir.clicked.connect(self.set_output_dir)
+
         self.verticalLayout_2.addWidget(self.list_view)
         self.input_files = []
         self.output_path = ''
@@ -69,7 +78,6 @@ class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
                 style_content = stream.readAll()
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
-
 
     def on_selection_changed(self, selected):
         for index in selected.indexes():
@@ -105,17 +113,45 @@ class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
                 self.add_item(file, index)
             self.btn_remove_selected.setEnabled(True)
             self.checkBox_select_all.setChecked(True)
+        if files and not self.output_dir:
+            self.output_dir = os.path.dirname(files[0])
+            font_metrics = QFontMetrics(self.label_output_dir.font())
+            # 使用 elidedText 根据按钮宽度生成省略文字
+            elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
+            self.label_output_dir.setText(elided_text)
+            self.label_output_dir.setToolTip(self.output_dir)
+
+    def select_output_dir(self):
+        text = self.comboBox_output_dir.currentText()
+        if text == 'PDF相同目录':
+            self.label_output_dir.setVisible(False)
+            self.btn_choose_output_dir.setVisible(False)
+        elif text == '自定义目录':
+            self.label_output_dir.setVisible(True)
+            self.btn_choose_output_dir.setVisible(True)
+
+    def set_output_dir(self):
+        folder = QFileDialog.getExistingDirectory(self, "选择输出目录")
+        if folder:
+            self.output_dir = folder
+            font_metrics = QFontMetrics(self.label_output_dir.font())
+            # 使用 elidedText 根据按钮宽度生成省略文字
+            elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
+            self.label_output_dir.setText(elided_text)
+            self.label_output_dir.setToolTip(self.output_dir)
 
     def merge(self):
         input_files = self.list_view.get_data()
-
         self.btn_start.setEnabled(False)
-
-        fileinfo = input_files[0]
-        self.output_path = os.path.join(os.path.dirname(fileinfo.file_path), self.output_filename + '.pdf')
-        self.output_path = common.usable_filepath(self.output_path)
         self.startBusy()
-        output_opt = Pdf2ImageOpt(format_='png', dpi=200)
+
+        if self.comboBox_output_dir.currentText() == '自定义目录':
+            self.output_path = self.output_dir
+        else:
+            fileinfo = input_files[0]
+            self.output_path = os.path.dirname(fileinfo.file_path)
+
+        output_opt = Pdf2ImageOpt(self.output_path, format_='png', dpi=200)
         self.worker = Pdf2ImageThread(input_files, output_opt)
         self.worker.okSignal.connect(self.merge_finish)
         self.worker.progressSignal.connect(self.update_progress)
@@ -134,7 +170,7 @@ class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
         btn = reply.addButton('打开', QMessageBox.ActionRole)
         btn.clicked.connect(
             lambda x: open_file_explorer(
-                os.path.dirname(self.output_path)
+                self.output_path
             )
         )
         # reply.addButton(btn)
@@ -193,6 +229,7 @@ class Pdf2ImageThread(QThread):
         try:
             # 创建多进程任务
             for fileinfo in self.input_file_infos:
+                fileinfo.save_path = self.output_opt.o_dir
                 task_queue.put(fileinfo)
 
             num_processes = min(len(self.input_file_infos), os.cpu_count())
@@ -237,8 +274,9 @@ class Pdf2ImageThread(QThread):
                 if not os.path.isfile(pdf_path):
                     print(f"文件未找到: {pdf_path}")
                     continue
-                output_dir = fileinfo.file_path.rstrip('.pdf')
+
                 file_name = fileinfo.file_name.rstrip('.pdf')
+                output_dir = fileinfo.save_path + '/' + file_name
                 if not os.path.exists(output_dir):
                     os.makedirs(output_dir, exist_ok=True)
                 try:

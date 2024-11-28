@@ -1,7 +1,8 @@
+from multiprocessing import Process
+
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from PyQt5.QtCore import pyqtSignal, QThread, QSize, QFile, QIODevice, QTextStream, QTimer, QDateTime
 from PyQt5.QtGui import QPixmap, QIcon, QGuiApplication
-
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
@@ -14,6 +15,7 @@ import cv2
 import threading
 import queue
 import time
+
 
 class ScreenRecordControl(QWidget, Ui_Form, QCursorGif):
     DecryptSignal = pyqtSignal(str)
@@ -28,8 +30,9 @@ class ScreenRecordControl(QWidget, Ui_Form, QCursorGif):
         self.child_routes = {}
         # 获取主屏幕对象
         self.screen = QGuiApplication.primaryScreen()
-        self.height, self.width = self.screen.size().height(), self.screen.size().width()
-        self.fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v') # 默认使用 mp4v 编码器
+        self.dpr = self.screen.devicePixelRatio()
+        self.height, self.width = int(self.screen.size().height() * self.dpr), int(self.screen.size().width() * self.dpr)
+        self.fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')  # 默认使用 mp4v 编码器
         self.recording = False
         self.output_path = ""
         self.format = "mp4"
@@ -95,7 +98,9 @@ class ScreenRecordControl(QWidget, Ui_Form, QCursorGif):
         # Initialize threads
         self.stop_event.clear()
         self.capture_thread = threading.Thread(target=self.capture_frames)
+        # self.capture_thread = Process(target=self.capture_frames, args=())
         self.writer_thread = threading.Thread(target=self.write_frames)
+        # self.writer_thread = Process(target=self.write_frames, args=())
 
         # Start threads
         self.capture_thread.start()
@@ -130,8 +135,7 @@ class ScreenRecordControl(QWidget, Ui_Form, QCursorGif):
                 frame = np.frombuffer(buffer, dtype=np.uint8).reshape((self.height, self.width, 4))
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
                 out.write(frame)
-        out.release()    
-
+        out.release()
 
     def stop_recording(self):
         self.recording = False

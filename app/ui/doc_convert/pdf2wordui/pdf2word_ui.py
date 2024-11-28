@@ -283,18 +283,19 @@ class Ui_pdf2word_view(object):
         self.gridLayout.setContentsMargins(-1, 9, -1, -1)
         self.gridLayout.setSpacing(15)
         self.gridLayout.setObjectName("gridLayout")
-        self.comboBox = QtWidgets.QComboBox(pdf2word_view)
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.gridLayout.addWidget(self.comboBox, 0, 1, 1, 1)
-        self.pushButton_2 = QtWidgets.QPushButton(pdf2word_view)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.gridLayout.addWidget(self.pushButton_2, 0, 4, 1, 1)
+        self.comboBox_output_dir = QtWidgets.QComboBox(pdf2word_view)
+        self.comboBox_output_dir.setObjectName("comboBox_output_dir")
+        self.comboBox_output_dir.addItem("")
+        self.comboBox_output_dir.addItem("")
+        self.gridLayout.addWidget(self.comboBox_output_dir, 0, 1, 1, 1)
+        self.btn_choose_output_dir = QtWidgets.QPushButton(pdf2word_view)
+        self.btn_choose_output_dir.setObjectName("btn_choose_output_dir")
+        self.gridLayout.addWidget(self.btn_choose_output_dir, 0, 4, 1, 1)
         self.label_9 = QtWidgets.QLabel(pdf2word_view)
         self.label_9.setObjectName("label_9")
         self.gridLayout.addWidget(self.label_9, 0, 0, 1, 1)
         self.label_output_dir = QtWidgets.QLabel(pdf2word_view)
+        self.label_output_dir.setMinimumSize(QtCore.QSize(150, 0))
         self.label_output_dir.setObjectName("label_output_dir")
         self.gridLayout.addWidget(self.label_output_dir, 0, 2, 1, 2)
         self.horizontalLayout_4.addLayout(self.gridLayout)
@@ -302,6 +303,21 @@ class Ui_pdf2word_view(object):
         self.horizontalLayout_4.addItem(spacerItem3)
         self.btn_merge = QtWidgets.QPushButton(pdf2word_view)
         self.btn_merge.setMinimumSize(QtCore.QSize(60, 40))
+        self.btn_merge.setStyleSheet("QPushButton {\n"
+"    background-color: #3498db; /* 按钮背景色 */\n"
+"    color: white; /* 字体颜色 */\n"
+"    border: none;\n"
+"    border-radius: 10px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #2980b9; /* 悬浮时背景色 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: #1c6e91; /* 点击时背景色 */\n"
+"}\n"
+"")
         self.btn_merge.setObjectName("btn_merge")
         self.horizontalLayout_4.addWidget(self.btn_merge)
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
@@ -323,9 +339,9 @@ class Ui_pdf2word_view(object):
         self.btn_remove_selected.setText(_translate("pdf2word_view", "清除选中"))
         self.btn_choose_files.setText(_translate("pdf2word_view", "添加文件"))
         self.btn_setting.setText(_translate("pdf2word_view", "设置"))
-        self.comboBox.setItemText(0, _translate("pdf2word_view", "PDF相同目录"))
-        self.comboBox.setItemText(1, _translate("pdf2word_view", "自定义目录"))
-        self.pushButton_2.setText(_translate("pdf2word_view", "···"))
+        self.comboBox_output_dir.setItemText(0, _translate("pdf2word_view", "PDF相同目录"))
+        self.comboBox_output_dir.setItemText(1, _translate("pdf2word_view", "自定义目录"))
+        self.btn_choose_output_dir.setText(_translate("pdf2word_view", "···"))
         self.label_9.setText(_translate("pdf2word_view", "输出目录:"))
         self.label_output_dir.setText(_translate("pdf2word_view", "目录"))
         self.btn_merge.setText(_translate("pdf2word_view", "开始转换"))

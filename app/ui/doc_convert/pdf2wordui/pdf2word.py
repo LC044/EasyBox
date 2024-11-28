@@ -4,10 +4,10 @@ from multiprocessing import Process, Queue
 from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices,QPixmap,QIcon
+from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
 
-from app.model import PdfFile
+from app.model import PdfFile, Pdf2DocxOpt
 from pdf2docx import Converter
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
@@ -19,6 +19,8 @@ from app.ui.components.router import Router
 
 def open_file_explorer(path):
     # 使用QDesktopServices打开文件管理器
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
@@ -28,6 +30,7 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
+        self.output_dir = ''
         self.encryption_options = {}
         self.dialog = None
         self.output_filename = '合并PDF'
@@ -56,6 +59,11 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         self.btn_remove_selected.clicked.connect(self.remove_selected)
         self.verticalLayout_2.addWidget(self.list_view)
 
+        self.label_output_dir.setVisible(False)
+        self.btn_choose_output_dir.setVisible(False)
+
+        self.comboBox_output_dir.activated.connect(self.select_output_dir)
+        self.btn_choose_output_dir.clicked.connect(self.set_output_dir)
         self.input_files = []
         self.output_path = ''
 
@@ -85,6 +93,25 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         else:
             self.list_view.dis_select_all()
 
+    def select_output_dir(self):
+        text = self.comboBox_output_dir.currentText()
+        if text == 'PDF相同目录':
+            self.label_output_dir.setVisible(False)
+            self.btn_choose_output_dir.setVisible(False)
+        elif text == '自定义目录':
+            self.label_output_dir.setVisible(True)
+            self.btn_choose_output_dir.setVisible(True)
+
+    def set_output_dir(self):
+        folder = QFileDialog.getExistingDirectory(self, "选择输出目录")
+        if folder:
+            self.output_dir = folder
+            font_metrics = QFontMetrics(self.label_output_dir.font())
+            # 使用 elidedText 根据按钮宽度生成省略文字
+            elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
+            self.label_output_dir.setText(elided_text)
+            self.label_output_dir.setToolTip(self.output_dir)
+
     def remove_selected(self):
         reply = QMessageBox.question(self, '温馨提示', '确定删除选中的文件？', QMessageBox.No | QMessageBox.Yes,
                                      QMessageBox.No)
@@ -104,6 +131,13 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
                 self.add_item(file, index)
             self.btn_remove_selected.setEnabled(True)
             self.checkBox_select_all.setChecked(True)
+        if files and not self.output_dir:
+            self.output_dir = os.path.dirname(files[0])
+            font_metrics = QFontMetrics(self.label_output_dir.font())
+            # 使用 elidedText 根据按钮宽度生成省略文字
+            elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
+            self.label_output_dir.setText(elided_text)
+            self.label_output_dir.setToolTip(self.output_dir)
 
     def merge(self):
         input_files = self.list_view.get_data()
@@ -112,12 +146,14 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         self.btn_merge.setEnabled(False)
 
         fileinfo = input_files[0]
-        self.output_path = os.path.join(os.path.dirname(fileinfo.file_path), self.output_filename + '.pdf')
-        self.output_path = common.usable_filepath(self.output_path)
+        if self.comboBox_output_dir.currentText() == '自定义目录':
+            self.output_path = self.output_dir
+        else:
+            self.output_path = os.path.dirname(fileinfo.file_path)
+
         self.startBusy()
-        output_info = PdfFile(self.output_path)
-        output_info.encryption_options = self.encryption_options
-        self.worker = Pdf2WordThread(input_files, output_info)
+        output_opt = Pdf2DocxOpt(self.output_path)
+        self.worker = Pdf2WordThread(input_files, output_opt)
         self.worker.okSignal.connect(self.merge_finish)
         self.worker.progressSignal.connect(self.update_progress)
         self.worker.start()
@@ -135,7 +171,7 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
         btn = reply.addButton('打开', QMessageBox.ActionRole)
         btn.clicked.connect(
             lambda x: open_file_explorer(
-                os.path.dirname(self.output_path)
+                self.output_path
             )
         )
         # reply.addButton(btn)
@@ -164,10 +200,10 @@ class Pdf2WordThread(QThread):
     okSignal = pyqtSignal(bool)
     progressSignal = pyqtSignal(int)
 
-    def __init__(self, input_file_infos: List[PdfFile], output_file_info: PdfFile):
+    def __init__(self, input_file_infos: List[PdfFile], output_opt: Pdf2DocxOpt):
         super().__init__()
         self.input_file_infos = input_file_infos
-        self.output_file_info = output_file_info
+        self.output_opt = output_opt
 
     def run(self):
         task_queue = Queue()
@@ -177,6 +213,7 @@ class Pdf2WordThread(QThread):
         try:
             # 创建多进程任务
             for fileinfo in self.input_file_infos:
+                fileinfo.save_path = self.output_opt.o_dir
                 task_queue.put(fileinfo)
 
             num_processes = min(len(self.input_file_infos), os.cpu_count())
@@ -198,7 +235,7 @@ class Pdf2WordThread(QThread):
                     print(f"处理文件出错: {result['error']} 文件: {result['filepath']}")
 
             self.progressSignal.emit(100)
-            print(f"合并完成，已生成文件: {self.output_file_info.file_path}")
+            print(f"PDF转Word完成，已生成文件")
 
         except Exception as e:
             print(f"合并过程中出错: {e}")
@@ -224,7 +261,7 @@ class Pdf2WordThread(QThread):
 
                 try:
                     cv = Converter(pdf_path)
-                    output_path = pdf_path + '.docx'
+                    output_path = os.path.join(fileinfo.save_path, fileinfo.file_name.rstrip('.pdf')+'.docx')
                     cv.convert(output_path, start=start_page_num - 1, end=end_page_num)
                     cv.close()
 
