@@ -15,9 +15,13 @@ try:
     from PyQt5.QtGui import QCursor, QPixmap
     from PyQt5.QtWidgets import QApplication
 except ImportError:
-    from PySide2.QtCore import QTimer, Qt
-    from PySide2.QtGui import QCursor, QPixmap
-    from PySide2.QtWidgets import QApplication
+    from PySide6.QtCore import QTimer, Qt
+    from PySide6.QtGui import QCursor, QPixmap
+    from PySide6.QtWidgets import QApplication
+
+# from PySide6.QtCore import QTimer, Qt
+# from PySide6.QtGui import QCursor, QPixmap
+# from PySide6.QtWidgets import QApplication
 from app.ui.resources import resource_rc
 
 var = resource_rc.qt_resource_name

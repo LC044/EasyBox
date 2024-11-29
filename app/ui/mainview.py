@@ -29,6 +29,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.setupUi(self)
         self.router_path = ''
         self.init_ui()
+        # 设置无边框
+        # self.setWindowFlag(Qt.FramelessWindowHint)
         globalSignals.not_support.connect(self.show_not_support)
         globalSignals.information.connect(self.show_information)
 
@@ -49,13 +51,13 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
         self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
         self.stackedWidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # C尽可能挤压B
-        font = QtGui.QFont()
-        font.setFamily("Microsoft YaHei UI")
-        font.setPointSize(15)
-        font.setBold(False)
-        font.setWeight(50)
-        self.stackedWidget.setFont(font)
-        self.stackedWidget.setObjectName("stackedWidget")
+        # font = QtGui.QFont()
+        # font.setFamily("Microsoft YaHei UI")
+        # font.setPointSize(150)
+        # font.setBold(True)
+        # font.setWeight(50)
+        # self.stackedWidget.setFont(font)
+        # self.stackedWidget.setObjectName("stackedWidget")
 
         self.router = Router(self.stackedWidget)
         self.sidebar = Sidebar(self.stackedWidget, parent=self)

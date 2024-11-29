@@ -46,10 +46,10 @@ from app.log import logger
 from app.ui import mainview
 
 
-# ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EasyBox")
-
-QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
 
 class ViewController(QWidget):
@@ -96,7 +96,7 @@ class ViewController(QWidget):
 if __name__ == '__main__':
     freeze_support()
     app = QApplication(sys.argv)
-    font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
+    font = QFont('微软雅黑', 12)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
     view = ViewController()
     widget = view.viewMainWindow

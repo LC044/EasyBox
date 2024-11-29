@@ -11,10 +11,8 @@
 import os
 import re
 import shutil
-from datetime import datetime
 from enum import Enum
 
-import piexif
 import pymupdf
 from PIL import Image
 

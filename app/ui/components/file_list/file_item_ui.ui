@@ -10,6 +10,11 @@
     <height>33</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
@@ -163,6 +168,11 @@ QProgressBar::chunk{
        <height>16777215</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
        <number>0</number>
@@ -198,6 +208,11 @@ QProgressBar::chunk{
           <width>46</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -254,6 +269,11 @@ QProgressBar::chunk{
           <width>46</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -335,6 +355,11 @@ QProgressBar::chunk{
        <height>16777215</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
        <number>0</number>
@@ -353,6 +378,11 @@ QProgressBar::chunk{
       </property>
       <item>
        <widget class="QPushButton" name="btn_open">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
@@ -360,7 +390,7 @@ QProgressBar::chunk{
          <string>打开文件</string>
         </property>
         <property name="text">
-         <string>✘</string>
+         <string>打开</string>
         </property>
        </widget>
       </item>

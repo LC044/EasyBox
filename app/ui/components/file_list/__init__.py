@@ -84,7 +84,7 @@ class CustomDelegate(QStyledItemDelegate):
         data = item.data(Qt.UserRole)
 
         # 通过数据（假设是文件名）动态计算高度
-        height = 50  # 默认高度
+        height = 35  # 默认高度
         # if data.filename:
         #     height = max(50, len(data.filename) // 2)
 

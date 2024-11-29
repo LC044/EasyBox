@@ -18,6 +18,7 @@ class Ui_Form(object):
         Form.setStyleSheet("QPushButton{\n"
 "    background-color: rgb(250,252,253);\n"
 "    border-radius: 5px;\n"
+"    font-size:12pt;\n"
 "    padding: 8px;\n"
 "    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
 "    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"

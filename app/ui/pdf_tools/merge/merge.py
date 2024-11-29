@@ -1,8 +1,4 @@
-import json
 import os.path
-import re
-import sys
-import traceback
 from typing import List
 
 import fitz
@@ -318,9 +314,10 @@ if __name__ == '__main__':
     from PyQt5.QtGui import QFont, QPixmap, QIcon
     from PyQt5.QtCore import Qt
 
+
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-    app = QApplication(sys.argv)
+    app = QApplication([])
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
     view = MergeControl(None)

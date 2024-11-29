@@ -14,24 +14,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(448, 292)
-        Form.setStyleSheet("")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(Form)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.scrollArea = QtWidgets.QScrollArea(Form)
-        self.scrollArea.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.scrollArea.setLineWidth(0)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setObjectName("scrollArea")
-        self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 430, 274))
-        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
-        self.verticalLayout_8.setObjectName("verticalLayout_8")
-        self.widget_4 = QtWidgets.QWidget(self.scrollAreaWidgetContents)
-        self.widget_4.setStyleSheet("QPushButton{\n"
+        Form.resize(504, 508)
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        Form.setFont(font)
+        Form.setStyleSheet("QPushButton{\n"
 "    background-color: rgb(250,252,253);\n"
 "    border-radius: 5px;\n"
+"    font-size:12pt;\n"
 "    padding: 8px;\n"
 "    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
 "    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */\n"
@@ -59,6 +49,20 @@ class Ui_Form(object):
 "    background-color: lightgray;\n"
 "    border: 2px solid #888888;\n"
 "}")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.scrollArea = QtWidgets.QScrollArea(Form)
+        self.scrollArea.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.scrollArea.setLineWidth(0)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName("scrollArea")
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 486, 490))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_8.setObjectName("verticalLayout_8")
+        self.widget_4 = QtWidgets.QWidget(self.scrollAreaWidgetContents)
+        self.widget_4.setStyleSheet("")
         self.widget_4.setObjectName("widget_4")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.widget_4)
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -165,6 +169,9 @@ class Ui_Form(object):
         self.gridLayout_3.addWidget(self.commandLinkButton_merge_pdf, 0, 0, 1, 1)
         self.commandLinkButton_split_pdf = QtWidgets.QCommandLinkButton(self.widget_4)
         self.commandLinkButton_split_pdf.setEnabled(True)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.commandLinkButton_split_pdf.setFont(font)
         self.commandLinkButton_split_pdf.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.commandLinkButton_split_pdf.setTabletTracking(False)
         self.commandLinkButton_split_pdf.setFocusPolicy(QtCore.Qt.StrongFocus)
