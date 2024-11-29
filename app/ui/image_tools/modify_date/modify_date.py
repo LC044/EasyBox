@@ -7,9 +7,9 @@ from typing import List
 
 from PIL import Image
 import piexif
-from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream, QDir, QSortFilterProxyModel
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog, QFileSystemModel, QTreeView, \
+from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream, QDir, QSortFilterProxyModel
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog, QFileSystemModel, QTreeView, \
     QTableWidgetItem
 
 from app.log import logger
@@ -33,8 +33,8 @@ exif_keys = ['DateTime', 'DateTimeOriginal', 'Make', 'Model', 'Software', 'Image
 
 
 class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
@@ -379,8 +379,8 @@ def is_image(file_path):
 
 
 class ModifyThread(QThread):
-    okSignal = pyqtSignal(bool)
-    progressSignal = pyqtSignal(int)
+    okSignal = Signal(bool)
+    progressSignal = Signal(int)
 
     def __init__(self, file_dir, output_dir, is_apply_child, given_date=None, is_force=False):
         super().__init__()
@@ -480,10 +480,10 @@ class ModifyThread(QThread):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

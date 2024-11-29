@@ -1,15 +1,15 @@
 import time
 
 from datetime import datetime, timedelta
-from PyQt5.QtCore import pyqtSignal, Qt, QLocale
-from PyQt5.QtWidgets import QApplication, QDialog, QCalendarWidget, QVBoxLayout, \
+from PySide6.QtCore import Signal, Qt, QLocale
+from PySide6.QtWidgets import QApplication, QDialog, QCalendarWidget, QVBoxLayout, \
     QToolButton
 
 from app.ui.Icon import Icon
 
 
 class CalendarDialog(QDialog):
-    selected_date_signal = pyqtSignal(int)
+    selected_date_signal = Signal(int)
 
     def __init__(self, date_range=None, parent=None):
         """

@@ -4,19 +4,19 @@
 """
 Created on 2019年7月26日
 @author: Irony
-@site: https://pyqt5.com https://github.com/892768447
+@site: https://PySide6.com https://github.com/892768447
 @email: 892768447@qq.com
 @file: CustomWidgets.CAvatar
 @description: 头像
 """
 import os
 
-from PyQt5.QtCore import QUrl, QRectF, Qt, QSize, QTimer, QPropertyAnimation, \
+from PySide6.QtCore import QUrl, QRectF, Qt, QSize, QTimer, QPropertyAnimation, \
     QPointF, pyqtProperty
-from PyQt5.QtGui import QPixmap, QColor, QPainter, QPainterPath, QMovie
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkDiskCache, \
+from PySide6.QtGui import QPixmap, QColor, QPainter, QPainterPath, QMovie
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkDiskCache, \
     QNetworkRequest
-from PyQt5.QtWidgets import QWidget, qApp
+from PySide6.QtWidgets import QWidget, qApp
 
 __Author__ = 'Irony'
 __Copyright__ = 'Copyright (c) 2019 Irony'
@@ -290,7 +290,7 @@ class CAvatar(QWidget):
 
 if __name__ == '__main__':
     import sys
-    from PyQt5.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
     w = CAvatar(

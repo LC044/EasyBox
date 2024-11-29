@@ -8,16 +8,16 @@
 @File        : EasyBox-encrypt_dialog.py 
 @Description : 
 """
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QDialog, QMessageBox
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QDialog, QMessageBox
 from pymupdf import mupdf
 
 from app.ui.pdf_tools.merge.encrypt_dialog_ui import Ui_Dialog
 
 
 class EncryptControl(QDialog, Ui_Dialog):
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)

@@ -6,17 +6,17 @@
 @Author      : SiYuan 
 @Email       : 863909694@qq.com 
 @File        : EasyBox-__init__.py.py 
-@Description : pyqt5实现的自定义文件列表，可自由拖拽排序，点击上下移动
+@Description : PySide6实现的自定义文件列表，可自由拖拽排序，点击上下移动
 """
 import os
 import re
 from typing import List
 
-from PyQt5.QtCore import pyqtSignal, QUrl, Qt, QSize, QMimeData
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QStandardItemModel, QStandardItem, QDrag
-from PyQt5.QtWidgets import QWidget, QAbstractItemView, QLabel, QPushButton, QHBoxLayout, \
+from PySide6.QtCore import Signal, QUrl, Qt, QSize, QMimeData, QModelIndex
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QStandardItemModel, QStandardItem, QDrag, QDropEvent
+from PySide6.QtWidgets import QWidget, QAbstractItemView, QLabel, QPushButton, QHBoxLayout, \
     QStyledItemDelegate, QListView
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from app.model import PdfFile
 from app.ui.components import ScrollBar
@@ -120,17 +120,20 @@ class FileItem(QStandardItem):
 
 
 class FileItemWidget(QWidget, Ui_file_item_widget):
-    dataChanged = pyqtSignal(bool)
+    dataChanged = Signal(bool)
+    dropIndex = Signal(QModelIndex)
 
     def __init__(self, fileinfo: PdfFile, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.filepath = fileinfo.file_path
+        self.index: QModelIndex = None
         self.checkBox_name.setText(fileinfo.file_name)
         self.checkBox_name.setToolTip(fileinfo.file_path)
         self.checkBox_name.clicked.connect(self.dataChanged)
         self.progressBar.setVisible(False)
         self.label_result.setVisible(False)
+        # self.setAcceptDrops(False)
         # self.btn_open.setVisible(False)
         self.spinBox_start.valueChanged.connect(self.update_page_range)
         self.spinBox_end.valueChanged.connect(self.update_page_range)
@@ -178,13 +181,43 @@ class FileItemWidget(QWidget, Ui_file_item_widget):
         self.checkBox_name.setChecked(False)
         self.dataChanged.emit(True)
 
+    def dragEnterEvent(self, event):
+        print('dragEnterEvent')
+        # self.setStyleSheet(
+        #     '''
+        #     border:2px solid rgb(230, 235, 240);
+        #     '''
+        # )
+        # event.acceptProposedAction()
+
+    def dragLeaveEvent(self, event):
+        self.setStyleSheet(
+            '''
+            border:none;
+            '''
+        )
+        print('leave')
+
+    def dropEvent(self, event):
+        self.setStyleSheet(
+            '''
+            border:none;
+            '''
+        )
+        print(self.filepath)
+        self.dropIndex.emit(self.index)
+
 
 class FileListView(QListView):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.start_drap_index: QModelIndex = None
+        self.start_drop_index = None
         self.setVerticalScrollBar(ScrollBar())
-        self.setDragDropMode(QAbstractItemView.InternalMove)  # 启用拖动排序
-        self.setDefaultDropAction(Qt.MoveAction)
+        self.setAcceptDrops(True)
+        # self.setDragEnabled(True)
+        self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)  # 启用拖动排序
+        self.setDefaultDropAction(Qt.DropAction.MoveAction)
         self.start_drag_pos = None
         self.model = QStandardItemModel(self)
         self.setModel(self.model)
@@ -198,13 +231,15 @@ class FileListView(QListView):
 
     def mousePressEvent(self, event):
         # 记录鼠标点击的起始点（相对于小部件的坐标）
-        self.start_drag_pos = event.pos()
+        self.start_drag_pos = event.position()
         super().mousePressEvent(event)
 
     def startDrag(self, supportedActions):
         # 获取当前选中的索引
         index = self.currentIndex()
-
+        self.start_drap_index = index
+        # super().startDrag(supportedActions)
+        # return
         if index.isValid():
             # 使用模型获取项的小部件
             item_widget = self.indexWidget(index)
@@ -213,27 +248,38 @@ class FileListView(QListView):
                 pixmap = item_widget.grab()  # 获取小部件的截图作为拖拽图像
 
                 # 创建 QDrag 对象
-                drag = QDrag(self)
+                drag = QDrag(item_widget)
                 mime_data = QMimeData()
+                mime_data.setText(item_widget.filepath)
                 drag.setMimeData(mime_data)
                 drag.setPixmap(pixmap)  # 设置拖拽图像为自定义小部件的截图
-
                 # 计算拖拽热点，使拖拽图像的初始点贴合鼠标
                 if self.start_drag_pos:
                     # 将点击点相对于小部件的位置转换为拖拽热点
                     hotspot = self.start_drag_pos - item_widget.pos()
-                    drag.setHotSpot(hotspot)
+                    drag.setHotSpot(hotspot.toPoint())
                 # 执行拖拽操作
-                result = drag.exec_(supportedActions)
+                result = drag.exec(supportedActions)
 
-                # 拖放结束后恢复显示
-                # item_widget.setHidden(False)
-
+        # print('拖动结束', supportedActions)
         super().startDrag(supportedActions)
+        # print('拖动结束', supportedActions)
+
+    def dragEnterEvent(self, event):
+        mime_data = event.mimeData()
+
+        event.acceptProposedAction()
+        # event.accept()
+
+    def dragLeaveEvent(self, e):
+        print('leave')
+        e.accept()
 
     def dropEvent(self, event):
+        print('dropEvent10086')
         # 实现拖拽放置时的处理
-        target_index = self.indexAt(event.pos())
+        target_index = self.indexAt(event.position().toPoint())
+        print(target_index)
         # 检查是否放置到有效位置
         if target_index.isValid():
             # 获取源项 (从当前列表中获取被拖拽的项)
@@ -263,10 +309,36 @@ class FileListView(QListView):
         else:
             event.ignore()
 
+    def dropEvent_(self, target_index):
+        print('dropEvent10086')
+        # 检查是否放置到有效位置
+        if target_index.isValid():
+            # 获取源项 (从当前列表中获取被拖拽的项)
+            source_index = self.currentIndex()
+            print(source_index, target_index)
+            if source_index.isValid() and source_index != target_index:
+                print(source_index, target_index)
+                # 获取源项和目标项的行
+                source_row = source_index.row()
+                target_row = target_index.row()
+                print(source_row, target_row)
+                # 获取源项内容
+                source_item = self.model.item(source_row)
+                # 创建新项并复制源项的数据
+                new_item = FileItem(source_item.data(Qt.UserRole).copy())
+                new_item.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDragEnabled)  # 设置为可拖动
+                # 从模型中移除源项
+                self.model.removeRow(source_row)
+                # 插入新项到目标位置
+                self.model.insertRow(target_row, new_item)
+                self.set_item_widget(new_item)
+                # 接受事件，标记拖放完成
+                # event.accept()
+
     def add_item(self, text, index):
         """添加自定义组件到 QListView"""
         item = FileItem(PdfFile(text))
-        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled)  # 设置为可拖动
+        item.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDragEnabled)  # 设置为可拖动
         self.model.appendRow(item)
         self.set_item_widget(item)
 
@@ -282,12 +354,14 @@ class FileListView(QListView):
         widget = FileItemWidget(fileinfo)
         # self.widgets.append(widget)
         index = self.model.indexFromItem(item)
+        widget.index = index
         self.setIndexWidget(index, widget)
         # 连接删除按钮事件
         widget.btn_delete.clicked.connect(lambda: self.remove_item(item))
         widget.btn_up.clicked.connect(lambda: self.move_item_up(item))
         widget.btn_down.clicked.connect(lambda: self.move_item_down(item))
         widget.dataChanged.connect(lambda: self.update_item_data(item))
+        # widget.dropIndex.connect(self.dropEvent_)
 
     def update_item_data(self, item):
         """
@@ -390,13 +464,11 @@ class FileListView(QListView):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
@@ -404,4 +476,4 @@ if __name__ == '__main__':
     for i in range(5):
         view.add_item(f'Item {i + 1}', i)
     view.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

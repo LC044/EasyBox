@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QIcon, QPixmap
+from PySide6.QtGui import QIcon, QPixmap
 
 from app.ui.resources import resource_rc
 

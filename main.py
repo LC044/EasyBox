@@ -31,16 +31,16 @@ def excepthook(exc_type, exc_value, traceback_):
     # 添加一个“确定”按钮
     error_box.addButton(QMessageBox.Ok)
     # 显示对话框
-    error_box.exec_()
+    error_box.exec()
     # 调用原始的 excepthook，以便程序正常退出
     sys.__excepthook__(exc_type, exc_value, traceback_)
 
 
 # 设置 excepthook
 sys.excepthook = excepthook
-from PyQt5.QtGui import QFont, QPixmap, QIcon
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt
+from PySide6.QtGui import QFont, QPixmap, QIcon
+from PySide6.QtWidgets import *
+from PySide6.QtCore import Qt
 
 from app.log import logger
 from app.ui import mainview
@@ -48,9 +48,6 @@ from app.ui import mainview
 
 QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-
 
 class ViewController(QWidget):
     def __init__(self):
@@ -106,7 +103,7 @@ if __name__ == '__main__':
         view.loadMainWinView()
         # view.show()
         # view.show_success()
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
     except Exception as e:
         print(f"Exception: {e}")
         logger.error(traceback.format_exc())

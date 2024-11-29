@@ -1,9 +1,9 @@
 import os.path
 import sys
 
-from PyQt5.QtCore import Qt, pyqtSignal, QThread, QUrl, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QFont, QDesktopServices, QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QListWidgetItem, QLabel
+from PySide6.QtCore import Qt, Signal, QThread, QUrl, QFile, QIODevice, QTextStream, QStringConverter
+from PySide6.QtGui import QFont, QDesktopServices, QPixmap, QIcon
+from PySide6.QtWidgets import QWidget, QMessageBox, QApplication, QListWidgetItem, QLabel
 
 from app.ui.Icon import Icon
 from app.ui.global_signal import globalSignals
@@ -15,13 +15,13 @@ Stylesheet = """
 
 
 class SettingWindow(QWidget, Ui_Form):
-    load_finish_signal = pyqtSignal(bool)
+    load_finish_signal = Signal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.init_ui()
-        self.setStyleSheet(Stylesheet)
+        # self.setStyleSheet(Stylesheet)
 
     def init_ui(self):
         pixmap = QPixmap(Icon.logo_ico_path)
@@ -46,7 +46,9 @@ class SettingWindow(QWidget, Ui_Form):
         style_qss_file = QFile(":/data/QSS/style.qss")
         if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
             stream = QTextStream(style_qss_file)
+            stream.setEncoding(QStringConverter.Encoding.System)
             style_content = stream.readAll()
+            print(style_content)
             self.setStyleSheet(style_content)
             style_qss_file.close()
 
@@ -68,4 +70,4 @@ if __name__ == '__main__':
     app.setFont(font)
     view = SettingWindow()
     view.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

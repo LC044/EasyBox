@@ -3,9 +3,9 @@ import os
 import subprocess
 import time
 
-from PyQt5.QtCore import QSize, QUrl, QThread, pyqtSignal
-from PyQt5.QtGui import QPixmap, QDesktopServices, QIcon
-from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
+from PySide6.QtCore import QSize, QUrl, QThread, Signal
+from PySide6.QtGui import QPixmap, QDesktopServices, QIcon
+from PySide6.QtWidgets import QApplication, QDialog, QMessageBox
 
 from app import config
 
@@ -28,7 +28,7 @@ about = f'''
     Copyright {copyright}
 '''
 
-from PyQt5 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 
 class Ui_Dialog(object):
@@ -126,7 +126,7 @@ class AboutDialog(QDialog, Ui_Dialog):
 
 
 class UpdateThread(QThread):
-    updateSignal = pyqtSignal(dict)
+    updateSignal = Signal(dict)
 
     def __init__(self, check_time=False):
         super().__init__()

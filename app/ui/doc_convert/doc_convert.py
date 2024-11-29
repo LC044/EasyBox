@@ -1,5 +1,5 @@
-from PyQt5.QtCore import pyqtSignal, QThread, QSize, QFile, QIODevice, QTextStream
-from PyQt5.QtWidgets import QWidget
+from PySide6.QtCore import Signal, QThread, QSize, QFile, QIODevice, QTextStream
+from PySide6.QtWidgets import QWidget
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
@@ -11,10 +11,10 @@ from app.ui.global_signal import globalSignals
 
 
 class DocConvertControl(QWidget, Ui_Form, QCursorGif):
-    DecryptSignal = pyqtSignal(str)
-    get_wxidSignal = pyqtSignal(str)
-    versionErrorSignal = pyqtSignal(str)
-    childRouterSignal = pyqtSignal(str)
+    DecryptSignal = Signal(str)
+    get_wxidSignal = Signal(str)
+    versionErrorSignal = Signal(str)
+    childRouterSignal = Signal(str)
 
     def __init__(self, router: Router, parent=None):
         super(DocConvertControl, self).__init__(parent)
@@ -87,10 +87,10 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

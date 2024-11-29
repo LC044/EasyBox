@@ -3,16 +3,15 @@ from multiprocessing import Process, Queue
 from typing import List
 
 import fitz
-from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
+from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
 
 from app.model import PdfFile
 from app.model.doc_cov_model import Pdf2ImageOpt
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
 from app.ui.doc_convert.pdf2image.pdf2image_ui import Ui_pdf2image_view
-from app.ui.pdf_tools.merge.encrypt_dialog import EncryptControl
 from app.util import common
 from app.ui.components.file_list import FileListView
 from app.ui.components.router import Router
@@ -26,8 +25,8 @@ def open_file_explorer(path):
 
 
 class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
@@ -194,22 +193,11 @@ class Pdf2ImageControl(QWidget, Ui_pdf2image_view, QCursorGif):
         super().closeEvent(a0)
         self.okSignal.emit(True)
 
-    def set_encrypt_option(self):
-        if self.dialog is None:
-            self.dialog = EncryptControl(self)
-        relay = self.dialog.exec_()
-        if relay == QDialog.Accepted:
-            self.encryption_options = self.dialog.get_data()
-            self.checkBox_doc_encrypt.setChecked(True)
-        else:
-            self.dialog = None
-            self.encryption_options = {}
-            self.checkBox_doc_encrypt.setChecked(False)
 
 
 class Pdf2ImageThread(QThread):
-    okSignal = pyqtSignal(bool)
-    progressSignal = pyqtSignal(int)
+    okSignal = Signal(bool)
+    progressSignal = Signal(int)
 
     def __init__(self, input_file_infos: List[PdfFile], output_opt: Pdf2ImageOpt):
         super().__init__()
@@ -307,16 +295,14 @@ class Pdf2ImageThread(QThread):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
     view = Pdf2ImageControl(None)
     view.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

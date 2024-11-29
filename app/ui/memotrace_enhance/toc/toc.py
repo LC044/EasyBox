@@ -5,9 +5,9 @@ from multiprocessing import Process, Queue
 from typing import List
 
 import pymupdf
-from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
+from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog
 
 from app.model import PdfFile
 from app.ui.memotrace_enhance.toc.toc_ui import Ui_toc_view
@@ -25,8 +25,8 @@ def open_file_explorer(path):
 
 
 class TocControl(QWidget, Ui_toc_view, QCursorGif):
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
@@ -166,8 +166,8 @@ class TocControl(QWidget, Ui_toc_view, QCursorGif):
 
 
 class Pdf2WordThread(QThread):
-    okSignal = pyqtSignal(bool)
-    progressSignal = pyqtSignal(int)
+    okSignal = Signal(bool)
+    progressSignal = Signal(int)
 
     def __init__(self, input_file_infos: List[PdfFile], output_file_info: PdfFile):
         super().__init__()
@@ -260,10 +260,10 @@ class Pdf2WordThread(QThread):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

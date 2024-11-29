@@ -8,9 +8,9 @@
 @File        : EasyBox-sidebar.py 
 @Description : 
 """
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QSizePolicy
-from PyQt5.QtCore import QSize, QRect, QPropertyAnimation, QTimer
-from PyQt5.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QSizePolicy
+from PySide6.QtCore import QSize, QRect, QPropertyAnimation, QTimer
+from PySide6.QtGui import QIcon
 
 from app.ui.Icon import Icon
 from app.ui.components.router import Router

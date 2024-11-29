@@ -1,9 +1,9 @@
-from PyQt5 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
 from app.ui import mainwindow
-from PyQt5.QtCore import pyqtSignal, QFile, QIODevice, QTextStream, QSize, Qt
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QLabel, QPushButton, QSizePolicy, QSplitter, QMessageBox
+from PySide6.QtCore import Signal, QFile, QIODevice, QTextStream, QSize, Qt
+from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtWidgets import QMainWindow, QListWidgetItem, QLabel, QPushButton, QSizePolicy, QSplitter, QMessageBox
 
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
@@ -19,9 +19,9 @@ from app.ui.video_tools.video_tool import VideoToolControl
 
 
 class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
-    exitSignal = pyqtSignal(bool)
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    exitSignal = Signal(bool)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     # username = ''
     def __init__(self, parent=None):

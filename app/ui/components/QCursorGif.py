@@ -4,24 +4,24 @@
 """
 Created on 2020年3月13日
 @author: Irony
-@site: https://pyqt.site , https://github.com/PyQt5
+@site: https://pyqt.site , https://github.com/PySide6
 @email: 892768447@qq.com
 @file: Demo.Lib.QCursorGif
 @description: 
 """
 
-try:
-    from PyQt5.QtCore import QTimer, Qt
-    from PyQt5.QtGui import QCursor, QPixmap
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PySide6.QtCore import QTimer, Qt
-    from PySide6.QtGui import QCursor, QPixmap
-    from PySide6.QtWidgets import QApplication
+# try:
+#     from PySide6.QtCore import QTimer, Qt
+#     from PySide6.QtGui import QCursor, QPixmap
+#     from PySide6.QtWidgets import QApplication
+# except ImportError:
+#     from PySide6.QtCore import QTimer, Qt
+#     from PySide6.QtGui import QCursor, QPixmap
+#     from PySide6.QtWidgets import QApplication
 
-# from PySide6.QtCore import QTimer, Qt
-# from PySide6.QtGui import QCursor, QPixmap
-# from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtGui import QCursor, QPixmap
+from PySide6.QtWidgets import QApplication
 from app.ui.resources import resource_rc
 
 var = resource_rc.qt_resource_name

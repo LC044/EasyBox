@@ -1,6 +1,6 @@
 import sys
 import subprocess
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
 
 class ScreenRecorderApp(QWidget):
     def __init__(self):

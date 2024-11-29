@@ -2,9 +2,9 @@ import os.path
 from typing import List
 
 import fitz
-from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
+from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog
 
 from app.model import PdfFile
 from app.ui.components.QCursorGif import QCursorGif
@@ -24,8 +24,8 @@ def open_file_explorer(path):
 
 
 class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
@@ -219,8 +219,8 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
 
 
 class MergeThread(QThread):
-    okSignal = pyqtSignal(bool)
-    progressSignal = pyqtSignal(int)
+    okSignal = Signal(bool)
+    progressSignal = Signal(int)
 
     def __init__(self, input_file_infos: List[PdfFile], output_file_info: PdfFile):
         super().__init__()
@@ -309,10 +309,10 @@ class MergeThread(QThread):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
 
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)

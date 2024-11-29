@@ -1,10 +1,10 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PySide6.QtCore import QObject, Signal
 
 
 class Router(QObject):
     """ 路由管理器，用于管理页面和路由路径 """
-    route_changed = pyqtSignal(str)
-    history_changed = pyqtSignal(int)
+    route_changed = Signal(str)
+    history_changed = Signal(int)
 
     def __init__(self, stack):
         """

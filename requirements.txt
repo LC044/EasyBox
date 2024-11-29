@@ -1,4 +1,3 @@
-PyQt5~=5.15.11
 PyQtWebEngine
 python-docx
 docxcompose

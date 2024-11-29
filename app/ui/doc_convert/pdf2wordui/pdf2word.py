@@ -3,9 +3,9 @@ import os
 from multiprocessing import Process, Queue
 from typing import List
 
-from PyQt5.QtCore import pyqtSignal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
-from PyQt5.QtGui import QDesktopServices, QPixmap, QIcon, QFontMetrics
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
+from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
+from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFontMetrics
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog
 
 from app.model import PdfFile, Pdf2DocxOpt
 from pdf2docx import Converter
@@ -25,8 +25,8 @@ def open_file_explorer(path):
 
 
 class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
-    okSignal = pyqtSignal(bool)
-    childRouterSignal = pyqtSignal(str)
+    okSignal = Signal(bool)
+    childRouterSignal = Signal(str)
 
     def __init__(self, router: Router, parent=None):
         super().__init__(parent)
@@ -197,8 +197,8 @@ class Pdf2WordControl(QWidget, Ui_pdf2word_view, QCursorGif):
 
 
 class Pdf2WordThread(QThread):
-    okSignal = pyqtSignal(bool)
-    progressSignal = pyqtSignal(int)
+    okSignal = Signal(bool)
+    progressSignal = Signal(int)
 
     def __init__(self, input_file_infos: List[PdfFile], output_opt: Pdf2DocxOpt):
         super().__init__()
@@ -274,10 +274,10 @@ class Pdf2WordThread(QThread):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QWidget, QApplication
+    from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PyQt5.QtGui import QFont, QPixmap, QIcon
-    from PyQt5.QtCore import Qt
+    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtCore import Qt
 
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

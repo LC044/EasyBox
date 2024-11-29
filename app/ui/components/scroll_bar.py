@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QScrollBar
+from PySide6.QtWidgets import QScrollBar
 
 
 class ScrollBar(QScrollBar):

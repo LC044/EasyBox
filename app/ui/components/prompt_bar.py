@@ -1,7 +1,7 @@
-from PyQt5 import QtGui
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PySide6 import QtGui
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
 class PromptBar(QLabel):
