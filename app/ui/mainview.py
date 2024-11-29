@@ -38,11 +38,11 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.initCursor([':/icons/icons/Cursors/%d.png' %
                          i for i in range(8)], self)
         self.setCursorTimeout(100)
-        pixmap = QPixmap(Icon.logo_ico_path)
-        icon = QIcon(pixmap)
-        self.setWindowIcon(icon)
-        self.setWindowTitle('合并PDF')
-        style_qss_file = QFile(":/data/QSS/style.qss")
+        # pixmap = QPixmap(Icon.logo_ico_path)
+        # icon = QIcon(pixmap)
+        # self.setWindowIcon(icon)
+
+        style_qss_file = QFile(":/data/resources/QSS/style.qss")
         if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
             stream = QTextStream(style_qss_file)
             style_content = stream.readAll()

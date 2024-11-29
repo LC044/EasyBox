@@ -5,7 +5,6 @@ from app.log.exception_handling import ExceptionHanding
 from app.ui.Icon import Icon
 from multiprocessing import freeze_support
 
-
 widget = None
 
 
@@ -45,9 +44,9 @@ from PySide6.QtCore import Qt
 from app.log import logger
 from app.ui import mainview
 
-
 QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+
 
 class ViewController(QWidget):
     def __init__(self):

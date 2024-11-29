@@ -182,13 +182,7 @@ class FileItemWidget(QWidget, Ui_file_item_widget):
         self.dataChanged.emit(True)
 
     def dragEnterEvent(self, event):
-        print('dragEnterEvent')
-        # self.setStyleSheet(
-        #     '''
-        #     border:2px solid rgb(230, 235, 240);
-        #     '''
-        # )
-        # event.acceptProposedAction()
+        pass
 
     def dragLeaveEvent(self, event):
         self.setStyleSheet(
@@ -196,7 +190,7 @@ class FileItemWidget(QWidget, Ui_file_item_widget):
             border:none;
             '''
         )
-        print('leave')
+        pass
 
     def dropEvent(self, event):
         self.setStyleSheet(
@@ -204,15 +198,11 @@ class FileItemWidget(QWidget, Ui_file_item_widget):
             border:none;
             '''
         )
-        print(self.filepath)
-        self.dropIndex.emit(self.index)
 
 
 class FileListView(QListView):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.start_drap_index: QModelIndex = None
-        self.start_drop_index = None
         self.setVerticalScrollBar(ScrollBar())
         self.setAcceptDrops(True)
         # self.setDragEnabled(True)
@@ -237,9 +227,6 @@ class FileListView(QListView):
     def startDrag(self, supportedActions):
         # 获取当前选中的索引
         index = self.currentIndex()
-        self.start_drap_index = index
-        # super().startDrag(supportedActions)
-        # return
         if index.isValid():
             # 使用模型获取项的小部件
             item_widget = self.indexWidget(index)
@@ -260,10 +247,7 @@ class FileListView(QListView):
                     drag.setHotSpot(hotspot.toPoint())
                 # 执行拖拽操作
                 result = drag.exec(supportedActions)
-
-        # print('拖动结束', supportedActions)
         super().startDrag(supportedActions)
-        # print('拖动结束', supportedActions)
 
     def dragEnterEvent(self, event):
         mime_data = event.mimeData()
@@ -272,25 +256,19 @@ class FileListView(QListView):
         # event.accept()
 
     def dragLeaveEvent(self, e):
-        print('leave')
         e.accept()
 
     def dropEvent(self, event):
-        print('dropEvent10086')
         # 实现拖拽放置时的处理
         target_index = self.indexAt(event.position().toPoint())
-        print(target_index)
         # 检查是否放置到有效位置
         if target_index.isValid():
             # 获取源项 (从当前列表中获取被拖拽的项)
             source_index = self.currentIndex()
-            print(source_index, target_index)
             if source_index.isValid() and source_index != target_index:
-                print(source_index, target_index)
                 # 获取源项和目标项的行
                 source_row = source_index.row()
                 target_row = target_index.row()
-                print(source_row, target_row)
                 # 获取源项内容
                 source_item = self.model.item(source_row)
                 # 创建新项并复制源项的数据
@@ -309,36 +287,11 @@ class FileListView(QListView):
         else:
             event.ignore()
 
-    def dropEvent_(self, target_index):
-        print('dropEvent10086')
-        # 检查是否放置到有效位置
-        if target_index.isValid():
-            # 获取源项 (从当前列表中获取被拖拽的项)
-            source_index = self.currentIndex()
-            print(source_index, target_index)
-            if source_index.isValid() and source_index != target_index:
-                print(source_index, target_index)
-                # 获取源项和目标项的行
-                source_row = source_index.row()
-                target_row = target_index.row()
-                print(source_row, target_row)
-                # 获取源项内容
-                source_item = self.model.item(source_row)
-                # 创建新项并复制源项的数据
-                new_item = FileItem(source_item.data(Qt.UserRole).copy())
-                new_item.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDragEnabled)  # 设置为可拖动
-                # 从模型中移除源项
-                self.model.removeRow(source_row)
-                # 插入新项到目标位置
-                self.model.insertRow(target_row, new_item)
-                self.set_item_widget(new_item)
-                # 接受事件，标记拖放完成
-                # event.accept()
-
     def add_item(self, text, index):
         """添加自定义组件到 QListView"""
         item = FileItem(PdfFile(text))
-        item.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDragEnabled)  # 设置为可拖动
+        item.setFlags(
+            Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDragEnabled)  # 设置为可拖动
         self.model.appendRow(item)
         self.set_item_widget(item)
 
@@ -354,14 +307,12 @@ class FileListView(QListView):
         widget = FileItemWidget(fileinfo)
         # self.widgets.append(widget)
         index = self.model.indexFromItem(item)
-        widget.index = index
         self.setIndexWidget(index, widget)
         # 连接删除按钮事件
         widget.btn_delete.clicked.connect(lambda: self.remove_item(item))
         widget.btn_up.clicked.connect(lambda: self.move_item_up(item))
         widget.btn_down.clicked.connect(lambda: self.move_item_down(item))
         widget.dataChanged.connect(lambda: self.update_item_data(item))
-        # widget.dropIndex.connect(self.dropEvent_)
 
     def update_item_data(self, item):
         """

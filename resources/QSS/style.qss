@@ -86,12 +86,12 @@ QCheckBox::indicator {
 QCheckBox::indicator:unchecked{
     Width:20px;
     Height:20px;
-    image: url(:/icons/icons/unselect.svg);
+    image: url(:/icons/resources/icons/unselect.svg);
 }
 QCheckBox::indicator:checked{
     Width:20px;
     Height:20px;
-    image: url(:/icons/icons/select.svg);
+    image: url(:/icons/resources/icons/select.svg);
 }
 QScrollBar:vertical {
     border-width: 0px;
@@ -173,14 +173,14 @@ QComboBox::down-arrow
     right:0px;/*控制箭头左右偏移*/
     width: 16px;
     height: 16px;
-    image: url(:/icons/icons/down.svg);
+    image: url(:/icons/resources/icons/down.svg);
 }
  /*下拉箭头点击样式*/
 QComboBox::down-arrow:on
 {
     width: 16px;
     height: 16px;
-    image: url(:/icons/icons/up.svg);
+    image: url(:/icons/resources/icons/up.svg);
 }
 QLineEdit
 {
@@ -215,12 +215,12 @@ QTabWidget::pane {
 }
 
 QSpinBox::up-button{
-    border-image:url(:/icons/icons/加.svg);
+    border-image:url(:/icons/resources/icons/加.svg);
     subcontrol-position:right;
     width:10px;height:10px;
 }
 QSpinBox::down-button{
-    border-image:url(:/icons/icons/减.svg);
+    border-image:url(:/icons/resources/icons/减.svg);
     subcontrol-position:left;
     width:10px;height:10px;
 }
@@ -254,7 +254,7 @@ QSlider::handle:horizontal{
 		margin-left: 0px;
 		margin-bottom: -6px;
 		margin-right: 0px;
-		border-image:url(:/icons/icons/dot.svg);
+		border-image:url(:/icons/resources/icons/dot.svg);
 }
 QSlider::sub-page:horizontal{
 	   background:rgba(80,166,234,1);

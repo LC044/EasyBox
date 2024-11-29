@@ -43,12 +43,11 @@ class SettingWindow(QWidget, Ui_Form):
         self.stackedWidget.addWidget(self.report_setting_window)
         self.stackedWidget.addWidget(self.file_setting_window)
         self.stackedWidget.addWidget(self.about_window)
-        style_qss_file = QFile(":/data/QSS/style.qss")
+        style_qss_file = QFile(":/data/resources/QSS/style.qss")
         if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
             stream = QTextStream(style_qss_file)
             stream.setEncoding(QStringConverter.Encoding.System)
             style_content = stream.readAll()
-            print(style_content)
             self.setStyleSheet(style_content)
             style_qss_file.close()
 

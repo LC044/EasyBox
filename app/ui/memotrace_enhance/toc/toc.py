@@ -68,7 +68,7 @@ class TocControl(QWidget, Ui_toc_view, QCursorGif):
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
             self.setWindowTitle('生成PDF目录')
-            style_qss_file = QFile(":/data/QSS/style.qss")
+            style_qss_file = QFile(":/data/resources/QSS/style.qss")
             if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
                 stream = QTextStream(style_qss_file)
                 style_content = stream.readAll()

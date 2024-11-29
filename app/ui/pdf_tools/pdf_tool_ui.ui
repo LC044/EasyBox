@@ -55,7 +55,7 @@ QPushButton:pressed {
    <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="lineWidth">
       <number>0</number>
@@ -85,13 +85,13 @@ QPushButton:pressed {
              <string notr="true">border-bottom: 2px solid #888888;</string>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <property name="lineWidth">
              <number>5</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -101,13 +101,13 @@ QPushButton:pressed {
              <string notr="true">border-bottom: 2px solid #888888;</string>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <property name="lineWidth">
              <number>5</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -123,16 +123,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -179,16 +179,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -235,16 +235,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -285,13 +285,13 @@ QPushButton:pressed {
              <string notr="true">border-bottom: 2px solid #888888;</string>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <property name="lineWidth">
              <number>5</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -307,16 +307,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -325,8 +325,14 @@ QPushButton:pressed {
              <string>合并</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/PDF.svg</normaloff>../../../resources/icons/PDF.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/pdf.svg</normaloff>:/icons/resources/icons/pdf.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -358,6 +364,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
+              <family>Segoe UI</family>
               <pointsize>12</pointsize>
              </font>
             </property>
@@ -368,16 +375,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -428,7 +435,7 @@ QPushButton:pressed {
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -444,6 +451,8 @@ QPushButton:pressed {
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

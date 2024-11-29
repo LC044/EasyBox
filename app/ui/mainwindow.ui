@@ -14,7 +14,6 @@
    <font>
     <family>微软雅黑</family>
     <pointsize>12</pointsize>
-    <weight>50</weight>
     <bold>false</bold>
    </font>
   </property>
@@ -22,7 +21,17 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>EasyBox</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../resource.qrc">
+    <normaloff>:/icons/resources/icons/logo.png</normaloff>:/icons/resources/icons/logo.png</iconset>
+  </property>
+  <property name="accessibleName">
+   <string>1423534</string>
+  </property>
+  <property name="accessibleDescription">
+   <string>142345</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -34,7 +43,7 @@
    </size>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+   <set>QMainWindow::DockOption::AllowTabbedDocks|QMainWindow::DockOption::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="mouseTracking">
@@ -63,12 +72,13 @@
     <font>
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
-     <weight>50</weight>
      <bold>false</bold>
     </font>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

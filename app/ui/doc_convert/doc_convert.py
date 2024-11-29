@@ -37,7 +37,7 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
             self.setWindowTitle('PDF工具箱')
-            style_qss_file = QFile(":/data/QSS/style.qss")
+            style_qss_file = QFile(":/data/resources/QSS/style.qss")
             if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
                 stream = QTextStream(style_qss_file)
                 style_content = stream.readAll()

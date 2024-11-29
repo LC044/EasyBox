@@ -22,7 +22,7 @@ Created on 2020年3月13日
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QCursor, QPixmap
 from PySide6.QtWidgets import QApplication
-from app.ui.resources import resource_rc
+import resource_rc
 
 var = resource_rc.qt_resource_name
 
