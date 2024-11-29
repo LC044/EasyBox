@@ -10,18 +10,10 @@ Created on 2020年3月13日
 @description: 
 """
 
-try:
-    from PyQt5.QtCore import QTimer, Qt
-    from PyQt5.QtGui import QCursor, QPixmap
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PySide6.QtCore import QTimer, Qt
-    from PySide6.QtGui import QCursor, QPixmap
-    from PySide6.QtWidgets import QApplication
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QCursor, QPixmap
+from PyQt5.QtWidgets import QApplication
 
-# from PySide6.QtCore import QTimer, Qt
-# from PySide6.QtGui import QCursor, QPixmap
-# from PySide6.QtWidgets import QApplication
 from app.ui.resources import resource_rc
 
 var = resource_rc.qt_resource_name

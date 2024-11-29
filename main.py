@@ -39,7 +39,7 @@ def excepthook(exc_type, exc_value, traceback_):
 # 设置 excepthook
 sys.excepthook = excepthook
 from PyQt5.QtGui import QFont, QPixmap, QIcon
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt
 
 from app.log import logger
