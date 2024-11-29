@@ -24,33 +24,12 @@ class Ui_Form(object):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(448, 839)
-        Form.setStyleSheet(u"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
+        Form.setStyleSheet(u"QCommandLinkButton{\n"
+"    border-radius: 10px;\n"
 "    padding: 8px;\n"
-"	font-size:12pt;\n"
-"    border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"\n"
-"\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(214,227,242);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 0px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 0px"
-                        " solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
 "}\n"
 "QPushButton:hover { \n"
-"	border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
+"	background-color: rgb(235,237,239);\n"
 "}\n"
 "QPushButton:pressed { \n"
 "    background-color: lightgray;\n"
@@ -60,7 +39,7 @@ class Ui_Form(object):
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.scrollArea = QScrollArea(Form)
         self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setFrameShape(QFrame.NoFrame)
+        self.scrollArea.setFrameShape(QFrame.Shape.NoFrame)
         self.scrollArea.setLineWidth(0)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
@@ -76,12 +55,15 @@ class Ui_Form(object):
         self.commandLinkButton_toc = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_toc.setObjectName(u"commandLinkButton_toc")
         self.commandLinkButton_toc.setEnabled(True)
+        font = QFont()
+        font.setPointSize(12)
+        self.commandLinkButton_toc.setFont(font)
         self.commandLinkButton_toc.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_toc.setTabletTracking(False)
-        self.commandLinkButton_toc.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_toc.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_toc.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_toc.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_toc.setToolTipDuration(-1)
-        self.commandLinkButton_toc.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_toc.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_toc.setAutoFillBackground(False)
         icon = QIcon()
         icon.addFile(u"../../../resources/icons/strategy.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
@@ -103,12 +85,13 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.commandLinkButton_pdf2word.sizePolicy().hasHeightForWidth())
         self.commandLinkButton_pdf2word.setSizePolicy(sizePolicy)
+        self.commandLinkButton_pdf2word.setFont(font)
         self.commandLinkButton_pdf2word.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2word.setTabletTracking(False)
-        self.commandLinkButton_pdf2word.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2word.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2word.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2word.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2word.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2word.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2word.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2word.setAutoFillBackground(False)
         icon1 = QIcon()
         icon1.addFile(u"../../../resources/icons/PDF.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
@@ -125,7 +108,7 @@ class Ui_Form(object):
         self.line_8 = QFrame(self.widget_4)
         self.line_8.setObjectName(u"line_8")
         self.line_8.setStyleSheet(u"border-bottom: 2px solid #888888;")
-        self.line_8.setFrameShadow(QFrame.Raised)
+        self.line_8.setFrameShadow(QFrame.Shadow.Raised)
         self.line_8.setLineWidth(5)
         self.line_8.setFrameShape(QFrame.Shape.HLine)
 
@@ -134,12 +117,13 @@ class Ui_Form(object):
         self.commandLinkButton_pdf2txt = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_pdf2txt.setObjectName(u"commandLinkButton_pdf2txt")
         self.commandLinkButton_pdf2txt.setEnabled(True)
+        self.commandLinkButton_pdf2txt.setFont(font)
         self.commandLinkButton_pdf2txt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2txt.setTabletTracking(False)
-        self.commandLinkButton_pdf2txt.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2txt.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2txt.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2txt.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2txt.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2txt.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2txt.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2txt.setAutoFillBackground(False)
         icon2 = QIcon()
         icon2.addFile(u"../../../resources/icons/random.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
@@ -156,12 +140,13 @@ class Ui_Form(object):
         self.commandLinkButton_pdf2excel = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_pdf2excel.setObjectName(u"commandLinkButton_pdf2excel")
         self.commandLinkButton_pdf2excel.setEnabled(True)
+        self.commandLinkButton_pdf2excel.setFont(font)
         self.commandLinkButton_pdf2excel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2excel.setTabletTracking(False)
-        self.commandLinkButton_pdf2excel.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2excel.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2excel.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2excel.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2excel.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2excel.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2excel.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2excel.setAutoFillBackground(False)
         icon3 = QIcon()
         icon3.addFile(u"../../../resources/icons/ratio.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
@@ -178,7 +163,7 @@ class Ui_Form(object):
         self.line_5 = QFrame(self.widget_4)
         self.line_5.setObjectName(u"line_5")
         self.line_5.setStyleSheet(u"border-bottom: 2px solid #888888;")
-        self.line_5.setFrameShadow(QFrame.Raised)
+        self.line_5.setFrameShadow(QFrame.Shadow.Raised)
         self.line_5.setLineWidth(5)
         self.line_5.setFrameShape(QFrame.Shape.HLine)
 

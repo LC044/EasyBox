@@ -8,7 +8,8 @@
 @File        : EasyBox-sidebar.py 
 @Description : 
 """
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QSizePolicy
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, \
+    QSizePolicy, QFrame
 from PySide6.QtCore import QSize, QRect, QPropertyAnimation, QTimer
 from PySide6.QtGui import QIcon
 
@@ -16,16 +17,16 @@ from app.ui.Icon import Icon
 from app.ui.components.router import Router
 
 try:
-    from sidebar_ui import Ui_Form
+    from sidebar_ui import Ui_Sidebar
 except:
-    from app.ui.components.sidebar.sidebar_ui import Ui_Form
+    from app.ui.components.sidebar.sidebar_ui import Ui_Sidebar
 
 
 class SidebarButton(QPushButton):
     def __init__(self, icon, text, parent=None):
         super(SidebarButton, self).__init__(icon=icon, text=text, parent=parent)
         self._text = text
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setStyleSheet(self.default_style())
         self.setToolTip(text)
         self.setObjectName('123')
@@ -43,6 +44,7 @@ class SidebarButton(QPushButton):
             }
             QPushButton:hover {
                 background-color: rgb(230,235,240);
+                border:none;
             }
         """
 
@@ -62,16 +64,15 @@ class SidebarButton(QPushButton):
             self.setStyleSheet(self.default_style())
 
 
-class Sidebar(QWidget, Ui_Form):
-    def __init__(self, stack, parent):
-        super().__init__(parent)
+class Sidebar(QFrame, Ui_Sidebar):
+    def __init__(self, stack, parent=None):
+        super(Sidebar, self).__init__(parent)
         self.setupUi(self)
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)  # B尽可能小
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)  # B尽可能小
         # self.btn_setting.setObjectName('border')
-
         self.expanded = True
         self.default_width = 120  # 展开时的宽度
-        self.collapsed_width = 40  # 折叠时的宽度
+        self.collapsed_width = 50  # 折叠时的宽度
         self.buttons = []
         self.btn_back.setEnabled(False)
         self.btn_back.setWhatsThis('返回')
@@ -79,8 +80,8 @@ class Sidebar(QWidget, Ui_Form):
         self.btn_toggle.setIcon(Icon.Exp_left_Icon)
         self.listWidget.clear()
         self.btn_toggle.clicked.connect(self.toggle_sidebar)
-
         self.setFixedWidth(self.default_width)
+        self.setAutoFillBackground(False)
 
     def set_turn_back_enable(self, flag):
         """
@@ -190,9 +191,24 @@ if __name__ == '__main__':
     # 测试应用
     app = QApplication([])
     window = QWidget()
+    # window.setAutoFillBackground(True)
+    window.setStyleSheet(
+    '''
+        QWidget{
+            background-color: rgb(20,252,253);
+        }
+    '''
+    )
     layout = QVBoxLayout(window)
-    sidebar = Sidebar(window)
-    layout.addWidget(sidebar)
+    sidebar = Sidebar(None,window)
+    sidebar.setAutoFillBackground(True)
+    sidebar.add_nav_button(Icon.PDF_Icon, 'text1', 'router_path', action=lambda x: x+1)
+    sidebar.add_nav_button(Icon.PDF_Icon, 'text2', 'router_path', action=lambda x: x + 1)
+    sidebar.add_nav_button(Icon.PDF_Icon, 'text3', 'router_path', action=lambda x: x + 1)
+    sidebar.add_nav_button(Icon.PDF_Icon, 'text4', 'router_path', action=lambda x: x + 1)
+    sidebar.add_nav_button(Icon.PDF_Icon, 'text5', 'router_path', action=lambda x: x + 1)
+    # layout.addWidget(sidebar)
+    sidebar.show()
     window.setGeometry(100, 100, 300, 400)  # 初始窗口大小
     window.show()
-    app.exec_()
+    app.exec()

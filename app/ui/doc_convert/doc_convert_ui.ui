@@ -7,50 +7,35 @@
     <x>0</x>
     <y>0</y>
     <width>448</width>
-    <height>516</height>
+    <height>524</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>12</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-	font-size:12pt;
+   <string notr="true">QCommandLinkButton{
+    border-radius: 10px;
     padding: 8px;
-    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-}
-
-
-QCommandLinkButton{
-    background-color: rgb(214,227,242);
-    border-radius: 5px;
-    padding: 8px;
-    border-right: 1px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 1px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 0px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 0px solid #ffffff;  /* 按钮边框，2px宽，白色 */
 }
 QPushButton:hover { 
-	border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+	background-color: rgb(235,237,239);
 }
 QPushButton:pressed { 
     background-color: lightgray;
 	border: 2px solid #888888;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <widget class="QScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="lineWidth">
       <number>0</number>
@@ -63,8 +48,8 @@ QPushButton:pressed {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>430</width>
-        <height>498</height>
+        <width>446</width>
+        <height>517</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -83,13 +68,13 @@ QPushButton:pressed {
              <string notr="true">border-bottom: 2px solid #888888;</string>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <property name="lineWidth">
              <number>5</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -104,6 +89,12 @@ QPushButton:pressed {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -111,16 +102,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -129,8 +120,14 @@ QPushButton:pressed {
              <string>PDF转文本</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/random.svg</normaloff>../../../resources/icons/random.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/txt.svg</normaloff>:/icons/resources/icons/txt.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -166,6 +163,12 @@ QPushButton:pressed {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -173,16 +176,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -191,8 +194,14 @@ QPushButton:pressed {
              <string>PDF转Excel</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/ratio.svg</normaloff>../../../resources/icons/ratio.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/Excel.svg</normaloff>:/icons/resources/icons/Excel.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -228,6 +237,12 @@ QPushButton:pressed {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -235,16 +250,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -253,8 +268,14 @@ QPushButton:pressed {
              <string>PDF转图片</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/strategy.svg</normaloff>../../../resources/icons/strategy.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/图片.svg</normaloff>:/icons/resources/icons/图片.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -290,6 +311,12 @@ QPushButton:pressed {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -297,16 +324,16 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
             <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+             <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
             </property>
             <property name="toolTipDuration">
              <number>-1</number>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
@@ -315,8 +342,14 @@ QPushButton:pressed {
              <string>PDF转Word</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/PDF.svg</normaloff>../../../resources/icons/PDF.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/word.svg</normaloff>:/icons/resources/icons/word.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -355,25 +388,82 @@ QPushButton:pressed {
          <property name="checkable">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QCommandLinkButton" name="commandLinkButton_md2pdf">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_img2pdf">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>Markdown转PDF</string>
+             <string>图片转PDF</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/图片.svg</normaloff>:/icons/resources/icons/图片.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="description">
+             <string>把图片转为PDF格式</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QCommandLinkButton" name="commandLinkButton_web2pdf">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>网页转PDF</string>
             </property>
+            <property name="icon">
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/html.svg</normaloff>:/icons/resources/icons/html.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="description">
+             <string>把网页或HTML文件转成PDF</string>
+            </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QCommandLinkButton" name="commandLinkButton_img2pdf">
+          <item row="1" column="0">
+           <widget class="QCommandLinkButton" name="commandLinkButton_md2pdf">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>图片转PDF</string>
+             <string>Markdown转PDF</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/markdown.svg</normaloff>:/icons/resources/icons/markdown.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="description">
+             <string>把Markdown文档转成PDF</string>
             </property>
            </widget>
           </item>
@@ -383,7 +473,7 @@ QPushButton:pressed {
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -399,6 +489,8 @@ QPushButton:pressed {
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

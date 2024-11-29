@@ -1,10 +1,10 @@
 QPushButton#border{
     border-radius: 5px;
     padding: 8px;
-    border-right: 2px solid #888888;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
-    border-bottom: 2px solid #888888;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
-    border-left: 1px solid #ffffff;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
-    border-top: 1px solid #ffffff;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
+    border-right: 2px solid #888888;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
+    border-bottom: 2px solid #888888;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
+    border-left: 1px solid #ffffff;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
+    border-top: 1px solid #ffffff;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
 }
 QPushButton#border:hover {
     background-color: lightgray;
@@ -13,10 +13,10 @@ QMessageBox QPushButton{
     background-color: rgb(250,252,253);
     border-radius: 5px;
     padding: 8px;
-    border-right: 2px solid #888888;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
-    border-bottom: 2px solid #888888;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
-    border-left: 1px solid #ffffff;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
-    border-top: 1px solid #ffffff;  /* °´Å¥±ß¿ò£¬2px¿í£¬°×É« */
+    border-right: 2px solid #888888;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
+    border-bottom: 2px solid #888888;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
+    border-left: 1px solid #ffffff;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
+    border-top: 1px solid #ffffff;  /* æŒ‰é’®è¾¹æ¡†ï¼Œ2pxå®½ï¼Œç™½è‰² */
 }
 QPushButton{
     background-color: rgb(238,244,249);
@@ -27,9 +27,10 @@ QPushButton:hover {
     background-color: lightgray;
 }
 QWidget{
-    background: rgb(238,244,249);
+    background: rgb(240,242,245);
 }
-/*È¥µôitemĞéÏß±ß¿ò*/
+
+/*å»æ‰itemè™šçº¿è¾¹æ¡†*/
 QListWidget, QListView, QTreeWidget, QTreeView {
     outline: 0px;
 }
@@ -38,7 +39,7 @@ QMenu::item:selected {
       color: black;
       background: rgb(230, 235, 240);
 }
-/*ÉèÖÃ×ó²àÑ¡ÏîµÄ×îĞ¡×î´ó¿í¶È,ÎÄ×ÖÑÕÉ«ºÍ±³¾°ÑÕÉ«*/
+/*è®¾ç½®å·¦ä¾§é€‰é¡¹çš„æœ€å°æœ€å¤§å®½åº¦,æ–‡å­—é¢œè‰²å’ŒèƒŒæ™¯é¢œè‰²*/
 QListWidget {
     color: black;
     border:none;
@@ -49,7 +50,7 @@ QListWidget::item{
 QListWidget::item:hover {
     background: rgb(230, 235, 240);
 }
-/*±»Ñ¡ÖĞÊ±µÄ±³¾°ÑÕÉ«ºÍ×ó±ß¿òÑÕÉ«*/
+/*è¢«é€‰ä¸­æ—¶çš„èƒŒæ™¯é¢œè‰²å’Œå·¦è¾¹æ¡†é¢œè‰²*/
 QListWidget::item:selected {
     background: rgb(230, 235, 240);
     border-left: 2px solid rgb(62, 62, 62);
@@ -72,7 +73,7 @@ QListView::item:selected {
     color: black;
     font-weight: bold;
 }
-/*Êó±êĞüÍ£ÑÕÉ«*/
+/*é¼ æ ‡æ‚¬åœé¢œè‰²*/
 HistoryPanel::item:hover {
     background: rgb(52, 52, 52);
 }
@@ -161,21 +162,21 @@ QComboBox:hover
     background-color:rgba(230,230,230,200);
     border:1px solid rgb(31,156,220) ;
 }
- /*ÏÂÀ­¼ıÍ·µÄ±ß¿ò*/
+ /*ä¸‹æ‹‰ç®­å¤´çš„è¾¹æ¡†*/
 QComboBox::drop-down
 {
     border:none;
 }
 
- /*ÏÂÀ­¼ıÍ·ÑùÊ½*/
+ /*ä¸‹æ‹‰ç®­å¤´æ ·å¼*/
 QComboBox::down-arrow
 {
-    right:0px;/*¿ØÖÆ¼ıÍ·×óÓÒÆ«ÒÆ*/
+    right:0px;/*æ§åˆ¶ç®­å¤´å·¦å³åç§»*/
     width: 16px;
     height: 16px;
     image: url(:/icons/resources/icons/down.svg);
 }
- /*ÏÂÀ­¼ıÍ·µã»÷ÑùÊ½*/
+ /*ä¸‹æ‹‰ç®­å¤´ç‚¹å‡»æ ·å¼*/
 QComboBox::down-arrow:on
 {
     width: 16px;
@@ -199,28 +200,28 @@ QLineEdit:hover
 }
 
 QTabBar::tab {
-    background-color:  rgb(238,244,249);  /* ÉèÖÃµ¼º½À¸±³¾°ÑÕÉ« */
-    color: black;               /* ÉèÖÃµ¼º½À¸ÎÄ×ÖÑÕÉ« */
-    padding: 8px 16px;          /* ÉèÖÃµ¼º½À¸±êÇ©ÄÚ±ß¾à */
-    border-top-left-radius: 4px; /* ÉèÖÃ×óÉÏ½ÇÔ²½Ç */
-    border-top-right-radius: 4px; /* ÉèÖÃÓÒÉÏ½ÇÔ²½Ç */
+    background-color:  rgb(238,244,249);  /* è®¾ç½®å¯¼èˆªæ èƒŒæ™¯é¢œè‰² */
+    color: black;               /* è®¾ç½®å¯¼èˆªæ æ–‡å­—é¢œè‰² */
+    padding: 8px 16px;          /* è®¾ç½®å¯¼èˆªæ æ ‡ç­¾å†…è¾¹è· */
+    border-top-left-radius: 4px; /* è®¾ç½®å·¦ä¸Šè§’åœ†è§’ */
+    border-top-right-radius: 4px; /* è®¾ç½®å³ä¸Šè§’åœ†è§’ */
 }
 
 QTabBar::tab:selected {
-    background-color: rgb(230, 235, 240);  /* ÉèÖÃÑ¡ÖĞ±êÇ©µÄ±³¾°ÑÕÉ« */
+    background-color: rgb(230, 235, 240);  /* è®¾ç½®é€‰ä¸­æ ‡ç­¾çš„èƒŒæ™¯é¢œè‰² */
 }
 
 QTabWidget::pane {
-    border: 0; /* È¥µôTabWidgetµÄ±ß¿ò */
+    border: 0; /* å»æ‰TabWidgetçš„è¾¹æ¡† */
 }
 
 QSpinBox::up-button{
-    border-image:url(:/icons/resources/icons/¼Ó.svg);
+    border-image:url(:/icons/resources/icons/åŠ .svg);
     subcontrol-position:right;
     width:10px;height:10px;
 }
 QSpinBox::down-button{
-    border-image:url(:/icons/resources/icons/¼õ.svg);
+    border-image:url(:/icons/resources/icons/å‡.svg);
     subcontrol-position:left;
     width:10px;height:10px;
 }
@@ -266,14 +267,14 @@ QSlider::sub-page:horizontal{
 }
 
 QGroupBox {
-    border: none;   // ±ß¿ò¿í¶È¡¢ÑÕÉ«
-    border-radius: 8px;         // Ô²½Ç°ë¾¶
-    margin-top: 20px;           // ±êÌâÓë¶¥²¿±ß¿òµÄ¾àÀë
+    border: none;   // è¾¹æ¡†å®½åº¦ã€é¢œè‰²
+    border-radius: 8px;         // åœ†è§’åŠå¾„
+    margin-top: 20px;           // æ ‡é¢˜ä¸é¡¶éƒ¨è¾¹æ¡†çš„è·ç¦»
 }
 QGroupBox::title { "
-    subcontrol-origin: margin;  // ±êÌâµÄ¶ÔÆë·½Ê½£¬ÒÀÀµ margin
-    subcontrol-position: top left;  // ±êÌâÎ»ÖÃ£¨¶¥²¿×ó¶ÔÆë£©
-    padding: 0 10px;            // ±êÌâÓë±ß¿òµÄÄÚ±ß¾à
-    color: #2ecc71;             // ±êÌâÎÄ×ÖÑÕÉ«
-    font-weight: bold;          // ±êÌâÎÄ×Ö¼Ó´Ö
+    subcontrol-origin: margin;  // æ ‡é¢˜çš„å¯¹é½æ–¹å¼ï¼Œä¾èµ– margin
+    subcontrol-position: top left;  // æ ‡é¢˜ä½ç½®ï¼ˆé¡¶éƒ¨å·¦å¯¹é½ï¼‰
+    padding: 0 10px;            // æ ‡é¢˜ä¸è¾¹æ¡†çš„å†…è¾¹è·
+    color: #2ecc71;             // æ ‡é¢˜æ–‡å­—é¢œè‰²
+    font-weight: bold;          // æ ‡é¢˜æ–‡å­—åŠ ç²—
 }

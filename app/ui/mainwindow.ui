@@ -33,6 +33,9 @@
   <property name="accessibleDescription">
    <string>142345</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>

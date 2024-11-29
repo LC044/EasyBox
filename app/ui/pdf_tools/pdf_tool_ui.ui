@@ -12,39 +12,20 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>9</pointsize>
+    <family>微软雅黑</family>
+    <pointsize>12</pointsize>
    </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton{
-    background-color: rgb(250,252,253);
-    border-radius: 5px;
-	font-size:12pt;
+   <string notr="true">QCommandLinkButton{
+    border-radius: 10px;
     padding: 8px;
-    border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-}
-
-
-QCommandLinkButton{
-    background-color: rgb(214,227,242);
-    border-radius: 5px;
-    padding: 8px;
-    border-right: 1px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 1px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 0px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 0px solid #ffffff;  /* 按钮边框，2px宽，白色 */
 }
 QPushButton:hover { 
-	border-right: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-bottom: 2px solid #888888;  /* 按钮边框，2px宽，白色 */
-    border-left: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
-    border-top: 1px solid #ffffff;  /* 按钮边框，2px宽，白色 */
+	background-color: rgb(235,237,239);
 }
 QPushButton:pressed { 
     background-color: lightgray;
@@ -116,6 +97,12 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -141,8 +128,14 @@ QPushButton:pressed {
              <string>PDF加密</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/random.svg</normaloff>../../../resources/icons/random.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/锁.svg</normaloff>:/icons/resources/icons/锁.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -172,6 +165,12 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -197,8 +196,14 @@ QPushButton:pressed {
              <string>PDF解密</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/ratio.svg</normaloff>../../../resources/icons/ratio.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/钥匙.svg</normaloff>:/icons/resources/icons/钥匙.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -228,6 +233,12 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -253,8 +264,14 @@ QPushButton:pressed {
              <string>删除空白页</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/strategy.svg</normaloff>../../../resources/icons/strategy.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/删除.svg</normaloff>:/icons/resources/icons/删除.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -275,7 +292,7 @@ QPushButton:pressed {
              <bool>false</bool>
             </property>
             <property name="description">
-             <string>批量删除PDF文件中的空白页</string>
+             <string extracomment="1324564">批量删除PDF文件中的空白页</string>
             </property>
            </widget>
           </item>
@@ -299,6 +316,12 @@ QPushButton:pressed {
            <widget class="QCommandLinkButton" name="commandLinkButton_merge_pdf">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
             </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
@@ -326,7 +349,7 @@ QPushButton:pressed {
             </property>
             <property name="icon">
              <iconset resource="../../../resource.qrc">
-              <normaloff>:/icons/resources/icons/pdf.svg</normaloff>:/icons/resources/icons/pdf.svg</iconset>
+              <normaloff>:/icons/resources/icons/合并.svg</normaloff>:/icons/resources/icons/合并.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -393,8 +416,14 @@ QPushButton:pressed {
              <string>拆分</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../../resources/icons/strategy.svg</normaloff>../../../resources/icons/strategy.svg</iconset>
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/拆分.svg</normaloff>:/icons/resources/icons/拆分.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -421,8 +450,24 @@ QPushButton:pressed {
           </item>
           <item row="5" column="1">
            <widget class="QCommandLinkButton" name="commandLinkButton_add_watermark">
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>添加水印</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../resource.qrc">
+              <normaloff>:/icons/resources/icons/水印.svg</normaloff>:/icons/resources/icons/水印.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="description">
              <string>在PDF中添加自定义水印</string>

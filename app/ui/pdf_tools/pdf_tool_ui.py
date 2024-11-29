@@ -26,35 +26,15 @@ class Ui_Form(object):
             Form.setObjectName(u"Form")
         Form.resize(504, 508)
         font = QFont()
-        font.setPointSize(9)
+        font.setFamilies([u"\u5fae\u8f6f\u96c5\u9ed1"])
+        font.setPointSize(12)
         Form.setFont(font)
-        Form.setStyleSheet(u"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"	font-size:12pt;\n"
+        Form.setStyleSheet(u"QCommandLinkButton{\n"
+"    border-radius: 10px;\n"
 "    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"\n"
-"\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(214,227,242);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 0px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 0px"
-                        " solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
 "}\n"
 "QPushButton:hover { \n"
-"	border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
+"	background-color: rgb(235,237,239);\n"
 "}\n"
 "QPushButton:pressed { \n"
 "    background-color: lightgray;\n"
@@ -98,6 +78,10 @@ class Ui_Form(object):
         self.commandLinkButton_encrypt = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_encrypt.setObjectName(u"commandLinkButton_encrypt")
         self.commandLinkButton_encrypt.setEnabled(True)
+        font1 = QFont()
+        font1.setFamilies([u"Segoe UI"])
+        font1.setPointSize(12)
+        self.commandLinkButton_encrypt.setFont(font1)
         self.commandLinkButton_encrypt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_encrypt.setTabletTracking(False)
         self.commandLinkButton_encrypt.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -106,8 +90,9 @@ class Ui_Form(object):
         self.commandLinkButton_encrypt.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_encrypt.setAutoFillBackground(False)
         icon = QIcon()
-        icon.addFile(u"../../../resources/icons/random.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/icons/resources/icons/\u9501.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_encrypt.setIcon(icon)
+        self.commandLinkButton_encrypt.setIconSize(QSize(50, 50))
         self.commandLinkButton_encrypt.setCheckable(True)
         self.commandLinkButton_encrypt.setChecked(False)
         self.commandLinkButton_encrypt.setAutoRepeat(False)
@@ -120,6 +105,7 @@ class Ui_Form(object):
         self.commandLinkButton_decrypt = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_decrypt.setObjectName(u"commandLinkButton_decrypt")
         self.commandLinkButton_decrypt.setEnabled(True)
+        self.commandLinkButton_decrypt.setFont(font1)
         self.commandLinkButton_decrypt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_decrypt.setTabletTracking(False)
         self.commandLinkButton_decrypt.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -128,8 +114,9 @@ class Ui_Form(object):
         self.commandLinkButton_decrypt.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_decrypt.setAutoFillBackground(False)
         icon1 = QIcon()
-        icon1.addFile(u"../../../resources/icons/ratio.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/icons/resources/icons/\u94a5\u5319.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_decrypt.setIcon(icon1)
+        self.commandLinkButton_decrypt.setIconSize(QSize(50, 50))
         self.commandLinkButton_decrypt.setCheckable(False)
         self.commandLinkButton_decrypt.setChecked(False)
         self.commandLinkButton_decrypt.setAutoRepeat(False)
@@ -142,6 +129,7 @@ class Ui_Form(object):
         self.commandLinkButton_delete_blank_pages = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_delete_blank_pages.setObjectName(u"commandLinkButton_delete_blank_pages")
         self.commandLinkButton_delete_blank_pages.setEnabled(True)
+        self.commandLinkButton_delete_blank_pages.setFont(font1)
         self.commandLinkButton_delete_blank_pages.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_delete_blank_pages.setTabletTracking(False)
         self.commandLinkButton_delete_blank_pages.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -150,8 +138,9 @@ class Ui_Form(object):
         self.commandLinkButton_delete_blank_pages.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_delete_blank_pages.setAutoFillBackground(False)
         icon2 = QIcon()
-        icon2.addFile(u"../../../resources/icons/strategy.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/icons/resources/icons/\u5220\u9664.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_delete_blank_pages.setIcon(icon2)
+        self.commandLinkButton_delete_blank_pages.setIconSize(QSize(50, 50))
         self.commandLinkButton_delete_blank_pages.setCheckable(True)
         self.commandLinkButton_delete_blank_pages.setChecked(False)
         self.commandLinkButton_delete_blank_pages.setAutoRepeat(False)
@@ -173,6 +162,7 @@ class Ui_Form(object):
         self.commandLinkButton_merge_pdf = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_merge_pdf.setObjectName(u"commandLinkButton_merge_pdf")
         self.commandLinkButton_merge_pdf.setEnabled(True)
+        self.commandLinkButton_merge_pdf.setFont(font1)
         self.commandLinkButton_merge_pdf.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_merge_pdf.setTabletTracking(False)
         self.commandLinkButton_merge_pdf.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -181,7 +171,7 @@ class Ui_Form(object):
         self.commandLinkButton_merge_pdf.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_merge_pdf.setAutoFillBackground(False)
         icon3 = QIcon()
-        icon3.addFile(u":/icons/resources/icons/pdf.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/icons/resources/icons/\u5408\u5e76.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_merge_pdf.setIcon(icon3)
         self.commandLinkButton_merge_pdf.setIconSize(QSize(50, 50))
         self.commandLinkButton_merge_pdf.setCheckable(True)
@@ -196,9 +186,6 @@ class Ui_Form(object):
         self.commandLinkButton_split_pdf = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_split_pdf.setObjectName(u"commandLinkButton_split_pdf")
         self.commandLinkButton_split_pdf.setEnabled(True)
-        font1 = QFont()
-        font1.setFamilies([u"Segoe UI"])
-        font1.setPointSize(12)
         self.commandLinkButton_split_pdf.setFont(font1)
         self.commandLinkButton_split_pdf.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_split_pdf.setTabletTracking(False)
@@ -207,7 +194,10 @@ class Ui_Form(object):
         self.commandLinkButton_split_pdf.setToolTipDuration(-1)
         self.commandLinkButton_split_pdf.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_split_pdf.setAutoFillBackground(False)
-        self.commandLinkButton_split_pdf.setIcon(icon2)
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/resources/icons/\u62c6\u5206.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.commandLinkButton_split_pdf.setIcon(icon4)
+        self.commandLinkButton_split_pdf.setIconSize(QSize(50, 50))
         self.commandLinkButton_split_pdf.setCheckable(True)
         self.commandLinkButton_split_pdf.setChecked(False)
         self.commandLinkButton_split_pdf.setAutoRepeat(False)
@@ -219,6 +209,11 @@ class Ui_Form(object):
 
         self.commandLinkButton_add_watermark = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_add_watermark.setObjectName(u"commandLinkButton_add_watermark")
+        self.commandLinkButton_add_watermark.setFont(font1)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/resources/icons/\u6c34\u5370.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.commandLinkButton_add_watermark.setIcon(icon5)
+        self.commandLinkButton_add_watermark.setIconSize(QSize(50, 50))
 
         self.gridLayout_3.addWidget(self.commandLinkButton_add_watermark, 5, 1, 1, 1)
 

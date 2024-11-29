@@ -18,54 +18,37 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QCommandLinkButton, QFrame, QGridLayout,
     QGroupBox, QScrollArea, QSizePolicy, QSpacerItem,
     QVBoxLayout, QWidget)
+import resource_rc
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(448, 516)
-        Form.setStyleSheet(u"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"	font-size:12pt;\n"
+        Form.resize(448, 524)
+        font = QFont()
+        font.setPointSize(12)
+        Form.setFont(font)
+        Form.setStyleSheet(u"QCommandLinkButton{\n"
+"    border-radius: 10px;\n"
 "    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"\n"
-"\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(214,227,242);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 0px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 0px"
-                        " solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
 "}\n"
 "QPushButton:hover { \n"
-"	border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
+"	background-color: rgb(235,237,239);\n"
 "}\n"
 "QPushButton:pressed { \n"
 "    background-color: lightgray;\n"
 "	border: 2px solid #888888;\n"
 "}")
-        self.verticalLayout = QVBoxLayout(Form)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.gridLayout_2 = QGridLayout(Form)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.scrollArea = QScrollArea(Form)
         self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setFrameShape(QFrame.NoFrame)
+        self.scrollArea.setFrameShape(QFrame.Shape.NoFrame)
         self.scrollArea.setLineWidth(0)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 430, 498))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 446, 517))
         self.verticalLayout_8 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.groupBox = QGroupBox(self.scrollAreaWidgetContents)
@@ -76,7 +59,7 @@ class Ui_Form(object):
         self.line_5 = QFrame(self.groupBox)
         self.line_5.setObjectName(u"line_5")
         self.line_5.setStyleSheet(u"border-bottom: 2px solid #888888;")
-        self.line_5.setFrameShadow(QFrame.Raised)
+        self.line_5.setFrameShadow(QFrame.Shadow.Raised)
         self.line_5.setLineWidth(5)
         self.line_5.setFrameShape(QFrame.Shape.HLine)
 
@@ -90,16 +73,21 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.commandLinkButton_pdf2txt.sizePolicy().hasHeightForWidth())
         self.commandLinkButton_pdf2txt.setSizePolicy(sizePolicy)
+        font1 = QFont()
+        font1.setFamilies([u"Segoe UI"])
+        font1.setPointSize(12)
+        self.commandLinkButton_pdf2txt.setFont(font1)
         self.commandLinkButton_pdf2txt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2txt.setTabletTracking(False)
-        self.commandLinkButton_pdf2txt.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2txt.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2txt.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2txt.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2txt.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2txt.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2txt.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2txt.setAutoFillBackground(False)
         icon = QIcon()
-        icon.addFile(u"../../../resources/icons/random.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/icons/resources/icons/txt.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_pdf2txt.setIcon(icon)
+        self.commandLinkButton_pdf2txt.setIconSize(QSize(50, 50))
         self.commandLinkButton_pdf2txt.setCheckable(True)
         self.commandLinkButton_pdf2txt.setChecked(False)
         self.commandLinkButton_pdf2txt.setAutoRepeat(False)
@@ -114,16 +102,18 @@ class Ui_Form(object):
         self.commandLinkButton_pdf2excel.setEnabled(True)
         sizePolicy.setHeightForWidth(self.commandLinkButton_pdf2excel.sizePolicy().hasHeightForWidth())
         self.commandLinkButton_pdf2excel.setSizePolicy(sizePolicy)
+        self.commandLinkButton_pdf2excel.setFont(font1)
         self.commandLinkButton_pdf2excel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2excel.setTabletTracking(False)
-        self.commandLinkButton_pdf2excel.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2excel.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2excel.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2excel.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2excel.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2excel.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2excel.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2excel.setAutoFillBackground(False)
         icon1 = QIcon()
-        icon1.addFile(u"../../../resources/icons/ratio.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/icons/resources/icons/Excel.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_pdf2excel.setIcon(icon1)
+        self.commandLinkButton_pdf2excel.setIconSize(QSize(50, 50))
         self.commandLinkButton_pdf2excel.setCheckable(False)
         self.commandLinkButton_pdf2excel.setChecked(False)
         self.commandLinkButton_pdf2excel.setAutoRepeat(False)
@@ -138,16 +128,18 @@ class Ui_Form(object):
         self.commandLinkButton_pdf2img.setEnabled(True)
         sizePolicy.setHeightForWidth(self.commandLinkButton_pdf2img.sizePolicy().hasHeightForWidth())
         self.commandLinkButton_pdf2img.setSizePolicy(sizePolicy)
+        self.commandLinkButton_pdf2img.setFont(font1)
         self.commandLinkButton_pdf2img.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2img.setTabletTracking(False)
-        self.commandLinkButton_pdf2img.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2img.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2img.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2img.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2img.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2img.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2img.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2img.setAutoFillBackground(False)
         icon2 = QIcon()
-        icon2.addFile(u"../../../resources/icons/strategy.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/icons/resources/icons/\u56fe\u7247.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_pdf2img.setIcon(icon2)
+        self.commandLinkButton_pdf2img.setIconSize(QSize(50, 50))
         self.commandLinkButton_pdf2img.setCheckable(True)
         self.commandLinkButton_pdf2img.setChecked(False)
         self.commandLinkButton_pdf2img.setAutoRepeat(False)
@@ -162,16 +154,18 @@ class Ui_Form(object):
         self.commandLinkButton_pdf2word.setEnabled(True)
         sizePolicy.setHeightForWidth(self.commandLinkButton_pdf2word.sizePolicy().hasHeightForWidth())
         self.commandLinkButton_pdf2word.setSizePolicy(sizePolicy)
+        self.commandLinkButton_pdf2word.setFont(font1)
         self.commandLinkButton_pdf2word.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_pdf2word.setTabletTracking(False)
-        self.commandLinkButton_pdf2word.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_pdf2word.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_pdf2word.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_pdf2word.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_pdf2word.setToolTipDuration(-1)
-        self.commandLinkButton_pdf2word.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_pdf2word.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_pdf2word.setAutoFillBackground(False)
         icon3 = QIcon()
-        icon3.addFile(u"../../../resources/icons/PDF.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/icons/resources/icons/word.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_pdf2word.setIcon(icon3)
+        self.commandLinkButton_pdf2word.setIconSize(QSize(50, 50))
         self.commandLinkButton_pdf2word.setCheckable(True)
         self.commandLinkButton_pdf2word.setChecked(False)
         self.commandLinkButton_pdf2word.setAutoRepeat(False)
@@ -188,22 +182,35 @@ class Ui_Form(object):
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.groupBox_2.setFlat(True)
         self.groupBox_2.setCheckable(False)
-        self.gridLayout_2 = QGridLayout(self.groupBox_2)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.commandLinkButton_md2pdf = QCommandLinkButton(self.groupBox_2)
-        self.commandLinkButton_md2pdf.setObjectName(u"commandLinkButton_md2pdf")
+        self.gridLayout_3 = QGridLayout(self.groupBox_2)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.commandLinkButton_img2pdf = QCommandLinkButton(self.groupBox_2)
+        self.commandLinkButton_img2pdf.setObjectName(u"commandLinkButton_img2pdf")
+        self.commandLinkButton_img2pdf.setFont(font1)
+        self.commandLinkButton_img2pdf.setIcon(icon2)
+        self.commandLinkButton_img2pdf.setIconSize(QSize(50, 50))
 
-        self.gridLayout_2.addWidget(self.commandLinkButton_md2pdf, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.commandLinkButton_img2pdf, 0, 0, 1, 1)
 
         self.commandLinkButton_web2pdf = QCommandLinkButton(self.groupBox_2)
         self.commandLinkButton_web2pdf.setObjectName(u"commandLinkButton_web2pdf")
+        self.commandLinkButton_web2pdf.setFont(font1)
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/resources/icons/html.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.commandLinkButton_web2pdf.setIcon(icon4)
+        self.commandLinkButton_web2pdf.setIconSize(QSize(50, 50))
 
-        self.gridLayout_2.addWidget(self.commandLinkButton_web2pdf, 0, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.commandLinkButton_web2pdf, 0, 1, 1, 1)
 
-        self.commandLinkButton_img2pdf = QCommandLinkButton(self.groupBox_2)
-        self.commandLinkButton_img2pdf.setObjectName(u"commandLinkButton_img2pdf")
+        self.commandLinkButton_md2pdf = QCommandLinkButton(self.groupBox_2)
+        self.commandLinkButton_md2pdf.setObjectName(u"commandLinkButton_md2pdf")
+        self.commandLinkButton_md2pdf.setFont(font1)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/resources/icons/markdown.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.commandLinkButton_md2pdf.setIcon(icon5)
+        self.commandLinkButton_md2pdf.setIconSize(QSize(50, 50))
 
-        self.gridLayout_2.addWidget(self.commandLinkButton_img2pdf, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.commandLinkButton_md2pdf, 1, 0, 1, 1)
 
 
         self.verticalLayout_8.addWidget(self.groupBox_2)
@@ -214,7 +221,7 @@ class Ui_Form(object):
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        self.verticalLayout.addWidget(self.scrollArea)
+        self.gridLayout_2.addWidget(self.scrollArea, 0, 0, 1, 1)
 
 
         self.retranslateUi(Form)
@@ -234,8 +241,11 @@ class Ui_Form(object):
         self.commandLinkButton_pdf2word.setText(QCoreApplication.translate("Form", u"PDF\u8f6cWord", None))
         self.commandLinkButton_pdf2word.setDescription(QCoreApplication.translate("Form", u"\u5c06PDF\u8f6c\u4e3aWord\u683c\u5f0f", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("Form", u"\u8f6c\u6362\u6210PDF", None))
-        self.commandLinkButton_md2pdf.setText(QCoreApplication.translate("Form", u"Markdown\u8f6cPDF", None))
-        self.commandLinkButton_web2pdf.setText(QCoreApplication.translate("Form", u"\u7f51\u9875\u8f6cPDF", None))
         self.commandLinkButton_img2pdf.setText(QCoreApplication.translate("Form", u"\u56fe\u7247\u8f6cPDF", None))
+        self.commandLinkButton_img2pdf.setDescription(QCoreApplication.translate("Form", u"\u628a\u56fe\u7247\u8f6c\u4e3aPDF\u683c\u5f0f", None))
+        self.commandLinkButton_web2pdf.setText(QCoreApplication.translate("Form", u"\u7f51\u9875\u8f6cPDF", None))
+        self.commandLinkButton_web2pdf.setDescription(QCoreApplication.translate("Form", u"\u628a\u7f51\u9875\u6216HTML\u6587\u4ef6\u8f6c\u6210PDF", None))
+        self.commandLinkButton_md2pdf.setText(QCoreApplication.translate("Form", u"Markdown\u8f6cPDF", None))
+        self.commandLinkButton_md2pdf.setDescription(QCoreApplication.translate("Form", u"\u628aMarkdown\u6587\u6863\u8f6c\u6210PDF", None))
     # retranslateUi
 

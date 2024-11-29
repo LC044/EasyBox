@@ -49,8 +49,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
             self.setStyleSheet(style_content)
             style_qss_file.close()
 
-        self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
-        self.stackedWidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # C尽可能挤压B
+        self.stackedWidget = QtWidgets.QStackedWidget(self)
+        self.stackedWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # C尽可能挤压B
         # font = QtGui.QFont()
         # font.setFamily("Microsoft YaHei UI")
         # font.setPointSize(150)
@@ -60,7 +60,7 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         # self.stackedWidget.setObjectName("stackedWidget")
 
         self.router = Router(self.stackedWidget)
-        self.sidebar = Sidebar(self.stackedWidget, parent=self)
+        self.sidebar = Sidebar(self.stackedWidget, parent=None)
         self.sidebar.btn_setting.clicked.connect(self.show_setting)
         self.sidebar.btn_back.setText('')
         self.sidebar.btn_setting.setIcon(Icon.Setting_Icon)
@@ -69,7 +69,7 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.router.history_changed.connect(self.sidebar.set_turn_back_enable)
         self.horizontalLayout.addWidget(self.sidebar)
         self.horizontalLayout.addWidget(self.stackedWidget)
-
+        self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.setting_view = SettingWindow()
 
         pdf_view = PDFToolControl(self.router, parent=self)

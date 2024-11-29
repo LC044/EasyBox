@@ -20,6 +20,8 @@
     <file>resources/icons/增加.svg</file>
     <file>resources/icons/批量添加.svg</file>
     <file>resources/icons/加.svg</file>
+    <file>resources/icons/html.svg</file>
+    <file>resources/icons/markdown.svg</file>
     <file>resources/icons/减.svg</file>
     <file>resources/icons/工具箱.svg</file>
     <file>resources/icons/左展开.svg</file>
@@ -30,7 +32,16 @@
     <file>resources/icons/批量操作.svg</file>
     <file>resources/icons/weixin.png</file>
     <file>resources/icons/录屏.svg</file>
+    <file>resources/icons/合并.svg</file>
     <file>resources/icons/视频.svg</file>
+    <file>resources/icons/拆分.svg</file>
+    <file>resources/icons/钥匙.svg</file>
+    <file>resources/icons/锁.svg</file>
+    <file>resources/icons/删除.svg</file>
+    <file>resources/icons/Excel.svg</file>
+    <file>resources/icons/word.svg</file>
+    <file>resources/icons/水印.svg</file>
+    <file>resources/icons/txt.svg</file>
   </qresource>
   <qresource prefix="/data">
     <file>resources/QSS/style.qss</file>
