@@ -7,6 +7,7 @@ from app.ui.doc_convert.pdf2image.pdf2image import Pdf2ImageControl
 from app.ui.doc_convert.pdf2wordui.pdf2word import Pdf2WordControl
 from app.ui.doc_convert.doc_convert_ui import Ui_Form
 from app.ui.components.router import Router
+from app.ui.doc_convert.web2pdf.web2pdf import Web2PdfControl
 from app.ui.global_signal import globalSignals
 
 
@@ -18,6 +19,7 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
 
     def __init__(self, router: Router, parent=None):
         super(DocConvertControl, self).__init__(parent)
+        self.web2pdf_view = None
         self.pdf2image_view = None
         self.router = router
         self.router_path = (self.parent().router_path if self.parent() else '') + '/文档转换'
@@ -49,7 +51,7 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
         self.commandLinkButton_pdf2txt.clicked.connect(globalSignals.not_support)
         self.commandLinkButton_pdf2excel.clicked.connect(globalSignals.not_support)
         self.commandLinkButton_md2pdf.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_web2pdf.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_web2pdf.clicked.connect(self.web2pdf)
         self.commandLinkButton_img2pdf.clicked.connect(globalSignals.not_support)
 
         self.resize(QSize(640, 480))
@@ -75,6 +77,20 @@ class DocConvertControl(QWidget, Ui_Form, QCursorGif):
             self.router.navigate(self.pdf2image_view.router_path)
         else:
             self.router.navigate(self.pdf2image_view.router_path)
+
+    def web2pdf(self):
+        if not self.web2pdf_view:
+            self.web2pdf_view = Web2PdfControl(router=self.router, parent=self if self.parent() else None)
+            self.web2pdf_view.okSignal.connect(self.web2pdf_finish)
+            self.router.add_route(self.web2pdf_view.router_path, self.web2pdf_view)
+            self.child_routes[self.web2pdf_view.router_path] = 0
+            self.childRouterSignal.emit(self.web2pdf_view.router_path)
+            self.router.navigate(self.web2pdf_view.router_path)
+        else:
+            self.router.navigate(self.web2pdf_view.router_path)
+
+    def web2pdf_finish(self):
+        self.web2pdf_view = None
 
     def pdf2image_finish(self):
         self.pdf2image_view = None

@@ -9,6 +9,7 @@
 @Description : 
 """
 import os.path
+import platform
 import re
 from datetime import datetime
 
@@ -93,5 +94,95 @@ def extract_datetime_from_filename(filename) -> datetime | None:
     return None
 
 
+import os
+from pathlib import Path
+
+
+def get_system_download_dir():
+    system = platform.system()
+
+    if system == 'Windows':
+        # Windows: 使用注册表获取下载目录
+        import winreg
+        try:
+            # 打开注册表键 HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+            reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                     r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders")
+            path, _ = winreg.QueryValueEx(reg_key, '{374DE290-123F-4565-9164-39C4925E467B}')
+            return os.path.expandvars(path)
+        except FileNotFoundError:
+            try:
+                # 打开注册表键 HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                         r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders")
+                path, _ = winreg.QueryValueEx(reg_key, '{7D83EE9B-2244-4E70-B1F5-5393042AF1E4}')
+                return os.path.expandvars(path)
+            except FileNotFoundError:
+                # 如果未找到，返回默认的 Downloads 路径
+                return os.path.expanduser('~\\Downloads')
+
+    elif system == 'Darwin':  # macOS
+        # macOS 默认下载目录是 ~/Downloads
+        return os.path.expanduser('~/Downloads')
+
+    elif system == 'Linux':
+        # Linux 通常默认下载目录是 ~/Downloads
+        return os.path.expanduser('~/Downloads')
+
+    else:
+        return '.'  # 如果是未知的操作系统，返回 None
+
+
+def get_system_document_dir():
+    system = platform.system()
+
+    if system == 'Windows':
+        # Windows 使用注册表获取
+        import winreg
+        try:
+            reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                     r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders")
+            path, _ = winreg.QueryValueEx(reg_key, 'Personal')
+            return os.path.expandvars(path)
+        except FileNotFoundError:
+            return os.path.expanduser('~')
+
+    elif system == 'Darwin':  # macOS
+        return os.path.expanduser('~/Documents')
+
+    elif system == 'Linux':
+        # Linux 通常使用 ~/Documents
+        return os.path.expanduser('~/Documents')
+
+    return '.'  # 未知系统
+
+
+def get_system_desktop_dir():
+    system = platform.system()
+
+    if system == 'Windows':
+        # Windows 使用注册表获取
+        import winreg
+        try:
+            reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                     r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders")
+            path, _ = winreg.QueryValueEx(reg_key, 'Desktop')
+            return os.path.expandvars(path)
+        except FileNotFoundError:
+            return os.path.expanduser('~')
+
+    elif system == 'Darwin':  # macOS
+        return os.path.expanduser('~/Documents')
+
+    elif system == 'Linux':
+        # Linux 通常使用 ~/Documents
+        return os.path.expanduser('~/Documents')
+
+    return '.'  # 未知系统
+
+
 if __name__ == '__main__':
-    pass
+    print(get_system_document_dir())
+    print(get_system_download_dir())
+    print(get_system_desktop_dir())
+

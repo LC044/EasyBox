@@ -23,12 +23,19 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
         self.child_routes = {}
         self.merge_view = None
         self.running_flag = False
+        self.init_ui()
         self.setupUi(self)
         # 设置忙碌光标图片数组
         self.initCursor([':/icons/icons/Cursors/%d.png' %
                          i for i in range(8)], self)
         self.setCursorTimeout(100)
-        self.init_ui()
+
+        self.commandLinkButton_merge_pdf.clicked.connect(self.merge_pdf)
+        self.commandLinkButton_split_pdf.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_encrypt.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_decrypt.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_delete_blank_pages.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_add_watermark.clicked.connect(globalSignals.not_support)
 
     def init_ui(self):
         if not self.parent():
@@ -42,14 +49,6 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
                 style_content = stream.readAll()
                 self.setStyleSheet(style_content)
                 style_qss_file.close()
-        self.commandLinkButton_merge_pdf.clicked.connect(self.merge_pdf)
-
-        self.commandLinkButton_split_pdf.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_encrypt.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_decrypt.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_delete_blank_pages.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_add_watermark.clicked.connect(globalSignals.not_support)
-
         self.resize(QSize(640, 480))
 
     def merge_pdf(self):

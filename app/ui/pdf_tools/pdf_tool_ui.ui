@@ -56,9 +56,6 @@ QPushButton:pressed {
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
         <widget class="QWidget" name="widget_4" native="true">
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="3" column="0" colspan="2">
            <widget class="Line" name="line_5">
@@ -100,7 +97,7 @@ QPushButton:pressed {
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -168,7 +165,7 @@ QPushButton:pressed {
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -236,7 +233,7 @@ QPushButton:pressed {
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -320,7 +317,7 @@ QPushButton:pressed {
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -388,7 +385,7 @@ QPushButton:pressed {
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -453,7 +450,7 @@ QPushButton:pressed {
             <property name="font">
              <font>
               <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
             <property name="text">
