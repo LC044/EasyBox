@@ -1,23 +1,18 @@
 import os.path
 import random
 import re
-from multiprocessing import Process, Queue
-from typing import List
 
-import fitz
 from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream, QTimer
-from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics, QGuiApplication, QCursor
+from PySide6.QtGui import QDesktopServices, QFontMetrics, QGuiApplication, QCursor
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QPushButton
 
-from app.model import PdfFile
-from app.model.doc_cov_model import Pdf2ImageOpt, Web2PdfOpt
+from app.model.doc_cov_model import Web2PdfOpt
 from app.ui.components import FlowLayout
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
 from app.ui.doc_convert.web2pdf.web2pdf_ui import Ui_web2pdf_view
 from app.util import common
-from app.ui.components.file_list import FileListView
 from app.ui.components.router import Router
 
 

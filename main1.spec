@@ -5,12 +5,14 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[(".\\.venv\\Lib\\site-packages\\docxcompose\\templates",'docxcompose/templates/')],
+    datas=[
+    (".\\.venv\\Lib\\site-packages\\docxcompose\\templates",'docxcompose/templates/'),
+    ],
     hiddenimports=['cv2'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['PySide6.QtQuick', 'PySide6.QtQml', 'PySide6.QtOpenGL'],
     noarchive=False,
 )
 pyz = PYZ(a.pure)
@@ -47,3 +49,18 @@ coll2 = COLLECT(
     upx_exclude=[],
     name='EasyBox',
 )
+
+import os
+import shutil
+
+# 删除 dist 目录中的 opengl32sw.dll
+dist_dir = './dist/EasyBox/_internal'  # 替换成你的应用程序路径
+del_path = [
+    ['PySide6', 'opengl32sw.dll'],
+    ['cv2', 'opencv_videoio_ffmpeg4100_64.dll']
+]
+
+for p in del_path:
+    dll_path = os.path.join(dist_dir,*p)
+    if os.path.exists(dll_path):
+        os.remove(dll_path)
