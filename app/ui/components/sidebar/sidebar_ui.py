@@ -23,11 +23,15 @@ class Ui_Sidebar(object):
     def setupUi(self, Sidebar):
         if not Sidebar.objectName():
             Sidebar.setObjectName(u"Sidebar")
-        Sidebar.resize(297, 820)
+        Sidebar.resize(291, 807)
         Sidebar.setAutoFillBackground(False)
         Sidebar.setStyleSheet(u"QWidget{\n"
 "       background: rgb(235,238,241);\n"
+"	border:none;\n"
 " }\n"
+"QFrame{\n"
+"	border-right: 1px solid  rgb(227,228,222);\n"
+"}\n"
 "QListWidget {\n"
 "margin-left:0px;\n"
 "    border:none;\n"
@@ -44,7 +48,7 @@ class Ui_Sidebar(object):
 "}")
         self.verticalLayout = QVBoxLayout(Sidebar)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(9, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(9, 0, 2, 9)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.btn_back = QPushButton(Sidebar)

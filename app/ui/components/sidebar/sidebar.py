@@ -71,7 +71,7 @@ class Sidebar(QFrame, Ui_Sidebar):
         self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)  # B尽可能小
         # self.btn_setting.setObjectName('border')
         self.expanded = True
-        self.default_width = 120  # 展开时的宽度
+        self.default_width = 125  # 展开时的宽度
         self.collapsed_width = 50  # 折叠时的宽度
         self.buttons = []
         self.btn_back.setEnabled(False)
@@ -82,6 +82,7 @@ class Sidebar(QFrame, Ui_Sidebar):
         self.btn_toggle.clicked.connect(self.toggle_sidebar)
         self.setFixedWidth(self.default_width)
         self.setAutoFillBackground(False)
+        # self.toggle_sidebar()
 
     def set_turn_back_enable(self, flag):
         """

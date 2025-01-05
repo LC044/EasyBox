@@ -70,15 +70,6 @@
     </property>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar">
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>12</pointsize>
-     <bold>false</bold>
-    </font>
-   </property>
-  </widget>
  </widget>
  <resources>
   <include location="../../resource.qrc"/>

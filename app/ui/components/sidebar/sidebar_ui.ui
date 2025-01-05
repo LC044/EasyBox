@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>297</width>
-    <height>820</height>
+    <width>291</width>
+    <height>807</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,11 @@
   <property name="styleSheet">
    <string notr="true">QWidget{
        background: rgb(235,238,241);
+	border:none;
  }
+QFrame{
+	border-right: 1px solid  rgb(227,228,222);
+}
 QListWidget {
 margin-left:0px;
     border:none;
@@ -43,10 +47,10 @@ border:none;
     <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>9</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">

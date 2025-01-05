@@ -16,7 +16,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QSizePolicy,
-    QStatusBar, QWidget)
+    QWidget)
 import resource_rc
 
 class Ui_MainWindow(object):
@@ -34,7 +34,7 @@ class Ui_MainWindow(object):
         icon.addFile(u":/icons/resources/icons/logo.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setAutoFillBackground(True)
-        # MainWindow.setStyleSheet(u"")
+        MainWindow.setStyleSheet(u"")
         MainWindow.setIconSize(QSize(50, 24))
         MainWindow.setDockOptions(QMainWindow.DockOption.AllowTabbedDocks|QMainWindow.DockOption.AnimatedDocks)
         self.centralwidget = QWidget(MainWindow)
@@ -45,10 +45,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(9, 0, 9, 0)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        self.statusbar.setFont(font)
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
 
