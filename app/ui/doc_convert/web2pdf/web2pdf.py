@@ -3,7 +3,7 @@ import random
 import re
 
 from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream, QTimer
-from PySide6.QtGui import QDesktopServices, QFontMetrics, QGuiApplication, QCursor
+from PySide6.QtGui import QDesktopServices, QFontMetrics, QGuiApplication, QCursor, QPixmap, QIcon
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QPushButton
 

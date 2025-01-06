@@ -66,15 +66,13 @@ def valid_time(dt):
 def extract_datetime_from_filename(filename) -> datetime | None:
     # 定义正则表达式，匹配常见的时间格式
     patterns = [
-        r"(\d{8})_(\d{6})",  # 格式：YYYYMMDD_HHMMSS
-        r"(\d{14})",         # 格式：YYYYMMDDHHMMSS
-        r"(\d{4})-(\d{2})-(\d{2})[ _](\d{6})",  # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
-        r"(\d{8})[_|-](\d{6}).*?"  # 格式：YYYYMMDD_HHMMSS[其他内容]
-        r"(\d{8})_(\d{6})",  # 格式：YYYYMMDD_HHMMSS
-        r"(\d{4})_(\d{2})_(\d{2})_(\d{2})-(\d{2})-(\d{2})",  # 格式：YYYY_MM_DD_HH-MM-SS
+        r"(\d{4})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})",  # 格式：YYYY_MM_DD_HH-MM-SS
+        r"(\d{4})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{6})",  # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
+        r"(\d{2})[_\.- ](\d{2})[_\.- ](\d{4})[_\.- ](\d{6})",  # 格式：DD-MM-YYYY_HHMMSS
+        r"(\d{8})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})",  # 格式：YYYYMMDD_HH-MM-SS
+        r"(\d{8})[_-\. ](\d{6})"  # 格式：YYYYMMDD_HHMMSS
         r"(\d{8})T(\d{6})",  # 格式：YYYYMMDDTHHMMSS
-        r"(\d{2})-(\d{2})-(\d{4})_(\d{6})",  # 格式：DD-MM-YYYY_HHMMSS
-        r"(\d{4})\.(\d{2})\.(\d{2})_(\d{2})-(\d{2})-(\d{2})"  # 格式：YYYY.MM.DD_HH-MM-SS
+        r"(\d{14})",         # 格式：YYYYMMDDHHMMSS
         r"(\d{13}|\d{10})",  # 格式：TIMESTAMP (13位毫秒级时间戳)
     ]
     for pattern in patterns:
@@ -103,17 +101,17 @@ def extract_datetime_from_filename(filename) -> datetime | None:
                     continue
             elif len(match.groups()) == 4:  # 格式：YYYY-MM-DD HHMMSS
                 year, month, day, time_str = match.groups()
-                dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%Y-%m-%d %H%M%S")
+                if len(year) == 4:
+                    # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
+                    dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%Y-%m-%d %H%M%S")
+                elif len(year) == 8:
+                    # 格式：YYYYMMDD_HH-MM-SS
+                    dt = datetime.strptime(f"{year} {month}-{day}-{time_str}", "%Y%m%d %H-%-M-%S")
+                else:
+                    # DD-MM-YYYY_HHMMSS
+                    dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%m-%d-%Y %H%M%S")
                 return dt
             elif len(match.groups()) == 6:  # 格式：YYYY_MM_DD_HH-MM-SS
-                year, month, day, hour, minute, second = match.groups()
-                dt = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
-                return dt
-            elif len(match.groups()) == 3:  # 格式：DD-MM-YYYY_HHMMSS
-                day, month, year, time_str = match.groups()
-                dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%Y-%m-%d %H%M%S")
-                return dt
-            elif len(match.groups()) == 5:  # 格式：YYYY.MM.DD_HH-MM-SS
                 year, month, day, hour, minute, second = match.groups()
                 dt = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
                 return dt
