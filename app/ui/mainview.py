@@ -38,9 +38,9 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.initCursor([':/icons/icons/Cursors/%d.png' %
                          i for i in range(8)], self)
         self.setCursorTimeout(100)
-        # pixmap = QPixmap(Icon.logo_ico_path)
-        # icon = QIcon(pixmap)
-        # self.setWindowIcon(icon)
+        pixmap = QPixmap(Icon.logo_ico_path)
+        icon = QIcon(pixmap)
+        self.setWindowIcon(icon)
 
         style_qss_file = QFile(":/data/resources/QSS/style.qss")
         if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
@@ -51,13 +51,6 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
         self.stackedWidget = QtWidgets.QStackedWidget(self)
         self.stackedWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # C尽可能挤压B
-        # font = QtGui.QFont()
-        # font.setFamily("Microsoft YaHei UI")
-        # font.setPointSize(150)
-        # font.setBold(True)
-        # font.setWeight(50)
-        # self.stackedWidget.setFont(font)
-        # self.stackedWidget.setObjectName("stackedWidget")
 
         self.router = Router(self.stackedWidget)
         self.sidebar = Sidebar(self.stackedWidget, parent=None)

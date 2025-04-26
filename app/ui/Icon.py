@@ -7,7 +7,7 @@ var = resource_rc.qt_resource_name
 
 class Icon:
     logo_path = ':/icons/resources/icons/logo.png'
-    logo_ico_path = ':/icons/resources/icons/logo.png'
+    logo_ico_path = ':/icons/resources/icons/logo.ico'
     # MainWindow_Icon = QIcon(':/icons/icons/logo.svg')
     Back = QIcon(':/icons/resources/icons/back.svg')
     Tool_Icon = QIcon(':/icons/resources/icons/工具箱.svg')

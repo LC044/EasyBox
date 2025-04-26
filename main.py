@@ -1,3 +1,4 @@
+import ctypes
 import sys
 import traceback
 from app.config import version
@@ -12,7 +13,7 @@ def excepthook(exc_type, exc_value, traceback_):
     # 将异常信息转为字符串
     # 在这里处理全局异常
     error_message = ExceptionHanding(exc_type, exc_value, traceback_)
-    txt = '您可添加QQ群:620777918发送日志文件以便解决该问题\n入群密码：memotrace0806'
+    txt = ''
     msg = f"Exception Type: {exc_type.__name__}\nException Value: {exc_value}\ndetails: {error_message}\n\n{txt}"
 
     logger.error(f'程序发生了错误:\n\n{msg}')
@@ -44,6 +45,10 @@ from PySide6.QtCore import Qt
 from app.log import logger
 from app.ui import mainview
 
+import platform
+
+if platform.system() == "Windows":
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EasyBox")
 QApplication.setHighDpiScaleFactorRoundingPolicy(
     Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
 
@@ -51,6 +56,9 @@ QApplication.setHighDpiScaleFactorRoundingPolicy(
 class ViewController(QWidget):
     def __init__(self):
         super().__init__()
+        pixmap = QPixmap(Icon.logo_ico_path)
+        icon = QIcon(pixmap)
+        self.setWindowIcon(icon)
         self.viewLogin = None
         self.viewMainWindow = None
         self.viewDecrypt = None
