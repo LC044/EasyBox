@@ -10,6 +10,15 @@
 * 图片工具
   * 根据文件名修改图片拍摄时间
 
+## 相关文章
+
+* [Python合并多个PDF](https://blog.lc044.love/post/11)
+* [PyQt5/PySide6自定义可拖拽列表组件](https://blog.lc044.love/post/12)
+* [基于文件名修改图片的拍摄日期](https://blog.lc044.love/post/14)
+* [基于 PyQt5/PySide6 实现分组列表滚动吸顶效果](https://blog.lc044.love/post/15)
+
+## 运行截图
+
 ![img.png](doc/images/img.png)
 ![img.png](doc/images/img_2.png)
 ![img_1.png](doc/images/img_1.png)
