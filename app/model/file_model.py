@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/20 14:31 
 @Author      : SiYuan 
-@Email       : 863909694@qq.com 
+@Email       : siyuan044@qq.com 
 @File        : EasyBox-file_model.py 
 @Description : 描述各种类型的文件
 """

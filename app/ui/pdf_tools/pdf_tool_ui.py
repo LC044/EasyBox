@@ -25,10 +25,6 @@ class Ui_Form(object):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(504, 508)
-        font = QFont()
-        font.setFamilies([u"\u5fae\u8f6f\u96c5\u9ed1"])
-        font.setPointSize(12)
-        Form.setFont(font)
         Form.setStyleSheet(u"QCommandLinkButton{\n"
 "    border-radius: 10px;\n"
 "    padding: 8px;\n"
@@ -77,9 +73,6 @@ class Ui_Form(object):
         self.commandLinkButton_encrypt = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_encrypt.setObjectName(u"commandLinkButton_encrypt")
         self.commandLinkButton_encrypt.setEnabled(True)
-        font1 = QFont()
-        font1.setFamilies([u"Segoe UI"])
-        self.commandLinkButton_encrypt.setFont(font1)
         self.commandLinkButton_encrypt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_encrypt.setTabletTracking(False)
         self.commandLinkButton_encrypt.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -103,7 +96,6 @@ class Ui_Form(object):
         self.commandLinkButton_decrypt = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_decrypt.setObjectName(u"commandLinkButton_decrypt")
         self.commandLinkButton_decrypt.setEnabled(True)
-        self.commandLinkButton_decrypt.setFont(font1)
         self.commandLinkButton_decrypt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_decrypt.setTabletTracking(False)
         self.commandLinkButton_decrypt.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -127,7 +119,6 @@ class Ui_Form(object):
         self.commandLinkButton_delete_blank_pages = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_delete_blank_pages.setObjectName(u"commandLinkButton_delete_blank_pages")
         self.commandLinkButton_delete_blank_pages.setEnabled(True)
-        self.commandLinkButton_delete_blank_pages.setFont(font1)
         self.commandLinkButton_delete_blank_pages.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_delete_blank_pages.setTabletTracking(False)
         self.commandLinkButton_delete_blank_pages.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -160,7 +151,6 @@ class Ui_Form(object):
         self.commandLinkButton_merge_pdf = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_merge_pdf.setObjectName(u"commandLinkButton_merge_pdf")
         self.commandLinkButton_merge_pdf.setEnabled(True)
-        self.commandLinkButton_merge_pdf.setFont(font1)
         self.commandLinkButton_merge_pdf.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_merge_pdf.setTabletTracking(False)
         self.commandLinkButton_merge_pdf.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -184,7 +174,6 @@ class Ui_Form(object):
         self.commandLinkButton_split_pdf = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_split_pdf.setObjectName(u"commandLinkButton_split_pdf")
         self.commandLinkButton_split_pdf.setEnabled(True)
-        self.commandLinkButton_split_pdf.setFont(font1)
         self.commandLinkButton_split_pdf.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_split_pdf.setTabletTracking(False)
         self.commandLinkButton_split_pdf.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -207,7 +196,6 @@ class Ui_Form(object):
 
         self.commandLinkButton_add_watermark = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_add_watermark.setObjectName(u"commandLinkButton_add_watermark")
-        self.commandLinkButton_add_watermark.setFont(font1)
         icon5 = QIcon()
         icon5.addFile(u":/icons/resources/icons/\u6c34\u5370.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.commandLinkButton_add_watermark.setIcon(icon5)

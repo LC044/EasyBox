@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/10 21:13 
 @Author      : SiYuan 
-@Email       : 863909694@qq.com 
+@Email       : siyuan044@qq.com 
 @File        : EasyBox-encrypt_dialog.py 
 @Description : 
 """

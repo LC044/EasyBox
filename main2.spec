@@ -31,7 +31,7 @@ exe3 = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['logo3.0.ico'],
+    icon=['./resources/logo.png'],
     version='version.txt',
 )
 

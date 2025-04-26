@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/26 0:56 
 @Author      : SiYuan 
-@Email       : 863909694@qq.com 
+@Email       : siyuan044@qq.com 
 @File        : EasyBox-doc_cov_model.py 
 @Description : 描述文档转换的配置选项
 """

@@ -12,8 +12,7 @@
   </property>
   <property name="font">
    <font>
-    <family>微软雅黑</family>
-    <pointsize>12</pointsize>
+    <pointsize>9</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -94,12 +93,6 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -162,12 +155,6 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -229,12 +216,6 @@ QPushButton:pressed {
            <widget class="QCommandLinkButton" name="commandLinkButton_delete_blank_pages">
             <property name="enabled">
              <bool>true</bool>
-            </property>
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>-1</pointsize>
-             </font>
             </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
@@ -314,12 +295,6 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -382,12 +357,6 @@ QPushButton:pressed {
             <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
@@ -447,12 +416,6 @@ QPushButton:pressed {
           </item>
           <item row="5" column="1">
            <widget class="QCommandLinkButton" name="commandLinkButton_add_watermark">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string>添加水印</string>
             </property>

@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/9 16:36 
 @Author      : SiYuan 
-@Email       : 863909694@qq.com 
+@Email       : siyuan044@qq.com 
 @File        : EasyBox-common.py 
 @Description : 
 """
@@ -66,11 +66,11 @@ def valid_time(dt):
 def extract_datetime_from_filename(filename) -> datetime | None:
     # 定义正则表达式，匹配常见的时间格式
     patterns = [
-        r"(\d{4})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})",  # 格式：YYYY_MM_DD_HH-MM-SS
-        r"(\d{4})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{6})",  # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
-        r"(\d{2})[_\.- ](\d{2})[_\.- ](\d{4})[_\.- ](\d{6})",  # 格式：DD-MM-YYYY_HHMMSS
-        r"(\d{8})[_\.- ](\d{2})[_\.- ](\d{2})[_\.- ](\d{2})",  # 格式：YYYYMMDD_HH-MM-SS
-        r"(\d{8})[_-\. ](\d{6})"  # 格式：YYYYMMDD_HHMMSS
+        r"(\d{4})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{2})",  # 格式：YYYY_MM_DD_HH-MM-SS
+        r"(\d{4})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{6})",  # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
+        r"(\d{2})[ _\.-](\d{2})[ _\.-](\d{4})[ _\.-](\d{6})",  # 格式：DD-MM-YYYY_HHMMSS
+        r"(\d{8})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{2})",  # 格式：YYYYMMDD_HH-MM-SS
+        r"(\d{8})[ _\.-](\d{6})"  # 格式：YYYYMMDD_HHMMSS
         r"(\d{8})T(\d{6})",  # 格式：YYYYMMDDTHHMMSS
         r"(\d{14})",         # 格式：YYYYMMDDHHMMSS
         r"(\d{13}|\d{10})",  # 格式：TIMESTAMP (13位毫秒级时间戳)

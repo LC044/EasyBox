@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/29 16:48 
 @Author      : SiYuan 
-@Email       : 863909694@qq.com 
+@Email       : siyuan044@qq.com 
 @File        : EasyBox-__init__.py.py 
 @Description : 
 """

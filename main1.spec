@@ -36,7 +36,7 @@ exe1 = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['logo.png'],
+    icon=['./resources/logo.png'],
     version='version.txt',
 )
 

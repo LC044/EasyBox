@@ -10,11 +10,6 @@
     <height>524</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <pointsize>12</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -49,7 +44,7 @@ QPushButton:pressed {
         <x>0</x>
         <y>0</y>
         <width>446</width>
-        <height>517</height>
+        <height>494</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -91,8 +86,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -165,8 +159,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -239,8 +232,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -313,8 +305,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="cursor">
@@ -391,12 +382,6 @@ QPushButton:pressed {
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
            <widget class="QCommandLinkButton" name="commandLinkButton_img2pdf">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string>图片转PDF</string>
             </property>
@@ -419,8 +404,7 @@ QPushButton:pressed {
            <widget class="QCommandLinkButton" name="commandLinkButton_web2pdf">
             <property name="font">
              <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
@@ -443,12 +427,6 @@ QPushButton:pressed {
           </item>
           <item row="1" column="0">
            <widget class="QCommandLinkButton" name="commandLinkButton_md2pdf">
-            <property name="font">
-             <font>
-              <family>Segoe UI</family>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string>Markdown转PDF</string>
             </property>
