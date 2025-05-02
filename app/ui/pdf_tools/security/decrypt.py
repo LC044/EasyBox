@@ -3,6 +3,7 @@ import io
 import subprocess
 import tempfile
 import threading
+import time
 
 import fitz
 from PyPDF2 import PdfReader, PdfWriter
@@ -42,6 +43,7 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         self.router_path = (self.parent().router_path if self.parent() else '') + '/解密PDF'
         self.child_routes = {}
         self.worker = None
+        self.cracking_canceled = False
         self.setupUi(self)
         # 设置忙碌光标图片数组
         self.initCursor([':/icons/icons/Cursors/%d.png' %
@@ -63,7 +65,6 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         # 创建解密方式下拉框替代单选按钮
         self.combo_decrypt_method = QComboBox(self.groupBox_decrypt_options)
         self.combo_decrypt_method.addItem("常规解密(需要密码)")
-        self.combo_decrypt_method.addItem("无密码解密(适用于部分PDF)")
         self.combo_decrypt_method.addItem("密码破解(自动尝试破解密码)")
         self.horizontal_decrypt_method.addWidget(self.combo_decrypt_method)
         
@@ -76,6 +77,27 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         # 在密码输入前添加解密方式选择
         self.verticalLayout_options.insertLayout(0, self.horizontal_decrypt_method)
         self.verticalLayout_options.addWidget(self.btn_crack_settings)
+        
+        # 添加当前尝试密码显示
+        self.current_pwd_layout = QHBoxLayout()
+        self.label_current_pwd = QLabel("当前尝试密码:")
+        self.current_pwd_layout.addWidget(self.label_current_pwd)
+        
+        self.lineEdit_current_pwd = QLineEdit()
+        self.lineEdit_current_pwd.setReadOnly(True)
+        self.current_pwd_layout.addWidget(self.lineEdit_current_pwd)
+        self.verticalLayout_options.addLayout(self.current_pwd_layout)
+        
+        # 添加终止按钮
+        self.btn_stop_crack = QPushButton("终止破解")
+        self.btn_stop_crack.setStyleSheet("background-color: #ff4d4d; color: white;")
+        self.btn_stop_crack.clicked.connect(self.stop_cracking)
+        self.verticalLayout_options.addWidget(self.btn_stop_crack)
+        
+        # 初始隐藏密码显示和终止按钮
+        self.label_current_pwd.setVisible(False)
+        self.lineEdit_current_pwd.setVisible(False)
+        self.btn_stop_crack.setVisible(False)
         
         # 解密方式变更事件
         self.combo_decrypt_method.currentIndexChanged.connect(self.update_decrypt_ui)
@@ -98,12 +120,12 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         
         # 破解设置
         self.crack_settings = {
-            "mode": "dictionary",  # 'dictionary' 或 'bruteforce'
+            "mode": "bruteforce",  # 'dictionary' 或 'bruteforce'，默认暴力破解
             "dict_path": "",      # 字典文件路径
             "min_length": 4,      # 最小密码长度
             "max_length": 8,      # 最大密码长度
             "charset": "digits",  # 'digits', 'lowercase', 'uppercase', 'all'
-            "timeout": 60         # 超时时间(秒)
+            "timeout": 0         # 超时时间(秒)，0表示不限制
         }
         
     def init_ui(self):
@@ -125,7 +147,7 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         """更新解密选项UI"""
         current_method = self.combo_decrypt_method.currentIndex()
         is_normal_decrypt = current_method == 0
-        is_crack_decrypt = current_method == 2
+        is_crack_decrypt = current_method == 1
         
         # 根据解密方式显示/隐藏密码输入框
         for widget in self.password_widgets:
@@ -134,7 +156,12 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         # 显示或隐藏破解设置按钮
         self.btn_crack_settings.setVisible(is_crack_decrypt)
         
-        # 更新说明文本
+        # 显示或隐藏当前密码和终止按钮
+        self.label_current_pwd.setVisible(False)
+        self.lineEdit_current_pwd.setVisible(False)
+        self.btn_stop_crack.setVisible(False)
+        
+        # 说明文本
         if is_normal_decrypt:
             self.label_pwd_info.setText("注：解密PDF文件需要所有者密码，如果没有所有者密码可以尝试使用用户密码")
         elif is_crack_decrypt:
@@ -273,25 +300,22 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         charset_layout.addWidget(charset_label)
         
         charset_combo = QComboBox()
-        charset_combo.addItem("数字")
-        charset_combo.addItem("小写字母")
-        charset_combo.addItem("大写字母") 
-        charset_combo.addItem("所有字符")
+        charset_combo.addItem("数字 (0-9)")
+        charset_combo.addItem("小写字母 (a-z)")
+        charset_combo.addItem("大写字母 (A-Z)")
+        charset_combo.addItem("字母和数字 (a-zA-Z0-9)")
+        charset_combo.addItem("所有字符 (包含特殊符号)")
         
-        charset_index = {"digits": 0, "lowercase": 1, "uppercase": 2, "all": 3}
-        charset_combo.setCurrentIndex(charset_index.get(self.crack_settings["charset"], 0))
+        charset_map = {
+            "digits": 0, 
+            "lowercase": 1, 
+            "uppercase": 2, 
+            "alphanumeric": 3,
+            "all": 4
+        }
+        charset_combo.setCurrentIndex(charset_map.get(self.crack_settings["charset"], 0))
         charset_layout.addWidget(charset_combo)
         layout.addLayout(charset_layout)
-        
-        # 超时设置
-        timeout_layout = QHBoxLayout()
-        timeout_label = QLabel("超时时间(秒):")
-        timeout_layout.addWidget(timeout_label)
-        
-        timeout_edit = QLineEdit()
-        timeout_edit.setText(str(self.crack_settings["timeout"]))
-        timeout_layout.addWidget(timeout_edit)
-        layout.addLayout(timeout_layout)
         
         # 按钮区域
         btn_layout = QHBoxLayout()
@@ -311,7 +335,7 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             min_length.text(),
             max_length.text(),
             charset_combo.currentIndex(),
-            timeout_edit.text(),
+            "0",  # 总是传递0作为超时时间
             dialog
         ))
         cancel_btn.clicked.connect(dialog.reject)
@@ -347,23 +371,24 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         try:
             min_len = int(min_length)
             max_len = int(max_length)
-            timeout_val = int(timeout)
+            # 忽略超时参数，始终设置为0表示无限制
+            timeout_val = 0
             
-            if min_len < 1 or max_len < min_len or timeout_val < 1:
+            if min_len < 1 or max_len < min_len:
                 raise ValueError("无效的参数值")
         except ValueError:
             QMessageBox.warning(self, "警告", "请输入有效的数字")
             return
         
         # 保存设置
-        charset_map = ["digits", "lowercase", "uppercase", "all"]
+        charset_map = ["digits", "lowercase", "uppercase", "alphanumeric", "all"]
         self.crack_settings = {
             "mode": "dictionary" if is_dict_mode else "bruteforce",
             "dict_path": dict_path,
             "min_length": min_len,
             "max_length": max_len,
             "charset": charset_map[charset_index],
-            "timeout": timeout_val
+            "timeout": timeout_val  # 始终为0，表示不限制时间
         }
         
         dialog.accept()
@@ -375,8 +400,7 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         
         # 获取解密方式
         decrypt_method = self.combo_decrypt_method.currentIndex()
-        use_force_decrypt = decrypt_method == 1
-        use_crack_decrypt = decrypt_method == 2
+        use_crack_decrypt = decrypt_method == 1
         
         # 准备密码参数
         if decrypt_method == 0:  # 常规解密
@@ -410,7 +434,15 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         
         # 禁用按钮，开始任务
         self.btn_decrypt.setEnabled(False)
+        self.cracking_canceled = False
         self.startBusy()
+        
+        # 如果是暴力破解模式，显示当前密码标签和终止按钮
+        if use_crack_decrypt:
+            self.label_current_pwd.setVisible(True)
+            self.lineEdit_current_pwd.setVisible(True)
+            self.btn_stop_crack.setVisible(True)
+            self.lineEdit_current_pwd.setText("准备开始...")
         
         # 创建并启动工作线程
         input_file = PdfFile(self.input_file_path)
@@ -419,13 +451,57 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             output_path=output_path,
             owner_password=owner_password,
             user_password=user_password,
-            use_force_decrypt=use_force_decrypt,
+            use_force_decrypt=False,
             use_crack_decrypt=use_crack_decrypt,
             crack_settings=self.crack_settings
         )
+        
+        # 连接信号
         self.worker.progressSignal.connect(self.update_progress)
         self.worker.okSignal.connect(self.decrypt_finish)
+        if use_crack_decrypt:
+            self.worker.current_pwd_signal.connect(self.update_current_pwd)
+        
         self.worker.start()
+    
+    def update_current_pwd(self, pwd):
+        """更新当前尝试的密码"""
+        self.lineEdit_current_pwd.setText(pwd)
+    
+    def stop_cracking(self):
+        """终止密码破解"""
+        if self.worker and self.worker.isRunning():
+            # 设置标志位，告知线程需要终止
+            self.cracking_canceled = True
+            # 请求中断线程，但不强制终止
+            self.worker.requestInterruption()
+            
+            # 显示正在终止
+            self.lineEdit_current_pwd.setText("正在安全终止...")
+            
+            # 给线程一些时间来自行终止
+            if not self.worker.wait(1000):  # 等待最多1秒
+                # 如果线程没有及时终止，通知用户
+                logger.warning("线程未能在短时间内终止，可能需要更长时间")
+                self.lineEdit_current_pwd.setText("终止中，请稍候...")
+                
+                # 继续等待线程自行终止，避免强制终止
+                if not self.worker.wait(3000):  # 再等3秒
+                    logger.warning("线程仍未终止，考虑安全地结束")
+                    # 不使用terminate()，避免崩溃
+            
+            # 恢复UI状态
+            self.btn_decrypt.setEnabled(True)
+            self.progressBar.setValue(0)
+            # 停止忙碌光标
+            self.stopBusy()
+            
+            # 简单提示已终止
+            self.lineEdit_current_pwd.setText("已终止破解")
+            # 不将worker设为None，避免线程对象被垃圾回收而引起问题
+            # 而是让线程自然结束
+            
+            logger.info("用户手动终止破解进程")
     
     def update_progress(self, value):
         self.progressBar.setValue(value)
@@ -434,22 +510,40 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         self.stopBusy()
         success, message = result_data
         
+        # 隐藏当前密码标签和终止按钮
+        self.label_current_pwd.setVisible(False)
+        self.lineEdit_current_pwd.setVisible(False)
+        self.btn_stop_crack.setVisible(False)
+        
         if success:
+            # 处理可能存在的多行消息（包含密码信息等）
+            folder_path = message.split('\n')[0] if '\n' in message else message
+            
+            # 确保路径是有效的目录路径
+            if not os.path.isdir(folder_path):
+                folder_path = os.path.dirname(folder_path)
+            
             reply = QMessageBox(self)
             reply.setIcon(QMessageBox.Information)
             reply.setWindowTitle('完成')
-            reply.setText(f"PDF解密成功")
+            reply.setText(f"PDF解密成功\n{message}")
             btn = reply.addButton('打开文件夹', QMessageBox.ActionRole)
-            btn.clicked.connect(lambda: open_file_explorer(message))
+            # 使用更可靠的方法打开文件夹
+            btn.clicked.connect(lambda: open_file_explorer(folder_path))
             reply.addButton("确认", QMessageBox.AcceptRole)
             reply.exec_()
         else:
-            QMessageBox.critical(self, "错误", f"PDF解密失败: {message}")
+            if self.cracking_canceled:
+                # 如果是用户终止的，不显示任何消息框，状态已在stop_cracking()中恢复
+                pass
+            else:
+                QMessageBox.critical(self, "错误", f"PDF解密失败: {message}")
         
         # 恢复UI状态
         self.btn_decrypt.setEnabled(True)
         self.progressBar.setValue(0)
         self.worker = None
+        self.cracking_canceled = False
     
     def closeEvent(self, event):
         super().closeEvent(event)
@@ -457,17 +551,142 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
     
     def check_cracking_tools_installed(self):
         """检查是否安装了密码破解工具"""
+        # 全局变量，用于调试
+        global johnOutput
+        johnOutput = ""
+        
         try:
             # 检查John the Ripper
+            logger.info("开始检查John the Ripper是否安装...")
+            
+            # 尝试方法1：直接运行john命令
             john_process = subprocess.Popen(
-                ["john", "--version"],
+                ["john"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True
+            )
+            stdout, stderr = john_process.communicate()
+            
+            # 记录输出到全局变量和日志
+            john_stdout = stdout.decode('utf-8', errors='ignore')
+            john_stderr = stderr.decode('utf-8', errors='ignore')
+            johnOutput = f"STDOUT: {john_stdout}\nSTDERR: {john_stderr}"
+            
+            logger.info(f"John命令输出: {johnOutput}")
+            
+            # 宽松检查：只要命令成功运行就认为已安装
+            if john_process.returncode == 0 or "john" in john_stdout.lower() or "john" in john_stderr.lower():
+                logger.info("检测到John the Ripper已安装(命令成功或包含关键字)")
+                return True
+                
+            logger.info("第一种方法未检测到John the Ripper")
+            
+            # 尝试方法2：使用shell执行
+            try:
+                if os.name == 'nt':  # Windows系统
+                    result = subprocess.run("where john", shell=True, capture_output=True, text=True)
+                    if result.returncode == 0:
+                        logger.info("通过where命令找到john路径")
+                        return True
+                else:  # Unix系统
+                    result = subprocess.run("which john", shell=True, capture_output=True, text=True)
+                    if result.returncode == 0:
+                        logger.info("通过which命令找到john路径")
+                        return True
+            except Exception as e:
+                logger.error(f"尝试检测john路径时出错: {str(e)}")
+            
+            logger.info("未能检测到John the Ripper的安装")
+            return False
+            
+        except Exception as e:
+            logger.error(f"检查John the Ripper安装出错: {str(e)}")
+            return False
+    
+    def verify_installation(self):
+        """验证工具安装状态"""
+        # 检查John the Ripper
+        john_installed = False
+        pdf2john_installed = False
+        
+        # 全局变量，用于调试
+        global johnOutput
+        
+        try:
+            logger.info("验证John the Ripper安装...")
+            john_process = subprocess.Popen(
+                ["john"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True
+            )
+            stdout, stderr = john_process.communicate()
+            
+            # 记录输出到全局变量
+            john_stdout = stdout.decode('utf-8', errors='ignore')
+            john_stderr = stderr.decode('utf-8', errors='ignore')
+            johnOutput = f"STDOUT: {john_stdout}\nSTDERR: {john_stderr}"
+            
+            logger.info(f"验证时John命令输出: {johnOutput}")
+            
+            # 宽松判断是否已安装
+            john_installed = john_process.returncode == 0 or "john" in john_stdout.lower() or "john" in john_stderr.lower()
+            
+            # 判断是否包含版本信息
+            john_version = "已安装"
+            
+            # 优先使用stderr，因为john的版本信息常常显示在stderr
+            if "john" in john_stderr.lower():
+                version_lines = john_stderr.split('\n')
+                if version_lines:
+                    john_version = version_lines[0].strip()
+            elif "john" in john_stdout.lower():
+                version_lines = john_stdout.split('\n')
+                if version_lines:
+                    john_version = version_lines[0].strip()
+            
+            # 如果没有安装，查看全局输出
+            if not john_installed:
+                john_version = f"未安装 - 命令输出: {johnOutput}"
+            
+        except Exception as e:
+            logger.error(f"验证John the Ripper安装出错: {str(e)}")
+            john_version = f"未安装 - 错误: {str(e)}"
+        
+        try:
+            pdf2john_process = subprocess.Popen(
+                ["where", "pdf2john"] if os.name == "nt" else ["which", "pdf2john"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
-            john_process.communicate()
-            return john_process.returncode == 0
+            pdf2john_process.communicate()
+            pdf2john_installed = pdf2john_process.returncode == 0
         except:
-            return False
+            pass
+        
+        if not pdf2john_installed:
+            try:
+                pdf2john_process = subprocess.Popen(
+                    ["where", "pdf2john.py"] if os.name == "nt" else ["which", "pdf2john.py"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+                pdf2john_process.communicate()
+                pdf2john_installed = pdf2john_process.returncode == 0
+            except:
+                pass
+        
+        # 显示安装状态
+        status_message = f"John the Ripper: {'已安装 - ' + john_version if john_installed else john_version}\n"
+        status_message += f"pdf2john: {'已安装' if pdf2john_installed else '未安装'}\n\n"
+        
+        if john_installed and pdf2john_installed:
+            status_message += "所有必要工具已安装，可以使用密码破解功能。"
+        else:
+            status_message += "部分工具未安装，密码破解功能可能无法正常工作。请按照安装指南进行安装。"
+        
+        QMessageBox.information(self, "安装状态", status_message)
     
     def show_installation_guide(self):
         """显示工具安装指南"""
@@ -502,8 +721,8 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             "<p><b>验证安装：</b></p>"
             "<ul>"
             "<li>打开命令行或终端</li>"
-            "<li>输入<code>john --version</code>命令</li>"
-            "<li>如果显示版本信息，则安装成功</li>"
+            "<li>输入<code>john</code>命令</li>"
+            "<li>如果显示包含\"John the Ripper\"的信息，则安装成功</li>"
             "</ul>"
             "<p><b>注意事项：</b></p>"
             "<ul>"
@@ -525,63 +744,12 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         
         dialog.setLayout(layout)
         dialog.exec_()
-    
-    def verify_installation(self):
-        """验证工具安装状态"""
-        # 检查John the Ripper
-        john_installed = False
-        pdf2john_installed = False
-        
-        try:
-            john_process = subprocess.Popen(
-                ["john", "--version"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            stdout, _ = john_process.communicate()
-            john_installed = john_process.returncode == 0
-            john_version = stdout.decode('utf-8', errors='ignore').strip() if john_installed else "未安装"
-        except:
-            john_version = "未安装"
-        
-        try:
-            pdf2john_process = subprocess.Popen(
-                ["where", "pdf2john"] if os.name == "nt" else ["which", "pdf2john"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            pdf2john_process.communicate()
-            pdf2john_installed = pdf2john_process.returncode == 0
-        except:
-            pass
-        
-        if not pdf2john_installed:
-            try:
-                pdf2john_process = subprocess.Popen(
-                    ["where", "pdf2john.py"] if os.name == "nt" else ["which", "pdf2john.py"],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
-                pdf2john_process.communicate()
-                pdf2john_installed = pdf2john_process.returncode == 0
-            except:
-                pass
-        
-        # 显示安装状态
-        status_message = f"John the Ripper: {'已安装 - ' + john_version if john_installed else '未安装'}\n"
-        status_message += f"pdf2john: {'已安装' if pdf2john_installed else '未安装'}\n\n"
-        
-        if john_installed and pdf2john_installed:
-            status_message += "所有必要工具已安装，可以使用密码破解功能。"
-        else:
-            status_message += "部分工具未安装，密码破解功能可能无法正常工作。请按照安装指南进行安装。"
-        
-        QMessageBox.information(self, "安装状态", status_message)
 
 
 class DecryptThread(QThread):
     okSignal = Signal(tuple)  # (success, message)
     progressSignal = Signal(int)
+    current_pwd_signal = Signal(str)  # 新增信号，用于传递当前尝试的密码
 
     def __init__(self, input_file, output_path, owner_password="", user_password="", 
                  use_force_decrypt=False, use_crack_decrypt=False, crack_settings=None):
@@ -593,14 +761,53 @@ class DecryptThread(QThread):
         self.use_force_decrypt = use_force_decrypt
         self.use_crack_decrypt = use_crack_decrypt
         self.crack_settings = crack_settings or {}
+        self.should_stop = False  # 添加停止标记
+    
+    def check_tool_installed(self, tool_name):
+        """检查是否安装了指定工具"""
+        try:
+            if tool_name in ["pdf2john.py", "pdf2john"]:
+                # 特殊处理pdf2john
+                process = subprocess.Popen(
+                    ["where", tool_name] if os.name == "nt" else ["which", tool_name], 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE
+                )
+                process.communicate()
+                return process.returncode == 0
+            elif tool_name == "john":
+                # 特殊处理john
+                john_process = subprocess.Popen(
+                    ["john"], 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE,
+                    shell=True
+                )
+                stdout, stderr = john_process.communicate()
+                
+                # 记录输出用于调试
+                john_stdout = stdout.decode('utf-8', errors='ignore')
+                john_stderr = stderr.decode('utf-8', errors='ignore')
+                
+                # 宽松检查
+                return john_process.returncode == 0 or "john" in john_stdout.lower() or "john" in john_stderr.lower()
+            else:
+                # 一般工具检查
+                subprocess.run(
+                    [tool_name, "--version"], 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE,
+                    check=False
+                )
+                return True
+        except Exception as e:
+            logger.error(f"检查{tool_name}工具安装出错: {str(e)}")
+            return False
     
     def run(self):
         if self.use_crack_decrypt:
             # 使用密码破解工具尝试破解密码
             return self.run_crack_decrypt()
-        elif self.use_force_decrypt:
-            # 使用PyPDF2尝试无密码解密
-            return self.run_force_decrypt()
         else:
             # 使用PyMuPDF带密码解密
             return self.run_normal_decrypt()
@@ -622,194 +829,170 @@ class DecryptThread(QThread):
             
             # 准备临时文件
             temp_dir = tempfile.mkdtemp()
-            hash_file = os.path.join(temp_dir, "pdf_hash.txt")
             
-            # 第1步：提取PDF密码哈希
+            # 直接尝试常见密码
             self.progressSignal.emit(20)
-            try:
-                # 检查是否安装了pdf2john工具
-                pdf2john_installed = self.check_tool_installed("pdf2john")
-                if not pdf2john_installed:
-                    pdf2john_installed = self.check_tool_installed("pdf2john.py")
-                
-                if not pdf2john_installed:
-                    logger.error("未找到pdf2john工具，无法提取密码哈希")
-                    self.okSignal.emit((False, "未找到pdf2john工具，请安装John the Ripper"))
-                    return
-                
-                # 使用pdf2john提取哈希
-                extract_cmd = ["pdf2john", self.input_file.file_path]
-                if not self.check_tool_installed("pdf2john"):
-                    extract_cmd = ["python", "pdf2john.py", self.input_file.file_path]
-                
-                process = subprocess.Popen(extract_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                stdout, stderr = process.communicate()
-                
-                if process.returncode != 0:
-                    logger.error(f"提取PDF哈希失败: {stderr.decode('utf-8', errors='ignore')}")
-                    self.okSignal.emit((False, "提取PDF哈希失败，无法进行破解"))
-                    return
-                
-                # 保存哈希到文件
-                with open(hash_file, 'wb') as f:
-                    f.write(stdout)
-                
-                logger.info("成功提取PDF密码哈希")
-            except Exception as e:
-                logger.error(f"提取PDF哈希过程中发生错误: {str(e)}")
-                
-                # 尝试模拟pdf2john的输出
-                try:
-                    pdf_name = os.path.basename(self.input_file.file_path)
-                    hash_output = f"{pdf_name}:$pdf$X*X*XX*X*X*X*X*X*X*X*X*X*X*X*X*X*X"
-                    with open(hash_file, 'w') as f:
-                        f.write(hash_output)
-                    logger.info("使用模拟哈希代替")
-                except:
-                    self.okSignal.emit((False, f"提取PDF哈希失败: {str(e)}"))
-                    return
+            common_passwords = ['', '1234', '0000', '1111', '9999', '123456', 'password', 'admin', 'qwerty']
+            logger.info("尝试一些常见密码...")
             
-            # 第2步：使用John the Ripper破解密码
-            self.progressSignal.emit(30)
-            password = None
-            
-            try:
-                # 检查是否安装了John the Ripper
-                if not self.check_tool_installed("john"):
-                    logger.error("未找到John the Ripper工具")
-                    self.okSignal.emit((False, "未找到John the Ripper工具，请先安装"))
+            for pwd in common_passwords:
+                if self.isInterruptionRequested():
+                    logger.info("破解过程被用户终止")
+                    self.okSignal.emit((False, "用户终止了破解过程"))
                     return
-                
-                # 根据破解模式生成命令
-                crack_cmd = ["john"]
-                
-                if self.crack_settings.get("mode") == "dictionary":
-                    # 字典模式
-                    dict_path = self.crack_settings.get("dict_path", "")
-                    if os.path.exists(dict_path):
-                        crack_cmd.extend(["--wordlist", dict_path])
-                    else:
-                        # 使用默认字典
-                        crack_cmd.append("--wordlist=password.lst")
-                else:
-                    # 暴力破解模式
-                    min_len = self.crack_settings.get("min_length", 4)
-                    max_len = self.crack_settings.get("max_length", 8)
-                    charset = self.crack_settings.get("charset", "digits")
                     
-                    # 根据字符集构建参数
-                    charset_arg = ""
-                    if charset == "digits":
-                        charset_arg = "0123456789"
-                    elif charset == "lowercase":
-                        charset_arg = "abcdefghijklmnopqrstuvwxyz"
-                    elif charset == "uppercase":
-                        charset_arg = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    else:  # all
-                        charset_arg = "?a"  # John的所有字符集
-                    
-                    crack_cmd.extend([
-                        "--incremental",
-                        f"--min-length={min_len}",
-                        f"--max-length={max_len}"
-                    ])
-                    
-                    if charset != "all":
-                        crack_cmd.append(f"--mask=?{charset_arg}")
-                
-                # 设置破解超时时间
-                timeout = self.crack_settings.get("timeout", 60)
-                crack_cmd.extend(["--max-run-time", str(timeout)])
-                
-                # 添加哈希文件路径
-                crack_cmd.append(hash_file)
-                
-                # 执行破解命令
-                logger.info(f"开始执行破解命令: {' '.join(crack_cmd)}")
-                process = subprocess.Popen(crack_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                
-                # 等待破解完成
-                for i in range(40, 80):
-                    if process.poll() is not None:
-                        break
-                    self.progressSignal.emit(i)
-                    self.msleep(1000)  # 每秒更新一次进度
-                
-                # 确保进程结束
-                try:
-                    process.terminate()
-                except:
-                    pass
-                
-                # 获取破解结果
-                show_cmd = ["john", "--show", hash_file]
-                show_process = subprocess.Popen(show_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                stdout, stderr = show_process.communicate()
-                
-                # 解析输出获取密码
-                output = stdout.decode('utf-8', errors='ignore')
-                for line in output.splitlines():
-                    if ":" in line:
-                        parts = line.split(":")
-                        if len(parts) >= 2:
-                            password = parts[1].strip()
-                            break
-                
-                if password:
-                    logger.info(f"成功破解PDF密码: {password}")
-                else:
-                    logger.info("在指定时间内未能破解出密码")
-            except Exception as e:
-                logger.error(f"密码破解过程中发生错误: {str(e)}")
-            
-            # 第3步：使用破解的密码或尝试其他方法解密PDF
-            self.progressSignal.emit(85)
-            
-            if password:
-                # 使用破解的密码进行解密
+                self.current_pwd_signal.emit(f"尝试常见密码: {pwd}")
                 try:
                     with fitz.open(self.input_file.file_path) as pdf:
-                        if pdf.authenticate(password):
+                        if pdf.authenticate(pwd):
+                            # 成功找到密码
+                            logger.info(f"使用常见密码'{pwd}'成功解密")
+                            
+                            # 保存解密后的PDF
                             pdf.save(self.output_path)
                             self.progressSignal.emit(100)
-                            self.okSignal.emit((True, f"{os.path.dirname(self.output_path)}\n成功破解密码: {password}"))
+                            success_message = f"{os.path.dirname(self.output_path)}\n成功使用密码: {pwd}"
+                            self.okSignal.emit((True, success_message))
                             return
-                        else:
-                            logger.error("破解的密码验证失败")
                 except Exception as e:
-                    logger.error(f"使用破解密码解密失败: {str(e)}")
+                    logger.error(f"尝试密码'{pwd}'失败: {str(e)}")
             
-            # 如果破解失败或解密失败，尝试无密码解密方法
-            logger.info("破解未成功，尝试备用解密方法")
-            return self.run_force_decrypt()
+            # 如果是字典模式，直接使用字典文件尝试密码
+            if self.crack_settings.get("mode") == "dictionary":
+                dict_path = self.crack_settings.get("dict_path", "")
+                if os.path.exists(dict_path):
+                    try:
+                        logger.info(f"使用字典文件直接尝试密码: {dict_path}")
+                        total_lines = sum(1 for _ in open(dict_path, 'r', encoding='utf-8', errors='ignore'))
+                        current_line = 0
+                        
+                        with open(dict_path, 'r', encoding='utf-8', errors='ignore') as dict_file:
+                            for line in dict_file:
+                                if self.isInterruptionRequested():
+                                    logger.info("破解过程被用户终止")
+                                    self.okSignal.emit((False, "用户终止了破解过程"))
+                                    return
+                                    
+                                pwd = line.strip()
+                                if not pwd:  # 跳过空行
+                                    continue
+                                
+                                # 更新当前尝试的密码
+                                self.current_pwd_signal.emit(f"字典破解: {pwd}")
+                                
+                                # 更新进度
+                                current_line += 1
+                                progress = 30 + int(current_line / total_lines * 60)
+                                self.progressSignal.emit(min(progress, 90))
+                                
+                                try:
+                                    with fitz.open(self.input_file.file_path) as pdf:
+                                        if pdf.authenticate(pwd):
+                                            logger.info(f"使用字典中的密码'{pwd}'成功解密")
+                                            
+                                            # 保存解密后的PDF
+                                            pdf.save(self.output_path)
+                                            self.progressSignal.emit(100)
+                                            success_message = f"{os.path.dirname(self.output_path)}\n成功使用密码: {pwd}"
+                                            self.okSignal.emit((True, success_message))
+                                            return
+                                except Exception as e:
+                                    # 这个密码尝试失败，继续下一个
+                                    continue
+                    except Exception as e:
+                        logger.error(f"读取字典文件失败: {str(e)}")
+            
+            # 暴力破解模式 - 使用排列组合方式
+            if self.crack_settings.get("mode") == "bruteforce":
+                min_len = self.crack_settings.get("min_length", 4)
+                max_len = self.crack_settings.get("max_length", 8)
+                charset = self.crack_settings.get("charset", "digits")
+                
+                # 定义字符集
+                charset_chars = ""
+                if charset == "digits":
+                    charset_chars = "0123456789"
+                elif charset == "lowercase":
+                    charset_chars = "abcdefghijklmnopqrstuvwxyz"
+                elif charset == "uppercase":
+                    charset_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                elif charset == "alphanumeric":
+                    charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                else:  # all
+                    charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?/"
+                
+                logger.info(f"开始暴力破解，字符集: {charset}, 长度范围: {min_len}-{max_len}")
+                
+                # 使用itertools实现高效的密码生成
+                import itertools
+                
+                # 生成所有可能的密码长度
+                for length in range(min_len, max_len + 1):
+                    logger.info(f"尝试长度为 {length} 的密码")
+                    self.current_pwd_signal.emit(f"准备破解长度: {length}")
+                    
+                    # 使用笛卡尔积生成指定长度的所有可能组合
+                    total_combinations = len(charset_chars) ** length
+                    logger.info(f"长度为 {length} 的可能组合数: {total_combinations}")
+                    
+                    # 显示预计时间
+                    if length > 4 and charset != "digits":
+                        self.current_pwd_signal.emit(f"长度: {length}, 组合数: {total_combinations}, 将耗时较长...")
+                    
+                    # 如果长度大于6，给出警告
+                    if length > 6 and charset != "digits":
+                        self.current_pwd_signal.emit(f"警告: 长度为 {length} 的破解可能非常耗时!")
+                    
+                    # 记录当前组合索引，用于进度计算
+                    combination_count = 0
+                    last_progress_update = time.time()
+                    
+                    # 逐个生成密码尝试
+                    for pwd_tuple in itertools.product(charset_chars, repeat=length):
+                        if self.isInterruptionRequested():
+                            logger.info("破解过程被用户终止")
+                            self.okSignal.emit((False, "用户终止了破解过程"))
+                            return
+                            
+                        # 转换为字符串
+                        pwd = ''.join(pwd_tuple)
+                        
+                        # 更新计数
+                        combination_count += 1
+                        
+                        # 每1000次更新一次进度和当前密码显示
+                        if combination_count % 1000 == 0 or time.time() - last_progress_update > 0.5:
+                            # 计算进度
+                            progress_percent = (combination_count / total_combinations) * 100
+                            # 总进度取决于当前长度相对于总长度范围的位置
+                            total_progress = 30 + min(60 * (length - min_len + progress_percent/100) / (max_len - min_len + 1), 60)
+                            self.progressSignal.emit(min(int(total_progress), 90))
+                            
+                            # 更新当前尝试的密码
+                            self.current_pwd_signal.emit(f"暴力破解: {pwd} ({combination_count}/{total_combinations})")
+                            last_progress_update = time.time()
+                        
+                        try:
+                            with fitz.open(self.input_file.file_path) as pdf:
+                                if pdf.authenticate(pwd):
+                                    logger.info(f"破解成功，密码: {pwd}")
+                                    pdf.save(self.output_path)
+                                    self.progressSignal.emit(100)
+                                    success_message = f"{os.path.dirname(self.output_path)}\n成功破解密码: {pwd}"
+                                    self.okSignal.emit((True, success_message))
+                                    return
+                        except Exception as e:
+                            # 忽略单个密码的错误，继续尝试
+                            continue
+                
+            # 如果所有尝试都失败，返回未成功消息
+            logger.info("所有密码尝试均失败")
+            self.okSignal.emit((False, "未能破解密码，请尝试其他解密方法"))
             
         except Exception as e:
             logger.error(f"PDF破解错误: {str(e)}")
             self.okSignal.emit((False, f"PDF破解失败: {str(e)}"))
-    
-    def check_tool_installed(self, tool_name):
-        """检查是否安装了指定工具"""
-        try:
-            if tool_name in ["pdf2john.py", "pdf2john"]:
-                # 特殊处理pdf2john
-                process = subprocess.Popen(
-                    ["where", tool_name] if os.name == "nt" else ["which", tool_name], 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.PIPE
-                )
-                process.communicate()
-                return process.returncode == 0
-            else:
-                # 一般工具检查
-                subprocess.run(
-                    [tool_name, "--version"], 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.PIPE,
-                    check=False
-                )
-                return True
-        except:
-            return False
+            return
     
     def run_normal_decrypt(self):
         try:
@@ -873,145 +1056,6 @@ class DecryptThread(QThread):
         except Exception as e:
             logger.error(f"PDF解密错误: {str(e)}")
             self.okSignal.emit((False, str(e)))
-    
-    def run_force_decrypt(self):
-        try:
-            self.progressSignal.emit(20)
-            
-            # 打开加密的PDF文件
-            with open(self.input_file.file_path, "rb") as infile:
-                # 使用strict=False参数提高兼容性
-                reader = PdfReader(infile, strict=False)
-                
-                # 检查文件是否加密
-                if not reader.is_encrypted:
-                    self.okSignal.emit((False, "PDF文件未加密，无需解密"))
-                    return
-                
-                self.progressSignal.emit(40)
-                
-                # 尝试方法1: 使用空密码解密
-                decrypt_success = False
-                try:
-                    # 尝试解密
-                    decrypt_result = reader.decrypt("")
-                    if decrypt_result > 0:
-                        decrypt_success = True
-                        logger.info("使用空密码成功解密PDF")
-                except Exception as e:
-                    logger.error(f"使用空密码解密失败: {str(e)}")
-                
-                # 创建一个新的PDF写入器
-                writer = PdfWriter()
-                
-                # 尝试方法2: 如果标准方法失败，尝试其他方式
-                if not decrypt_success:
-                    try:
-                        # 尝试直接修改加密标志
-                        reader._decrypt = lambda *args: 1  # 覆盖解密方法
-                        reader.is_encrypted = False  # 强制设置为未加密
-                        decrypt_success = True
-                        logger.info("使用标志修改方法解密PDF")
-                    except Exception as e:
-                        logger.error(f"使用标志修改解密失败: {str(e)}")
-                
-                self.progressSignal.emit(60)
-                
-                # 方法3: 使用append_pages_from_reader方法添加所有页面
-                pages_added = 0
-                try:
-                    # 尝试批量添加所有页面
-                    writer.append_pages_from_reader(reader)
-                    # 计算成功添加的页数
-                    pages_added = len(writer.pages)
-                    logger.info(f"成功批量添加{pages_added}页")
-                except Exception as e:
-                    logger.error(f"批量添加页面失败: {str(e)}")
-                    
-                    # 方法4: 如果批量添加失败，尝试逐页添加
-                    if pages_added == 0:
-                        try:
-                            total_pages = len(reader.pages)
-                            for page_num in range(total_pages):
-                                try:
-                                    page = reader.pages[page_num]
-                                    writer.add_page(page)
-                                    pages_added += 1
-                                except Exception as page_e:
-                                    logger.error(f"处理第{page_num+1}页时出错: {str(page_e)}")
-                                    continue
-                        except Exception as pages_e:
-                            logger.error(f"逐页添加失败: {str(pages_e)}")
-                
-                self.progressSignal.emit(80)
-                
-                # 检查是否成功添加了页面
-                if pages_added == 0:
-                    # 最后尝试方法5: 使用另一种打开方式
-                    try:
-                        infile.seek(0)  # 重置文件指针位置
-                        reader = PdfReader(infile, strict=False)
-                        writer = PdfWriter()
-                        # 不考虑加密状态，直接批量添加
-                        writer.append_pages_from_reader(reader)
-                        pages_added = len(writer.pages)
-                    except:
-                        pass
-                    
-                    if pages_added == 0:
-                        self.okSignal.emit((False, "无密码解密失败，未能提取任何页面"))
-                        return
-                
-                # 保存解密后的PDF
-                with open(self.output_path, "wb") as outfile:
-                    writer.write(outfile)
-                
-                self.progressSignal.emit(100)
-                
-                # 检查是否解密结果完整
-                try:
-                    total_pages = len(reader.pages)
-                    if pages_added < total_pages:
-                        self.okSignal.emit((True, f"{os.path.dirname(self.output_path)} (部分页面解密可能不完整)"))
-                    else:
-                        self.okSignal.emit((True, os.path.dirname(self.output_path)))
-                except:
-                    # 无法确定原始页数，只返回成功信息
-                    self.okSignal.emit((True, os.path.dirname(self.output_path)))
-        
-        except Exception as e:
-            logger.error(f"无密码解密错误: {str(e)}")
-            
-            # 尝试备用方法 - 使用参考代码的逻辑
-            try:
-                self.progressSignal.emit(25)
-                logger.info("尝试使用备用解密方法...")
-                
-                # 重新打开文件
-                with open(self.input_file.file_path, "rb") as input_file:
-                    # 使用strict=False参数
-                    reader = PdfReader(input_file, strict=False)
-                    
-                    # 尝试解密
-                    if reader.is_encrypted:
-                        reader.decrypt("")
-                    
-                    # 创建写入器并添加所有页面
-                    writer = PdfWriter()
-                    writer.append_pages_from_reader(reader)
-                    
-                    # 保存文件
-                    with open(self.output_path, "wb") as output_file:
-                        writer.write(output_file)
-                    
-                    self.progressSignal.emit(100)
-                    self.okSignal.emit((True, os.path.dirname(self.output_path)))
-                    return
-            except Exception as backup_e:
-                logger.error(f"备用解密方法失败: {str(backup_e)}")
-                
-            # 如果所有方法都失败，返回原始错误
-            self.okSignal.emit((False, f"无密码解密失败: {str(e)}"))
 
 
 if __name__ == '__main__':
