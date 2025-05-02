@@ -31,9 +31,9 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
         self.setCursorTimeout(100)
 
         self.commandLinkButton_merge_pdf.clicked.connect(self.merge_pdf)
-        self.commandLinkButton_split_pdf.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_encrypt.clicked.connect(globalSignals.not_support)
-        self.commandLinkButton_decrypt.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_split_pdf.clicked.connect(self.split_pdf)
+        self.commandLinkButton_encrypt.clicked.connect(self.encrypt_pdf)
+        self.commandLinkButton_decrypt.clicked.connect(self.decrypt_pdf)
         self.commandLinkButton_delete_blank_pages.clicked.connect(globalSignals.not_support)
         self.commandLinkButton_add_watermark.clicked.connect(globalSignals.not_support)
 
@@ -61,6 +61,51 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
             self.router.navigate(self.merge_view.router_path)
         else:
             self.router.navigate(self.merge_view.router_path)
+
+    def split_pdf(self):
+        from app.ui.pdf_tools.split.split import SplitControl
+        if not hasattr(self, 'split_view') or not self.split_view:
+            self.split_view = SplitControl(router=self.router, parent=self if self.parent() else None)
+            self.split_view.okSignal.connect(self.split_finish)
+            self.router.add_route(self.split_view.router_path, self.split_view)
+            self.child_routes[self.split_view.router_path] = 0
+            self.childRouterSignal.emit(self.split_view.router_path)
+            self.router.navigate(self.split_view.router_path)
+        else:
+            self.router.navigate(self.split_view.router_path)
+
+    def encrypt_pdf(self):
+        from app.ui.pdf_tools.security.encrypt import EncryptControl
+        if not hasattr(self, 'encrypt_view') or not self.encrypt_view:
+            self.encrypt_view = EncryptControl(router=self.router, parent=self if self.parent() else None)
+            self.encrypt_view.okSignal.connect(self.encrypt_finish)
+            self.router.add_route(self.encrypt_view.router_path, self.encrypt_view)
+            self.child_routes[self.encrypt_view.router_path] = 0
+            self.childRouterSignal.emit(self.encrypt_view.router_path)
+            self.router.navigate(self.encrypt_view.router_path)
+        else:
+            self.router.navigate(self.encrypt_view.router_path)
+
+    def decrypt_pdf(self):
+        from app.ui.pdf_tools.security.decrypt import DecryptControl
+        if not hasattr(self, 'decrypt_view') or not self.decrypt_view:
+            self.decrypt_view = DecryptControl(router=self.router, parent=self if self.parent() else None)
+            self.decrypt_view.okSignal.connect(self.decrypt_finish)
+            self.router.add_route(self.decrypt_view.router_path, self.decrypt_view)
+            self.child_routes[self.decrypt_view.router_path] = 0
+            self.childRouterSignal.emit(self.decrypt_view.router_path)
+            self.router.navigate(self.decrypt_view.router_path)
+        else:
+            self.router.navigate(self.decrypt_view.router_path)
+
+    def encrypt_finish(self):
+        self.encrypt_view = None
+
+    def decrypt_finish(self):
+        self.decrypt_view = None
+
+    def split_finish(self):
+        self.split_view = None
 
     def merge_finish(self):
         self.merge_view = None
