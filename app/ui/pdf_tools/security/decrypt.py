@@ -4,6 +4,10 @@ import subprocess
 import tempfile
 import threading
 import time
+import multiprocessing
+import concurrent.futures
+import queue
+import math
 
 import fitz
 from PyPDF2 import PdfReader, PdfWriter
@@ -12,7 +16,7 @@ from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
 from PySide6.QtWidgets import (QWidget, QMessageBox, QFileDialog, QRadioButton, 
                               QButtonGroup, QHBoxLayout, QLabel, QCheckBox, 
                               QProgressDialog, QDialog, QVBoxLayout, QPushButton,
-                              QLineEdit, QComboBox)
+                              QLineEdit, QComboBox, QSpinBox)
 
 from app.model import PdfFile
 from app.ui.components.QCursorGif import QCursorGif
@@ -125,7 +129,8 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             "min_length": 4,      # 最小密码长度
             "max_length": 8,      # 最大密码长度
             "charset": "digits",  # 'digits', 'lowercase', 'uppercase', 'all'
-            "timeout": 0         # 超时时间(秒)，0表示不限制
+            "timeout": 0,         # 超时时间(秒)，0表示不限制
+            "threads": self.get_recommended_threads()  # 线程数，默认为推荐值
         }
         
     def init_ui(self):
@@ -317,6 +322,25 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         charset_layout.addWidget(charset_combo)
         layout.addLayout(charset_layout)
         
+        # 添加线程数设置
+        threads_layout = QHBoxLayout()
+        threads_label = QLabel("线程数:")
+        threads_layout.addWidget(threads_label)
+        
+        threads_spinbox = QSpinBox()
+        threads_spinbox.setMinimum(1)
+        threads_spinbox.setMaximum(32)
+        threads_spinbox.setValue(self.crack_settings.get("threads", self.get_recommended_threads()))
+        threads_spinbox.setToolTip(f"推荐线程数: {self.get_recommended_threads()} (基于CPU核心数)")
+        threads_layout.addWidget(threads_spinbox)
+        
+        # 添加自动推荐按钮
+        recommend_btn = QPushButton("推荐值")
+        recommend_btn.clicked.connect(lambda: threads_spinbox.setValue(self.get_recommended_threads()))
+        threads_layout.addWidget(recommend_btn)
+        
+        layout.addLayout(threads_layout)
+        
         # 按钮区域
         btn_layout = QHBoxLayout()
         ok_btn = QPushButton("确定")
@@ -336,6 +360,7 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             max_length.text(),
             charset_combo.currentIndex(),
             "0",  # 总是传递0作为超时时间
+            threads_spinbox.value(),  # 传递线程数
             dialog
         ))
         cancel_btn.clicked.connect(dialog.reject)
@@ -361,7 +386,7 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         if file_path:
             line_edit.setText(file_path)
     
-    def save_crack_settings(self, is_dict_mode, dict_path, min_length, max_length, charset_index, timeout, dialog):
+    def save_crack_settings(self, is_dict_mode, dict_path, min_length, max_length, charset_index, timeout, threads, dialog):
         """保存破解设置"""
         # 验证输入
         if is_dict_mode and not os.path.exists(dict_path):
@@ -373,6 +398,8 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             max_len = int(max_length)
             # 忽略超时参数，始终设置为0表示无限制
             timeout_val = 0
+            # 验证线程数
+            thread_count = min(max(1, threads), 32)  # 限制在1-32之间
             
             if min_len < 1 or max_len < min_len:
                 raise ValueError("无效的参数值")
@@ -388,7 +415,8 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             "min_length": min_len,
             "max_length": max_len,
             "charset": charset_map[charset_index],
-            "timeout": timeout_val  # 始终为0，表示不限制时间
+            "timeout": timeout_val,  # 始终为0，表示不限制时间
+            "threads": thread_count  # 保存线程数设置
         }
         
         dialog.accept()
@@ -745,6 +773,13 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         dialog.setLayout(layout)
         dialog.exec_()
 
+    def get_recommended_threads(self):
+        """根据系统CPU核心数推荐合适的线程数"""
+        # 获取CPU核心数
+        cpu_count = multiprocessing.cpu_count()
+        # 推荐使用核心数-1的线程数，最少为2
+        return max(2, cpu_count - 1)
+
 
 class DecryptThread(QThread):
     okSignal = Signal(tuple)  # (success, message)
@@ -859,132 +894,12 @@ class DecryptThread(QThread):
             
             # 如果是字典模式，直接使用字典文件尝试密码
             if self.crack_settings.get("mode") == "dictionary":
-                dict_path = self.crack_settings.get("dict_path", "")
-                if os.path.exists(dict_path):
-                    try:
-                        logger.info(f"使用字典文件直接尝试密码: {dict_path}")
-                        total_lines = sum(1 for _ in open(dict_path, 'r', encoding='utf-8', errors='ignore'))
-                        current_line = 0
-                        
-                        with open(dict_path, 'r', encoding='utf-8', errors='ignore') as dict_file:
-                            for line in dict_file:
-                                if self.isInterruptionRequested():
-                                    logger.info("破解过程被用户终止")
-                                    self.okSignal.emit((False, "用户终止了破解过程"))
-                                    return
-                                    
-                                pwd = line.strip()
-                                if not pwd:  # 跳过空行
-                                    continue
-                                
-                                # 更新当前尝试的密码
-                                self.current_pwd_signal.emit(f"字典破解: {pwd}")
-                                
-                                # 更新进度
-                                current_line += 1
-                                progress = 30 + int(current_line / total_lines * 60)
-                                self.progressSignal.emit(min(progress, 90))
-                                
-                                try:
-                                    with fitz.open(self.input_file.file_path) as pdf:
-                                        if pdf.authenticate(pwd):
-                                            logger.info(f"使用字典中的密码'{pwd}'成功解密")
-                                            
-                                            # 保存解密后的PDF
-                                            pdf.save(self.output_path)
-                                            self.progressSignal.emit(100)
-                                            success_message = f"{os.path.dirname(self.output_path)}\n成功使用密码: {pwd}"
-                                            self.okSignal.emit((True, success_message))
-                                            return
-                                except Exception as e:
-                                    # 这个密码尝试失败，继续下一个
-                                    continue
-                    except Exception as e:
-                        logger.error(f"读取字典文件失败: {str(e)}")
+                return self.run_dict_crack()
             
-            # 暴力破解模式 - 使用排列组合方式
+            # 暴力破解模式 - 使用排列组合方式，多线程处理
             if self.crack_settings.get("mode") == "bruteforce":
-                min_len = self.crack_settings.get("min_length", 4)
-                max_len = self.crack_settings.get("max_length", 8)
-                charset = self.crack_settings.get("charset", "digits")
-                
-                # 定义字符集
-                charset_chars = ""
-                if charset == "digits":
-                    charset_chars = "0123456789"
-                elif charset == "lowercase":
-                    charset_chars = "abcdefghijklmnopqrstuvwxyz"
-                elif charset == "uppercase":
-                    charset_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                elif charset == "alphanumeric":
-                    charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                else:  # all
-                    charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?/"
-                
-                logger.info(f"开始暴力破解，字符集: {charset}, 长度范围: {min_len}-{max_len}")
-                
-                # 使用itertools实现高效的密码生成
-                import itertools
-                
-                # 生成所有可能的密码长度
-                for length in range(min_len, max_len + 1):
-                    logger.info(f"尝试长度为 {length} 的密码")
-                    self.current_pwd_signal.emit(f"准备破解长度: {length}")
-                    
-                    # 使用笛卡尔积生成指定长度的所有可能组合
-                    total_combinations = len(charset_chars) ** length
-                    logger.info(f"长度为 {length} 的可能组合数: {total_combinations}")
-                    
-                    # 显示预计时间
-                    if length > 4 and charset != "digits":
-                        self.current_pwd_signal.emit(f"长度: {length}, 组合数: {total_combinations}, 将耗时较长...")
-                    
-                    # 如果长度大于6，给出警告
-                    if length > 6 and charset != "digits":
-                        self.current_pwd_signal.emit(f"警告: 长度为 {length} 的破解可能非常耗时!")
-                    
-                    # 记录当前组合索引，用于进度计算
-                    combination_count = 0
-                    last_progress_update = time.time()
-                    
-                    # 逐个生成密码尝试
-                    for pwd_tuple in itertools.product(charset_chars, repeat=length):
-                        if self.isInterruptionRequested():
-                            logger.info("破解过程被用户终止")
-                            self.okSignal.emit((False, "用户终止了破解过程"))
-                            return
-                            
-                        # 转换为字符串
-                        pwd = ''.join(pwd_tuple)
-                        
-                        # 更新计数
-                        combination_count += 1
-                        
-                        # 每1000次更新一次进度和当前密码显示
-                        if combination_count % 1000 == 0 or time.time() - last_progress_update > 0.5:
-                            # 计算进度
-                            progress_percent = (combination_count / total_combinations) * 100
-                            # 总进度取决于当前长度相对于总长度范围的位置
-                            total_progress = 30 + min(60 * (length - min_len + progress_percent/100) / (max_len - min_len + 1), 60)
-                            self.progressSignal.emit(min(int(total_progress), 90))
-                            
-                            # 更新当前尝试的密码
-                            self.current_pwd_signal.emit(f"暴力破解: {pwd} ({combination_count}/{total_combinations})")
-                            last_progress_update = time.time()
-                        
-                        try:
-                            with fitz.open(self.input_file.file_path) as pdf:
-                                if pdf.authenticate(pwd):
-                                    logger.info(f"破解成功，密码: {pwd}")
-                                    pdf.save(self.output_path)
-                                    self.progressSignal.emit(100)
-                                    success_message = f"{os.path.dirname(self.output_path)}\n成功破解密码: {pwd}"
-                                    self.okSignal.emit((True, success_message))
-                                    return
-                        except Exception as e:
-                            # 忽略单个密码的错误，继续尝试
-                            continue
-                
+                return self.run_bruteforce_crack()
+            
             # 如果所有尝试都失败，返回未成功消息
             logger.info("所有密码尝试均失败")
             self.okSignal.emit((False, "未能破解密码，请尝试其他解密方法"))
@@ -993,6 +908,280 @@ class DecryptThread(QThread):
             logger.error(f"PDF破解错误: {str(e)}")
             self.okSignal.emit((False, f"PDF破解失败: {str(e)}"))
             return
+    
+    def run_dict_crack(self):
+        """使用字典破解密码 - 多线程版本"""
+        dict_path = self.crack_settings.get("dict_path", "")
+        if not os.path.exists(dict_path):
+            self.okSignal.emit((False, "字典文件不存在"))
+            return
+            
+        try:
+            logger.info(f"使用字典文件多线程破解: {dict_path}")
+            # 获取线程数
+            thread_count = self.crack_settings.get("threads", 4)
+            logger.info(f"使用 {thread_count} 个线程进行字典破解")
+            
+            # 读取字典文件中的密码列表
+            passwords = []
+            with open(dict_path, 'r', encoding='utf-8', errors='ignore') as f:
+                for line in f:
+                    pwd = line.strip()
+                    if pwd:  # 跳过空行
+                        passwords.append(pwd)
+            
+            if not passwords:
+                self.okSignal.emit((False, "字典文件为空或格式不正确"))
+                return
+                
+            total_passwords = len(passwords)
+            logger.info(f"字典中共有 {total_passwords} 个密码")
+            self.current_pwd_signal.emit(f"正在使用 {thread_count} 个线程破解字典中的 {total_passwords} 个密码...")
+            
+            # 创建一个用于状态同步的对象
+            class CrackState:
+                def __init__(self):
+                    self.success = False
+                    self.found_password = None
+                    self.processed_count = 0
+                    self.lock = threading.Lock()
+                    
+            crack_state = CrackState()
+            
+            # 定义测试密码的函数
+            def test_password(pwd):
+                if crack_state.success:
+                    return  # 如果已经成功，就不再测试
+                
+                try:
+                    with fitz.open(self.input_file.file_path) as pdf:
+                        if pdf.authenticate(pwd):
+                            with crack_state.lock:
+                                if not crack_state.success:  # 双重检查
+                                    crack_state.success = True
+                                    crack_state.found_password = pwd
+                                    logger.info(f"字典破解成功，密码: {pwd}")
+                except Exception as e:
+                    logger.debug(f"尝试密码 '{pwd}' 失败: {str(e)}")
+                
+                # 更新处理计数
+                with crack_state.lock:
+                    crack_state.processed_count += 1
+                    progress = int(crack_state.processed_count / total_passwords * 60) + 30
+                    self.progressSignal.emit(min(progress, 90))
+                    
+                    # 每处理100个密码更新一次UI
+                    if crack_state.processed_count % 100 == 0 or crack_state.processed_count == total_passwords:
+                        percentage = int(crack_state.processed_count / total_passwords * 100)
+                        self.current_pwd_signal.emit(f"字典破解: 已尝试 {crack_state.processed_count}/{total_passwords} 个密码 ({percentage}%)")
+            
+            # 创建线程池
+            with concurrent.futures.ThreadPoolExecutor(max_workers=thread_count) as executor:
+                # 提交任务
+                futures = []
+                for pwd in passwords:
+                    if self.isInterruptionRequested():
+                        break
+                    futures.append(executor.submit(test_password, pwd))
+                
+                # 等待任务完成
+                for future in concurrent.futures.as_completed(futures):
+                    if self.isInterruptionRequested() or crack_state.success:
+                        # 如果破解成功或用户请求终止，取消所有未完成的任务
+                        for f in futures:
+                            f.cancel()
+                        break
+                    
+                    # 获取任务结果（可能产生异常）
+                    try:
+                        future.result()
+                    except Exception as e:
+                        logger.error(f"字典破解线程出错: {str(e)}")
+            
+            # 检查是否成功
+            if crack_state.success and crack_state.found_password:
+                # 保存解密后的PDF
+                with fitz.open(self.input_file.file_path) as pdf:
+                    pdf.authenticate(crack_state.found_password)
+                    pdf.save(self.output_path)
+                
+                self.progressSignal.emit(100)
+                success_message = f"{os.path.dirname(self.output_path)}\n成功使用密码: {crack_state.found_password}"
+                self.okSignal.emit((True, success_message))
+                return
+            
+            # 如果被终止
+            if self.isInterruptionRequested():
+                logger.info("字典破解过程被用户终止")
+                self.okSignal.emit((False, "用户终止了破解过程"))
+                return
+                
+            # 所有密码都尝试过了，但没有成功
+            logger.info("字典中所有密码尝试均失败")
+            self.okSignal.emit((False, "字典中所有密码尝试均失败，请尝试其他解密方法"))
+            
+        except Exception as e:
+            logger.error(f"字典破解出错: {str(e)}")
+            self.okSignal.emit((False, f"字典破解失败: {str(e)}"))
+    
+    def run_bruteforce_crack(self):
+        """使用暴力破解方式 - 多线程版本"""
+        min_len = self.crack_settings.get("min_length", 4)
+        max_len = self.crack_settings.get("max_length", 8)
+        charset = self.crack_settings.get("charset", "digits")
+        thread_count = self.crack_settings.get("threads", 4)
+        
+        logger.info(f"使用 {thread_count} 个线程进行暴力破解")
+        
+        # 定义字符集
+        charset_chars = ""
+        if charset == "digits":
+            charset_chars = "0123456789"
+        elif charset == "lowercase":
+            charset_chars = "abcdefghijklmnopqrstuvwxyz"
+        elif charset == "uppercase":
+            charset_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        elif charset == "alphanumeric":
+            charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        else:  # all
+            charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?/"
+        
+        logger.info(f"开始多线程暴力破解，字符集: {charset}, 长度范围: {min_len}-{max_len}")
+        
+        import itertools
+        
+        # 创建一个用于状态同步的对象
+        class CrackState:
+            def __init__(self):
+                self.success = False
+                self.found_password = None
+                self.current_length = min_len
+                self.current_count = 0
+                self.total_combinations = 0
+                self.lock = threading.Lock()
+                
+        crack_state = CrackState()
+        
+        # 定义密码检查函数
+        def check_password(pwd):
+            if crack_state.success:
+                return  # 如果已经成功，就不再测试
+                
+            try:
+                with fitz.open(self.input_file.file_path) as pdf:
+                    if pdf.authenticate(pwd):
+                        with crack_state.lock:
+                            if not crack_state.success:  # 双重检查
+                                crack_state.success = True
+                                crack_state.found_password = pwd
+                                logger.info(f"暴力破解成功，密码: {pwd}")
+            except Exception as e:
+                logger.debug(f"尝试密码 '{pwd}' 失败: {str(e)}")
+                
+            # 更新处理计数
+            with crack_state.lock:
+                crack_state.current_count += 1
+                
+                # 每处理1000个密码或每0.5秒更新一次进度
+                if crack_state.current_count % 1000 == 0:
+                    percent = (crack_state.current_count / crack_state.total_combinations * 100) 
+                    if crack_state.total_combinations > 0:
+                        length_progress = (crack_state.current_length - min_len) / (max_len - min_len + 1)
+                        total_progress = 30 + min(60 * (length_progress + percent / 100 / (max_len - min_len + 1)), 60)
+                        self.progressSignal.emit(min(int(total_progress), 90))
+                    
+                    self.current_pwd_signal.emit(
+                        f"暴力破解(长度{crack_state.current_length}): {pwd} "
+                        f"({crack_state.current_count}/{crack_state.total_combinations}, "
+                        f"{thread_count}线程)"
+                    )
+        
+        # 按照密码长度逐一尝试
+        for length in range(min_len, max_len + 1):
+            if self.isInterruptionRequested() or crack_state.success:
+                break
+                
+            crack_state.current_length = length
+            crack_state.current_count = 0
+            crack_state.total_combinations = len(charset_chars) ** length
+                
+            logger.info(f"尝试长度为 {length} 的密码，组合总数: {crack_state.total_combinations}")
+            self.current_pwd_signal.emit(f"准备破解长度: {length}，组合总数: {crack_state.total_combinations}...")
+            
+            # 如果组合数太多，警告用户
+            if crack_state.total_combinations > 10000000:  # 1千万
+                logger.warning(f"长度 {length} 的组合数超过1千万，可能需要很长时间")
+                self.current_pwd_signal.emit(f"警告: 长度 {length} 的组合数很大，破解可能需要很长时间!")
+            
+            # 分批生成密码并多线程处理
+            # 计算合适的批次大小
+            batch_size = min(10000, max(1000, crack_state.total_combinations // (thread_count * 10)))
+            
+            # 创建密码队列
+            password_queue = queue.Queue(maxsize=batch_size * 2)  # 队列大小为批次大小的两倍
+            
+            # 生产者线程 - 生成密码并放入队列
+            def password_producer():
+                for pwd_tuple in itertools.product(charset_chars, repeat=length):
+                    if self.isInterruptionRequested() or crack_state.success:
+                        break
+                    pwd = ''.join(pwd_tuple)
+                    password_queue.put(pwd)
+                # 添加结束标记
+                for _ in range(thread_count):
+                    password_queue.put(None)
+            
+            # 启动生产者线程
+            producer_thread = threading.Thread(target=password_producer)
+            producer_thread.daemon = True
+            producer_thread.start()
+            
+            # 消费者函数 - 从队列中获取密码并检查
+            def password_consumer():
+                while not self.isInterruptionRequested() and not crack_state.success:
+                    pwd = password_queue.get()
+                    if pwd is None:  # 结束标记
+                        break
+                    check_password(pwd)
+                    password_queue.task_done()
+            
+            # 启动消费者线程
+            consumer_threads = []
+            for _ in range(thread_count):
+                t = threading.Thread(target=password_consumer)
+                t.daemon = True
+                t.start()
+                consumer_threads.append(t)
+            
+            # 等待所有密码处理完成或找到密码
+            for t in consumer_threads:
+                t.join()
+            
+            # 如果已经找到密码或用户要求终止，就退出循环
+            if crack_state.success or self.isInterruptionRequested():
+                break
+        
+        # 检查最终结果
+        if crack_state.success and crack_state.found_password:
+            # 保存解密后的PDF
+            with fitz.open(self.input_file.file_path) as pdf:
+                pdf.authenticate(crack_state.found_password)
+                pdf.save(self.output_path)
+            
+            self.progressSignal.emit(100)
+            success_message = f"{os.path.dirname(self.output_path)}\n成功破解密码: {crack_state.found_password}"
+            self.okSignal.emit((True, success_message))
+            return
+        
+        # 如果被终止
+        if self.isInterruptionRequested():
+            logger.info("暴力破解过程被用户终止")
+            self.okSignal.emit((False, "用户终止了破解过程"))
+            return
+        
+        # 所有组合都尝试过了，但没有成功
+        logger.info("暴力破解尝试所有可能的密码组合均失败")
+        self.okSignal.emit((False, "所有可能的密码组合尝试均失败，请使用其他方法"))
     
     def run_normal_decrypt(self):
         try:
