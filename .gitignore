@@ -147,3 +147,5 @@ build
 *.log
 *.c
 *.pyd
+__pycache__/
+*.pyc

@@ -11,3 +11,5 @@ opencv-python~=4.10.0.84
 fonttools~=4.54.1
 setuptools~=75.3.0
 Cython~=3.0.11
+PyPDF2~=3.0.1
+pdf2john~=0.2.0

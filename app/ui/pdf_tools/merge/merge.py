@@ -144,6 +144,15 @@ class MergeControl(QWidget, Ui_merge_pdf_view, QCursorGif):
             elided_text = font_metrics.elidedText(self.output_dir, Qt.ElideRight, self.label_output_dir.width() - 10)
             self.label_output_dir.setText(elided_text)
             self.label_output_dir.setToolTip(self.output_dir)
+            
+            # 输出文件名格式：使用第一个文件的名称作为基础
+            if files:
+                first_file = files[0]
+                filename = os.path.basename(first_file)
+                filename_without_ext = os.path.splitext(filename)[0]
+                new_filename = f"{filename_without_ext}_合并文件"
+                self.output_filename = new_filename
+                self.lineEdit_filename.setText(new_filename)
 
     def merge(self):
         input_files = self.list_view.get_data()
