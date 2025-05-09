@@ -8,6 +8,8 @@ import multiprocessing
 import concurrent.futures
 import queue
 import math
+import sys
+import re
 
 import fitz
 from PyPDF2 import PdfReader, PdfWriter
@@ -16,7 +18,8 @@ from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
 from PySide6.QtWidgets import (QWidget, QMessageBox, QFileDialog, QRadioButton, 
                               QButtonGroup, QHBoxLayout, QLabel, QCheckBox, 
                               QProgressDialog, QDialog, QVBoxLayout, QPushButton,
-                              QLineEdit, QComboBox, QSpinBox)
+                              QLineEdit, QComboBox, QSpinBox, QGroupBox, QListWidget,
+                              QListWidgetItem, QGridLayout)
 
 from app.model import PdfFile
 from app.ui.components.QCursorGif import QCursorGif
@@ -130,8 +133,17 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             "max_length": 8,      # 最大密码长度
             "charset": "digits",  # 'digits', 'lowercase', 'uppercase', 'all'
             "timeout": 0,         # 超时时间(秒)，0表示不限制
-            "threads": self.get_recommended_threads()  # 线程数，默认为推荐值
+            "threads": self.get_recommended_threads(),  # 线程数，默认为推荐值
+            "use_gpu": False,     # 是否使用GPU加速
+            "selected_gpus": [],  # 选择的GPU设备ID列表
+            "hashcat_path": "",   # hashcat安装目录
+            "gpu_threads": 8,     # GPU线程数，默认为8
+            "gpu_accel": 64,      # GPU加速因子，默认为64
+            "workload": 3         # GPU工作负载配置(1-4)，默认为3(高负载)
         }
+        
+        # 检测GPU
+        self.available_gpus = []  # 初始为空列表，等选择了hashcat路径后再检测
         
     def init_ui(self):
         self.btn_decrypt.setObjectName('border')
@@ -249,7 +261,8 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         """显示密码破解设置对话框"""
         dialog = QDialog(self)
         dialog.setWindowTitle("密码破解设置")
-        dialog.setMinimumWidth(400)
+        dialog.setMinimumWidth(500)
+        dialog.setMinimumHeight(550)  # 增加高度以容纳新的GPU设置
         
         layout = QVBoxLayout()
         
@@ -322,14 +335,18 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         charset_layout.addWidget(charset_combo)
         layout.addLayout(charset_layout)
         
+        # CPU线程设置组
+        cpu_group = QGroupBox("CPU设置")
+        cpu_layout = QVBoxLayout()
+        
         # 添加线程数设置
         threads_layout = QHBoxLayout()
-        threads_label = QLabel("线程数:")
+        threads_label = QLabel("CPU线程数:")
         threads_layout.addWidget(threads_label)
         
         threads_spinbox = QSpinBox()
         threads_spinbox.setMinimum(1)
-        threads_spinbox.setMaximum(32)
+        threads_spinbox.setMaximum(1000)  # 移除32线程限制
         threads_spinbox.setValue(self.crack_settings.get("threads", self.get_recommended_threads()))
         threads_spinbox.setToolTip(f"推荐线程数: {self.get_recommended_threads()} (基于CPU核心数)")
         threads_layout.addWidget(threads_spinbox)
@@ -339,7 +356,118 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         recommend_btn.clicked.connect(lambda: threads_spinbox.setValue(self.get_recommended_threads()))
         threads_layout.addWidget(recommend_btn)
         
-        layout.addLayout(threads_layout)
+        cpu_layout.addLayout(threads_layout)
+        cpu_group.setLayout(cpu_layout)
+        layout.addWidget(cpu_group)
+        
+        # 添加GPU加速设置
+        gpu_group = QGroupBox("GPU加速")
+        gpu_layout = QVBoxLayout()
+        
+        # GPU启用开关
+        use_gpu_checkbox = QCheckBox("启用GPU加速")
+        use_gpu_checkbox.setChecked(self.crack_settings.get("use_gpu", False))
+        gpu_layout.addWidget(use_gpu_checkbox)
+        
+        # Hashcat路径选择
+        hashcat_layout = QHBoxLayout()
+        hashcat_label = QLabel("Hashcat目录:")
+        hashcat_layout.addWidget(hashcat_label)
+        
+        hashcat_path = QLineEdit()
+        hashcat_path.setText(self.crack_settings.get("hashcat_path", ""))
+        hashcat_path.setReadOnly(True)
+        hashcat_layout.addWidget(hashcat_path)
+        
+        hashcat_btn = QPushButton("选择")
+        hashcat_btn.clicked.connect(lambda: self.select_hashcat_dir(hashcat_path, gpu_list))
+        hashcat_layout.addWidget(hashcat_btn)
+        gpu_layout.addLayout(hashcat_layout)
+        
+        # 检测Hashcat是否可用的状态标签
+        hashcat_status_label = QLabel()
+        hashcat_status_label.setText("请先选择Hashcat目录")
+        gpu_layout.addWidget(hashcat_status_label)
+        
+        # 安装指南按钮
+        install_hashcat_btn = QPushButton("查看Hashcat安装指南")
+        install_hashcat_btn.clicked.connect(self.show_hashcat_installation_guide)
+        gpu_layout.addWidget(install_hashcat_btn)
+        
+        # 添加GPU线程数设置
+        gpu_threads_layout = QHBoxLayout()
+        gpu_threads_label = QLabel("GPU线程数(-n):")
+        gpu_threads_layout.addWidget(gpu_threads_label)
+        
+        gpu_threads_spinbox = QSpinBox()
+        gpu_threads_spinbox.setMinimum(1)
+        gpu_threads_spinbox.setMaximum(1024)
+        gpu_threads_spinbox.setValue(self.crack_settings.get("gpu_threads", 8))
+        gpu_threads_spinbox.setToolTip("设置GPU线程数，影响并行计算能力")
+        gpu_threads_layout.addWidget(gpu_threads_spinbox)
+        gpu_layout.addLayout(gpu_threads_layout)
+        
+        # 添加GPU加速因子设置
+        gpu_accel_layout = QHBoxLayout()
+        gpu_accel_label = QLabel("GPU加速因子(-u):")
+        gpu_accel_layout.addWidget(gpu_accel_label)
+        
+        gpu_accel_spinbox = QSpinBox()
+        gpu_accel_spinbox.setMinimum(1)
+        gpu_accel_spinbox.setMaximum(1024)
+        gpu_accel_spinbox.setValue(self.crack_settings.get("gpu_accel", 64))
+        gpu_accel_spinbox.setToolTip("设置GPU加速因子，增大此值可提高GPU利用率")
+        gpu_accel_layout.addWidget(gpu_accel_spinbox)
+        gpu_layout.addLayout(gpu_accel_layout)
+        
+        # 添加工作负载配置
+        workload_layout = QHBoxLayout()
+        workload_label = QLabel("工作负载(-w):")
+        workload_layout.addWidget(workload_label)
+        
+        workload_combo = QComboBox()
+        workload_combo.addItem("1 - 低")
+        workload_combo.addItem("2 - 默认")
+        workload_combo.addItem("3 - 高")
+        workload_combo.addItem("4 - 最高")
+        workload_combo.setCurrentIndex(self.crack_settings.get("workload", 3) - 1)
+        workload_combo.setToolTip("设置GPU工作负载，值越高利用率越高，但可能影响系统响应")
+        workload_layout.addWidget(workload_combo)
+        gpu_layout.addLayout(workload_layout)
+        
+        # GPU设备选择
+        gpu_devices_label = QLabel("选择GPU设备:")
+        gpu_layout.addWidget(gpu_devices_label)
+        
+        # GPU列表
+        gpu_list = QListWidget()
+        gpu_list.setSelectionMode(QListWidget.MultiSelection)
+        
+        # 最初的状态提示
+        if not hashcat_path.text():
+            item = QListWidgetItem("请先选择Hashcat目录")
+            gpu_list.addItem(item)
+            gpu_list.setEnabled(False)
+        elif self.available_gpus:
+            for i, gpu in enumerate(self.available_gpus):
+                item = QListWidgetItem(f"{i}: {gpu}")
+                gpu_list.addItem(item)
+                # 如果之前选择了该GPU，设置为选中状态
+                if i in self.crack_settings.get("selected_gpus", []):
+                    item.setSelected(True)
+        else:
+            gpu_list.addItem("未检测到GPU设备")
+            gpu_list.setEnabled(False)
+        
+        gpu_layout.addWidget(gpu_list)
+        
+        # 刷新GPU列表按钮
+        refresh_gpu_btn = QPushButton("刷新GPU列表")
+        refresh_gpu_btn.clicked.connect(lambda: self.refresh_gpu_list(gpu_list, hashcat_path.text()))
+        gpu_layout.addWidget(refresh_gpu_btn)
+        
+        gpu_group.setLayout(gpu_layout)
+        layout.addWidget(gpu_group)
         
         # 按钮区域
         btn_layout = QHBoxLayout()
@@ -352,6 +480,27 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         
         dialog.setLayout(layout)
         
+        # 检查hashcat状态并更新UI
+        def check_hashcat_status():
+            path = hashcat_path.text()
+            if not path:
+                hashcat_status_label.setText("请先选择Hashcat目录")
+                hashcat_status_label.setStyleSheet("color: black;")
+                return False
+                
+            is_valid = self.check_hashcat_in_dir(path)
+            if is_valid:
+                hashcat_status_label.setText("Hashcat可用 ✓")
+                hashcat_status_label.setStyleSheet("color: green;")
+                return True
+            else:
+                hashcat_status_label.setText("所选目录中未找到有效的Hashcat ✗")
+                hashcat_status_label.setStyleSheet("color: red;")
+                return False
+                
+        # 初始检查
+        hashcat_valid = check_hashcat_status()
+        
         # 连接按钮事件
         ok_btn.clicked.connect(lambda: self.save_crack_settings(
             mode_combo.currentIndex() == 0,
@@ -360,7 +509,14 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             max_length.text(),
             charset_combo.currentIndex(),
             "0",  # 总是传递0作为超时时间
-            threads_spinbox.value(),  # 传递线程数
+            threads_spinbox.value(),
+            use_gpu_checkbox.isChecked(),
+            [i for i in range(gpu_list.count()) if gpu_list.item(i).isSelected() and not gpu_list.item(i).text().startswith("请先")
+                and not gpu_list.item(i).text().startswith("未检测到")],
+            hashcat_path.text(),
+            gpu_threads_spinbox.value(),
+            gpu_accel_spinbox.value(),
+            workload_combo.currentIndex() + 1,
             dialog
         ))
         cancel_btn.clicked.connect(dialog.reject)
@@ -374,19 +530,203 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             min_length.setEnabled(not is_dict_mode)
             max_length.setEnabled(not is_dict_mode)
             charset_combo.setEnabled(not is_dict_mode)
+            
+            # GPU设置只在启用GPU并且有hashcat时可用
+            gpu_enabled = use_gpu_checkbox.isChecked() and hashcat_valid
+            gpu_list.setEnabled(gpu_enabled)
+            gpu_threads_spinbox.setEnabled(gpu_enabled)
+            gpu_accel_spinbox.setEnabled(gpu_enabled)
+            workload_combo.setEnabled(gpu_enabled)
         
         update_ui()
         mode_combo.currentIndexChanged.connect(update_ui)
+        use_gpu_checkbox.toggled.connect(update_ui)
         
         dialog.exec_()
     
-    def select_dict_file(self, line_edit):
-        """选择字典文件"""
-        file_path, _ = QFileDialog.getOpenFileName(self, "选择密码字典文件", "", "文本文件 (*.txt);;所有文件 (*)")
-        if file_path:
-            line_edit.setText(file_path)
+    def select_hashcat_dir(self, line_edit, gpu_list=None):
+        """选择Hashcat安装目录"""
+        dir_path = QFileDialog.getExistingDirectory(self, "选择Hashcat安装目录")
+        if dir_path:
+            # 检查目录是否包含hashcat可执行文件
+            is_valid = self.check_hashcat_in_dir(dir_path)
+            
+            if is_valid:
+                line_edit.setText(dir_path)
+                # 如果提供了GPU列表，刷新它
+                if gpu_list:
+                    self.refresh_gpu_list(gpu_list, dir_path)
+            else:
+                QMessageBox.warning(
+                    self, 
+                    "无效的Hashcat目录", 
+                    "在所选目录中未找到有效的Hashcat可执行文件。请确保选择正确的Hashcat安装目录。"
+                )
     
-    def save_crack_settings(self, is_dict_mode, dict_path, min_length, max_length, charset_index, timeout, threads, dialog):
+    def check_hashcat_in_dir(self, dir_path):
+        """检查指定目录中是否存在有效的hashcat可执行文件"""
+        if not dir_path:
+            return False
+            
+        # 根据操作系统确定可执行文件名
+        if os.name == 'nt':  # Windows
+            hashcat_exe = os.path.join(dir_path, "hashcat.exe")
+        else:  # Linux/macOS
+            hashcat_exe = os.path.join(dir_path, "hashcat")
+            
+        # 检查是否存在
+        if not os.path.isfile(hashcat_exe):
+            return False
+            
+        # 检查是否可执行
+        try:
+            # 使用绝对路径运行hashcat --version命令
+            result = subprocess.run(
+                [hashcat_exe, "--version"], 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False
+            )
+            
+            # 检查命令是否执行成功
+            return result.returncode == 0
+        except Exception as e:
+            logger.error(f"检查hashcat出错: {str(e)}")
+            return False
+    
+    def refresh_gpu_list(self, gpu_list, hashcat_dir=""):
+        """刷新GPU列表"""
+        # 保存当前选择的项目
+        selected_indexes = [i for i in range(gpu_list.count()) 
+                          if gpu_list.item(i).isSelected() and not gpu_list.item(i).text().startswith("请先")
+                            and not gpu_list.item(i).text().startswith("未检测到")]
+        
+        # 清空列表
+        gpu_list.clear()
+        
+        # 如果未提供hashcat目录，使用保存的路径
+        if not hashcat_dir:
+            hashcat_dir = self.crack_settings.get("hashcat_path", "")
+        
+        # 检查hashcat目录是否有效
+        if not hashcat_dir or not self.check_hashcat_in_dir(hashcat_dir):
+            gpu_list.addItem("请先选择有效的Hashcat目录")
+            gpu_list.setEnabled(False)
+            self.available_gpus = []
+            return
+        
+        # 重新检测GPU
+        self.available_gpus = self.detect_gpu_with_hashcat(hashcat_dir)
+        
+        # 重新填充列表
+        if self.available_gpus:
+            for i, gpu in enumerate(self.available_gpus):
+                item = QListWidgetItem(f"{i}: {gpu}")
+                gpu_list.addItem(item)
+                # 如果之前选择了该索引，并且索引仍然有效，则重新选中
+                if i in selected_indexes and i < len(self.available_gpus):
+                    item.setSelected(True)
+        else:
+            gpu_list.addItem("未检测到GPU设备")
+            gpu_list.setEnabled(False)
+    
+    def detect_gpu_with_hashcat(self, hashcat_dir):
+        """使用指定目录中的hashcat检测GPU设备"""
+        gpu_list = []
+        
+        # 确定hashcat可执行文件路径
+        if os.name == 'nt':  # Windows
+            hashcat_exe = os.path.join(hashcat_dir, "hashcat.exe")
+        else:  # Linux/macOS
+            hashcat_exe = os.path.join(hashcat_dir, "hashcat")
+        
+        try:
+            # 检查是否存在hashcat
+            if not os.path.isfile(hashcat_exe):
+                logger.error(f"未找到hashcat可执行文件: {hashcat_exe}")
+                return gpu_list
+            
+            # 执行hashcat --listdevices命令
+            result = subprocess.run(
+                [hashcat_exe, "--listdevices"], 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False
+            )
+            
+            if result.returncode == 0:
+                # 解析输出中的GPU信息
+                output = result.stdout
+                # 查找形如 * Device #1: ... 的行
+                device_lines = re.findall(r'Device #\d+:.*', output)
+                
+                for line in device_lines:
+                    # 提取设备名称
+                    if "CPU" not in line and ("GPU" in line or "NVIDIA" in line or "AMD" in line):
+                        name_match = re.search(r'Device #\d+: (.*)', line)
+                        if name_match:
+                            gpu_name = name_match.group(1).strip()
+                            gpu_list.append(gpu_name)
+            
+            # 如果hashcat未检测到GPU，尝试其他方法
+            if not gpu_list:
+                # 这里可以添加备用检测方法，保持与之前相同
+                if os.name == 'nt':  # Windows
+                    # 使用WMIC查询GPU信息
+                    result = subprocess.run(
+                        ["wmic", "path", "win32_VideoController", "get", "Name"],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        check=False
+                    )
+                    if result.returncode == 0:
+                        lines = result.stdout.strip().split('\n')[1:]  # 跳过标题行
+                        for line in lines:
+                            if line.strip():
+                                gpu_list.append(line.strip())
+                
+                elif sys.platform == 'darwin':  # macOS
+                    result = subprocess.run(
+                        ["system_profiler", "SPDisplaysDataType"],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        check=False
+                    )
+                    if result.returncode == 0:
+                        for line in result.stdout.split('\n'):
+                            if "Chipset Model:" in line:
+                                gpu_name = line.split(':', 1)[1].strip()
+                                gpu_list.append(gpu_name)
+                
+                else:  # Linux
+                    # 尝试使用lspci
+                    result = subprocess.run(
+                        ["lspci", "-v"],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        check=False
+                    )
+                    if result.returncode == 0:
+                        for line in result.stdout.split('\n'):
+                            if "VGA" in line or "3D" in line:
+                                parts = line.split(':', 2)
+                                if len(parts) >= 3:
+                                    gpu_name = parts[2].strip()
+                                    gpu_list.append(gpu_name)
+        
+        except Exception as e:
+            logger.error(f"使用hashcat检测GPU出错: {str(e)}")
+        
+        return gpu_list
+    
+    def save_crack_settings(self, is_dict_mode, dict_path, min_length, max_length, charset_index, 
+                          timeout, threads, use_gpu, selected_gpus, hashcat_path, 
+                          gpu_threads=8, gpu_accel=64, workload=3, dialog=None):
         """保存破解设置"""
         # 验证输入
         if is_dict_mode and not os.path.exists(dict_path):
@@ -398,14 +738,37 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             max_len = int(max_length)
             # 忽略超时参数，始终设置为0表示无限制
             timeout_val = 0
-            # 验证线程数
-            thread_count = min(max(1, threads), 32)  # 限制在1-32之间
+            # 线程数不再限制最大值
+            thread_count = max(1, threads)
+            # GPU相关参数验证
+            gpu_threads_val = max(1, min(gpu_threads, 1024))
+            gpu_accel_val = max(1, min(gpu_accel, 1024))
+            workload_val = max(1, min(workload, 4))
             
             if min_len < 1 or max_len < min_len:
                 raise ValueError("无效的参数值")
         except ValueError:
             QMessageBox.warning(self, "警告", "请输入有效的数字")
             return
+        
+        # 验证GPU选择
+        if use_gpu:
+            # 验证hashcat路径
+            if not hashcat_path or not self.check_hashcat_in_dir(hashcat_path):
+                QMessageBox.warning(self, "警告", "请选择有效的Hashcat目录")
+                return
+            
+            # 验证是否选择了GPU
+            if not selected_gpus:
+                reply = QMessageBox.question(
+                    self,
+                    "未选择GPU",
+                    "您启用了GPU加速但未选择任何GPU设备。是否继续？",
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
+                if reply == QMessageBox.No:
+                    return
         
         # 保存设置
         charset_map = ["digits", "lowercase", "uppercase", "alphanumeric", "all"]
@@ -415,11 +778,18 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
             "min_length": min_len,
             "max_length": max_len,
             "charset": charset_map[charset_index],
-            "timeout": timeout_val,  # 始终为0，表示不限制时间
-            "threads": thread_count  # 保存线程数设置
+            "timeout": timeout_val,
+            "threads": thread_count,
+            "use_gpu": use_gpu,
+            "selected_gpus": selected_gpus,
+            "hashcat_path": hashcat_path,
+            "gpu_threads": gpu_threads_val,
+            "gpu_accel": gpu_accel_val,
+            "workload": workload_val
         }
         
-        dialog.accept()
+        if dialog:
+            dialog.accept()
     
     def decrypt_pdf(self):
         if not os.path.exists(self.input_file_path):
@@ -780,6 +1150,64 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
         # 推荐使用核心数-1的线程数，最少为2
         return max(2, cpu_count - 1)
 
+    def show_hashcat_installation_guide(self):
+        """显示Hashcat安装指南"""
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Hashcat安装指南")
+        dialog.setMinimumSize(600, 400)
+        
+        layout = QVBoxLayout()
+        
+        # 添加安装说明
+        info_label = QLabel()
+        info_label.setWordWrap(True)
+        info_label.setText(
+            "<h3>安装Hashcat的步骤</h3>"
+            "<p><b>1. Windows系统：</b></p>"
+            "<ul>"
+            "<li>访问官方网站下载：<a href='https://github.com/hashcat/hashcat/releases'>https://github.com/hashcat/hashcat/releases</a></li>"
+            "<li>下载Windows版本的.7z文件(如hashcat-6.2.6.7z)</li>"
+            "<li>使用7zip解压下载的文件到任意目录</li>"
+            "<li>在PDF解密工具中选择刚才解压出来的目录作为Hashcat目录</li>"
+            "<li><b>注意：</b>目录中应当直接包含hashcat.exe文件</li>"
+            "</ul>"
+            "<p><b>2. Linux系统：</b></p>"
+            "<ul>"
+            "<li>从发行版仓库安装: <code>sudo apt-get install hashcat</code>(Ubuntu/Debian) 或相应命令</li>"
+            "<li>或从官网下载Linux版本并解压到任意目录</li>"
+            "<li>在PDF解密工具中选择hashcat的安装目录</li>"
+            "</ul>"
+            "<p><b>3. macOS系统：</b></p>"
+            "<ul>"
+            "<li>使用Homebrew安装: <code>brew install hashcat</code></li>"
+            "<li>找到安装路径(通常是/usr/local/bin/或/opt/homebrew/bin/)</li>"
+            "<li>在PDF解密工具中选择该目录</li>"
+            "</ul>"
+            "<p><b>验证安装：</b></p>"
+            "<ul>"
+            "<li>在PDF解密工具中选择好Hashcat目录后，可以看到\"Hashcat可用 ✓\"的提示</li>"
+            "<li>如果看到错误提示，请确认选择的目录中直接包含hashcat可执行文件</li>"
+            "</ul>"
+            "<p><b>注意事项：</b></p>"
+            "<ul>"
+            "<li>确保已安装GPU驱动程序（NVIDIA或AMD）</li>"
+            "<li>例如：NVIDIA需要安装CUDA</li>"
+            "<li>使用Hashcat进行GPU加速需要OpenCL支持</li>"
+            "<li>某些集成显卡可能不支持或性能较差</li>"
+            "<li>如果不确定Hashcat的具体目录，请在系统中找到hashcat可执行文件，然后选择其所在目录</li>"
+            "</ul>"
+        )
+        
+        layout.addWidget(info_label)
+        
+        # 关闭按钮
+        close_btn = QPushButton("关闭")
+        close_btn.clicked.connect(dialog.accept)
+        layout.addWidget(close_btn)
+        
+        dialog.setLayout(layout)
+        dialog.exec_()
+
 
 class DecryptThread(QThread):
     okSignal = Signal(tuple)  # (success, message)
@@ -892,7 +1320,14 @@ class DecryptThread(QThread):
                 except Exception as e:
                     logger.error(f"尝试密码'{pwd}'失败: {str(e)}")
             
-            # 如果是字典模式，直接使用字典文件尝试密码
+            # 检查是否需要使用GPU加速
+            use_gpu = self.crack_settings.get("use_gpu", False)
+            
+            # 如果启用GPU且Hashcat可用，使用Hashcat进行GPU加速破解
+            if use_gpu and self.check_tool_installed("hashcat"):
+                return self.run_gpu_crack()
+                
+            # 根据模式选择破解方法
             if self.crack_settings.get("mode") == "dictionary":
                 return self.run_dict_crack()
             
@@ -907,6 +1342,316 @@ class DecryptThread(QThread):
         except Exception as e:
             logger.error(f"PDF破解错误: {str(e)}")
             self.okSignal.emit((False, f"PDF破解失败: {str(e)}"))
+            return
+    
+    def run_gpu_crack(self):
+        """使用GPU加速进行密码破解"""
+        try:
+            # 获取设置
+            is_dict_mode = self.crack_settings.get("mode") == "dictionary"
+            selected_gpus = self.crack_settings.get("selected_gpus", [])
+            hashcat_dir = self.crack_settings.get("hashcat_path", "")
+            gpu_threads = self.crack_settings.get("gpu_threads", 8)
+            gpu_accel = self.crack_settings.get("gpu_accel", 64)
+            workload = self.crack_settings.get("workload", 3)
+            
+            # 检查hashcat路径
+            if not hashcat_dir:
+                self.okSignal.emit((False, "未指定Hashcat目录"))
+                return
+                
+            # 确定hashcat可执行文件路径
+            if os.name == 'nt':  # Windows
+                hashcat_exe = os.path.join(hashcat_dir, "hashcat.exe")
+            else:  # Linux/macOS
+                hashcat_exe = os.path.join(hashcat_dir, "hashcat")
+                
+            # 检查是否存在hashcat
+            if not os.path.isfile(hashcat_exe):
+                self.okSignal.emit((False, f"未找到Hashcat可执行文件: {hashcat_exe}"))
+                return
+            
+            # 创建临时目录
+            temp_dir = tempfile.mkdtemp()
+            hash_file = os.path.join(temp_dir, "pdf_hash.txt")
+            
+            # 提取PDF密码哈希
+            self.current_pwd_signal.emit("正在提取PDF密码哈希...")
+            
+            # 使用pdf2john提取哈希
+            try:
+                # 尝试直接使用pdf2john
+                pdf2john_cmd = ["pdf2john", self.input_file.file_path]
+                result = subprocess.run(
+                    pdf2john_cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False
+                )
+                
+                if result.returncode != 0:
+                    # 尝试使用pdf2john.py
+                    pdf2john_cmd = ["pdf2john.py", self.input_file.file_path]
+                    result = subprocess.run(
+                        pdf2john_cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        check=False
+                    )
+                
+                if result.returncode != 0:
+                    self.okSignal.emit((False, "提取PDF密码哈希失败，无法使用GPU加速"))
+                    return
+                
+                # 保存哈希到文件
+                hash_content = result.stdout.strip()
+                with open(hash_file, 'w') as f:
+                    f.write(hash_content)
+                
+                logger.info(f"成功提取PDF密码哈希: {hash_content[:50]}...")
+                
+            except Exception as e:
+                logger.error(f"提取PDF密码哈希失败: {str(e)}")
+                self.okSignal.emit((False, f"提取PDF密码哈希失败: {str(e)}"))
+                return
+            
+            # 准备hashcat命令
+            hashcat_cmd = [hashcat_exe]  # 使用指定目录的hashcat可执行文件
+            
+            # 添加设备选项
+            if selected_gpus:
+                devices_str = ",".join(str(gpu) for gpu in selected_gpus)
+                hashcat_cmd.extend(["-d", devices_str])
+            
+            # 添加哈希类型 (PDF的哈希类型为10400/10500/10600，取决于PDF版本)
+            hashcat_cmd.extend(["-m", "10500"])  # 尝试使用PDF 1.4-1.6格式
+            
+            # 添加GPU优化参数
+            hashcat_cmd.extend(["-n", str(gpu_threads)])  # GPU线程数
+            hashcat_cmd.extend(["-u", str(gpu_accel)])    # GPU加速因子
+            hashcat_cmd.extend(["-w", str(workload)])     # 工作负载
+            
+            # 优化参数
+            hashcat_cmd.extend(["--opencl-device-types=1,2,3"])  # 使用所有类型的OpenCL设备
+            hashcat_cmd.extend(["--force"])  # 忽略警告
+            hashcat_cmd.extend(["--optimized-kernel-enable"])  # 启用优化内核
+            
+            # 添加哈希文件
+            hashcat_cmd.append(hash_file)
+            
+            # 根据模式添加字典或掩码
+            if is_dict_mode:
+                # 字典模式
+                dict_path = self.crack_settings.get("dict_path", "")
+                if not os.path.exists(dict_path):
+                    self.okSignal.emit((False, "字典文件不存在"))
+                    return
+                
+                hashcat_cmd.append(dict_path)
+                
+                self.current_pwd_signal.emit(f"正在使用GPU加速进行字典破解 (线程数:{gpu_threads}, 加速因子:{gpu_accel})...")
+                logger.info(f"执行GPU字典破解命令: {' '.join(hashcat_cmd)}")
+                
+            else:
+                # 暴力破解模式
+                min_len = self.crack_settings.get("min_length", 4)
+                max_len = self.crack_settings.get("max_length", 8)
+                charset = self.crack_settings.get("charset", "digits")
+                
+                # 定义字符集掩码
+                charset_mask = ""
+                if charset == "digits":
+                    charset_mask = "?d"  # 数字
+                elif charset == "lowercase":
+                    charset_mask = "?l"  # 小写字母
+                elif charset == "uppercase":
+                    charset_mask = "?u"  # 大写字母
+                elif charset == "alphanumeric":
+                    charset_mask = "?a"  # 字母数字
+                else:  # all
+                    charset_mask = "?a"  # 所有字符
+                
+                # 构建掩码
+                mask = charset_mask * min_len
+                
+                # 添加掩码参数
+                hashcat_cmd.append(mask)
+                
+                # 如果有长度范围，添加增量模式
+                if min_len < max_len:
+                    increment_str = f"--increment --increment-min={min_len} --increment-max={max_len}"
+                    hashcat_cmd.extend(increment_str.split())
+                
+                self.current_pwd_signal.emit(
+                    f"正在使用GPU加速进行暴力破解 (长度: {min_len}-{max_len}, 线程数:{gpu_threads}, 加速因子:{gpu_accel})..."
+                )
+                logger.info(f"执行GPU暴力破解命令: {' '.join(hashcat_cmd)}")
+            
+            # 添加其他选项
+            hashcat_cmd.extend(["--status", "--potfile-disable"])
+            
+            # 运行hashcat进程
+            self.progressSignal.emit(30)
+            hashcat_process = subprocess.Popen(
+                hashcat_cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1
+            )
+            
+            # 创建读取输出的线程，防止阻塞
+            def read_output():
+                found_password = None
+                for line in hashcat_process.stdout:
+                    if self.isInterruptionRequested():
+                        hashcat_process.terminate()
+                        break
+                    
+                    # 解析hashcat输出，更新进度和找到的密码
+                    if "STATUS" in line:
+                        try:
+                            progress = re.search(r'PROGRESS\s*:\s*(\d+)', line)
+                            if progress:
+                                progress_val = min(int(progress.group(1)), 100)
+                                self.progressSignal.emit(30 + int(progress_val * 0.6))
+                        except:
+                            pass
+                    
+                    if "Session.Name..." in line:
+                        self.current_pwd_signal.emit("GPU加速初始化完成，开始破解...")
+                    
+                    # 更新进度信息
+                    if "Speed.Dev" in line:
+                        speed_match = re.search(r'Speed.Dev.*:\s*([\d.]+)\s*([A-Za-z/]+)', line)
+                        if speed_match:
+                            speed = speed_match.group(1)
+                            unit = speed_match.group(2)
+                            self.current_pwd_signal.emit(f"GPU破解速度: {speed} {unit}")
+                    
+                    # 更新GPU利用率信息（如果有）
+                    if "Util:" in line:
+                        util_match = re.search(r'Util:\s*(\d+)%', line)
+                        if util_match:
+                            util = util_match.group(1)
+                            self.current_pwd_signal.emit(f"GPU利用率: {util}%")
+                    
+                    # 检查是否找到密码
+                    if "Recovered" in line and ":" in line and "0/1 (0.00%)" not in line:
+                        self.current_pwd_signal.emit("已找到密码！正在验证...")
+                        # 尝试从输出中提取密码
+                        password_match = re.search(r':\s*(.+?)$', line)
+                        if password_match:
+                            found_password = password_match.group(1).strip()
+                        
+                        # 如果找到了密码，结束循环
+                        if found_password:
+                            break
+            
+            # 创建读取stderr的线程，可能包含更多调试信息
+            def read_stderr():
+                for line in hashcat_process.stderr:
+                    if self.isInterruptionRequested():
+                        break
+                    
+                    # 记录错误信息
+                    logger.debug(f"Hashcat stderr: {line.strip()}")
+                    
+                    # 如果包含重要信息，也更新UI
+                    if "CUDA" in line or "OpenCL" in line or "Error" in line:
+                        self.current_pwd_signal.emit(f"GPU信息: {line.strip()}")
+            
+            # 启动输出读取线程
+            output_thread = threading.Thread(target=read_output)
+            output_thread.daemon = True
+            output_thread.start()
+            
+            # 启动错误读取线程
+            stderr_thread = threading.Thread(target=read_stderr)
+            stderr_thread.daemon = True
+            stderr_thread.start()
+            
+            # 等待hashcat进程完成或用户中断
+            start_time = time.time()
+            while hashcat_process.poll() is None:
+                if self.isInterruptionRequested():
+                    hashcat_process.terminate()
+                    self.okSignal.emit((False, "用户终止了破解过程"))
+                    return
+                
+                # 检查是否超时
+                if time.time() - start_time > 300:  # 5分钟超时
+                    self.current_pwd_signal.emit("GPU破解超时，尝试读取结果...")
+                    break
+                
+                time.sleep(0.5)
+            
+            # 等待输出线程结束
+            output_thread.join(timeout=2)
+            stderr_thread.join(timeout=2)
+            
+            # 检查破解结果
+            return_code = hashcat_process.poll() or 0
+            stdout, stderr = hashcat_process.communicate()
+            
+            # 查找密码
+            password = None
+            
+            # 在输出中查找密码
+            potfile_path = os.path.join(temp_dir, "hashcat.potfile")
+            if os.path.exists(potfile_path):
+                with open(potfile_path, 'r') as f:
+                    potfile_content = f.read()
+                    if ":" in potfile_content:
+                        password = potfile_content.split(":", 1)[1].strip()
+            
+            # 如果没有找到密码，尝试从stdout中解析
+            if not password and stdout:
+                password_match = re.search(r'Hash\.Target\s*:\s*.*:(.*?)$', stdout, re.MULTILINE)
+                if password_match:
+                    password = password_match.group(1).strip()
+            
+            if not password:
+                # 尝试从结果目录查找
+                cracked_files = [f for f in os.listdir(temp_dir) if f.endswith('.cracked')]
+                for cracked_file in cracked_files:
+                    with open(os.path.join(temp_dir, cracked_file), 'r') as f:
+                        content = f.read().strip()
+                        if content:
+                            password_parts = content.split(':')
+                            if len(password_parts) > 1:
+                                password = password_parts[-1].strip()
+                                break
+            
+            # 如果找到了密码，验证并保存解密后的PDF
+            if password:
+                try:
+                    # 验证密码
+                    self.current_pwd_signal.emit(f"验证密码: {password}")
+                    with fitz.open(self.input_file.file_path) as pdf:
+                        if pdf.authenticate(password):
+                            # 保存解密后的PDF
+                            pdf.save(self.output_path)
+                            self.progressSignal.emit(100)
+                            success_message = f"{os.path.dirname(self.output_path)}\n成功破解密码: {password}"
+                            self.okSignal.emit((True, success_message))
+                            return
+                except Exception as e:
+                    logger.error(f"验证密码失败: {str(e)}")
+            
+            # 如果GPU破解失败，尝试回退到CPU方法
+            self.current_pwd_signal.emit("GPU破解未找到密码，切换到CPU方法...")
+            
+            if self.crack_settings.get("mode") == "dictionary":
+                return self.run_dict_crack()
+            else:
+                return self.run_bruteforce_crack()
+            
+        except Exception as e:
+            logger.error(f"GPU破解出错: {str(e)}")
+            self.okSignal.emit((False, f"GPU破解失败: {str(e)}"))
             return
     
     def run_dict_crack(self):
