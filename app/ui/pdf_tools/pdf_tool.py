@@ -8,6 +8,7 @@ from app.ui.pdf_tools.merge import MergeControl
 from app.ui.pdf_tools.pdf_tool_ui import Ui_Form
 from app.ui.components.router import Router
 from app.ui.pdf_tools.blank_pages.blank_pages import BlankPagesControl
+from app.ui.pdf_tools.watermark.watermark import WatermarkControl
 
 
 class PDFToolControl(QWidget, Ui_Form, QCursorGif):
@@ -36,7 +37,7 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
         self.commandLinkButton_encrypt.clicked.connect(self.encrypt_pdf)
         self.commandLinkButton_decrypt.clicked.connect(self.decrypt_pdf)
         self.commandLinkButton_delete_blank_pages.clicked.connect(self.delete_blank_pages)
-        self.commandLinkButton_add_watermark.clicked.connect(globalSignals.not_support)
+        self.commandLinkButton_add_watermark.clicked.connect(self.add_watermark)
 
     def init_ui(self):
         if not self.parent():
@@ -110,6 +111,17 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
         else:
             self.router.navigate(self.blank_pages_view.router_path)
 
+    def add_watermark(self):
+        if not hasattr(self, 'watermark_view') or not self.watermark_view:
+            self.watermark_view = WatermarkControl(router=self.router, parent=self if self.parent() else None)
+            self.watermark_view.okSignal.connect(self.watermark_finish)
+            self.router.add_route(self.watermark_view.router_path, self.watermark_view)
+            self.child_routes[self.watermark_view.router_path] = 0
+            self.childRouterSignal.emit(self.watermark_view.router_path)
+            self.router.navigate(self.watermark_view.router_path)
+        else:
+            self.router.navigate(self.watermark_view.router_path)
+
     def merge_finish(self, s=None):
         if self.merge_view and self.merge_view.router_path in self.child_routes:
             self.child_routes.pop(self.merge_view.router_path)
@@ -139,6 +151,12 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
             self.child_routes.pop(self.blank_pages_view.router_path)
             self.router.remove_route(self.blank_pages_view.router_path)
             self.blank_pages_view = None
+
+    def watermark_finish(self, s=None):
+        if hasattr(self, 'watermark_view') and self.watermark_view and self.watermark_view.router_path in self.child_routes:
+            self.child_routes.pop(self.watermark_view.router_path)
+            self.router.remove_route(self.watermark_view.router_path)
+            self.watermark_view = None
 
     def __del__(self):
         self.merge_view = None
