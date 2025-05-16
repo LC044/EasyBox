@@ -32,6 +32,7 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
         self.total_task_num = 0
         self.finish_task_num = 0
         self.input_urls = []
+        self.local_html_files = []  # 添加存储本地HTML文件的列表
         self.webs = {}
         self.output_dir = ''
         self.router = router
@@ -47,6 +48,12 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
         self.setCursorTimeout(100)
 
         self.btn_start.clicked.connect(self.merge)
+        
+        # 添加选择本地网页文件的按钮
+        self.btn_choose_local_html = QPushButton("选择本地网页文件", self)
+        self.btn_choose_local_html.clicked.connect(self.select_local_html_files)
+        # 将按钮添加到布局中，根据UI布局调整位置
+        self.verticalLayout.insertWidget(1, self.btn_choose_local_html)
 
         self.btn_choose_output_dir.setVisible(False)
         self.label_output_dir.setVisible(False)
@@ -76,6 +83,33 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
         for child in self.widget_urls.children():
             if isinstance(child, QPushButton):
                 child.deleteLater()  # 删除按钮
+
+    # 添加选择本地HTML文件的方法
+    def select_local_html_files(self):
+        files, _ = QFileDialog.getOpenFileNames(self, "选择本地网页文件", "", "HTML文件 (*.html *.htm);;All Files (*)")
+        if files:
+            self.local_html_files = files
+            # 清除布局中的所有控件
+            for i in reversed(range(self.layout.count())):
+                widget = self.layout.itemAt(i).widget()
+                if widget is not None:
+                    widget.deleteLater()
+            
+            # 添加本地文件按钮
+            for file_path in self.local_html_files:
+                label = QPushButton()
+                label.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+                label.setMaximumWidth(250)
+                font_metrics = QFontMetrics(self.label_output_dir.font())
+                file_name = os.path.basename(file_path)
+                # 使用 elidedText 根据按钮宽度生成省略文字
+                elided_text = font_metrics.elidedText(file_name, Qt.ElideRight, 240)
+                label.setText(elided_text)
+                label.setToolTip(file_path)
+                label.clicked.connect(
+                    lambda checked, path=file_path: QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+                )
+                self.layout.addWidget(label)
 
     def change_url(self):
         text = self.lineEdit.text()
@@ -111,6 +145,8 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
                 )
                 # label.lin
                 self.layout.addWidget(label)
+            # 清空本地文件列表，因为用户选择了输入URL
+            self.local_html_files = []
 
     def select_output_dir(self):
         text = self.comboBox_output_dir.currentText()
@@ -143,10 +179,11 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
             self.label_output_dir.setToolTip(self.output_dir)
 
     def merge(self):
-
-        if len(self.input_urls) == 0:
-            QMessageBox.information(self, '错误', '未识别到链接')
+        # 检查是否有URL或本地文件
+        if len(self.input_urls) == 0 and len(self.local_html_files) == 0:
+            QMessageBox.information(self, '错误', '未识别到链接或本地网页文件')
             return
+            
         if self.comboBox_output_dir.currentText() == '自定义目录':
             self.output_path = self.output_dir
         else:
@@ -154,11 +191,25 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
         cnt = 0
         self.btn_start.setEnabled(False)
         self.startBusy()
-        self.total_task_num = len(self.input_urls)
+        
+        # 合并URL和本地文件的任务
+        all_tasks = []
+        # 添加URL任务
+        for url in self.input_urls:
+            all_tasks.append((url, True))  # (url, is_url)
+        
+        # 添加本地文件任务
+        for file_path in self.local_html_files:
+            all_tasks.append((file_path, False))  # (file_path, is_url)
+            
+        self.total_task_num = len(all_tasks)
         self.finish_task_num = 0
-        while len(self.input_urls) > 0 and cnt < 4:
+        
+        # 启动前4个任务
+        while all_tasks and cnt < 4:
             cnt += 1
-            task = Web2PdfOpt(self.input_urls.pop(0), self.output_dir)
+            url, is_url = all_tasks.pop(0)
+            task = Web2PdfOpt(url, self.output_dir, is_url)
             view = HTMLToPDFConverter(task, title='正在导出PDF，请不要退出')
             view.finishSignal.connect(self.print_one)
             self.startBusy()
@@ -179,13 +230,17 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
 
             view.show()
             self.webs[view.pdf_id] = view
+            
+        # 保存剩余任务列表，供后续处理
+        self.remaining_tasks = all_tasks
 
     def print_one(self, pdf_id):
         del self.webs[pdf_id]
         self.finish_task_num += 1
-        if len(self.input_urls) > 0:
-            task = Web2PdfOpt(self.input_urls.pop(0), self.output_dir)
-            view = HTMLToPDFConverter(task, title=f'正在导出PDF，剩余任务{len(self.input_urls)}')
+        if self.remaining_tasks:
+            url, is_url = self.remaining_tasks.pop(0)
+            task = Web2PdfOpt(url, self.output_dir, is_url)
+            view = HTMLToPDFConverter(task, title=f'正在导出PDF，剩余任务{len(self.remaining_tasks)}')
             view.finishSignal.connect(self.print_one)
             self.startBusy()
             # 获取屏幕信息
@@ -233,6 +288,15 @@ class Web2PdfControl(QWidget, Ui_web2pdf_view, QCursorGif):
         self.btn_start.setEnabled(True)
         self.progressBar.setValue(0)
         self.worker = None
+        # 清空任务列表
+        self.input_urls = []
+        self.local_html_files = []
+        self.lineEdit.clear()
+        # 清除显示区域
+        for i in reversed(range(self.layout.count())):
+            widget = self.layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
 
     def closeEvent(self, a0):
         super().closeEvent(a0)
