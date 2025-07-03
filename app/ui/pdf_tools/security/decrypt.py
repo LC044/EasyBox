@@ -13,6 +13,20 @@ import re
 
 import fitz
 from PyPDF2 import PdfReader, PdfWriter
+
+# 导入Cython优化模块
+try:
+    import pdf_cracker
+    CYTHON_AVAILABLE = True
+except ImportError:
+    CYTHON_AVAILABLE = False
+    
+# 导入Hashcat GPU加速优化模块
+try:
+    import hashcat_wrapper
+    HASHCAT_WRAPPER_AVAILABLE = True
+except ImportError:
+    HASHCAT_WRAPPER_AVAILABLE = False
 from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream
 from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
 from PySide6.QtWidgets import (QWidget, QMessageBox, QFileDialog, QRadioButton, 
@@ -37,6 +51,45 @@ def open_file_explorer(path):
     QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
 
+# 尝试编译Cython模块
+def compile_cython_module():
+    try:
+        import subprocess
+        import os
+        import sys
+        
+        # 获取当前文件所在目录
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        setup_path = os.path.join(current_dir, "setup.py")
+        
+        # 检查setup.py是否存在
+        if not os.path.exists(setup_path):
+            logger.warning("setup.py不存在，无法编译Cython模块")
+            return False
+        
+        # 执行编译命令
+        logger.info("开始编译Cython模块...")
+        cmd = [sys.executable, setup_path, "build_ext", "--inplace"]
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=current_dir
+        )
+        stdout, stderr = process.communicate()
+        
+        # 检查编译结果
+        if process.returncode == 0:
+            logger.info("Cython模块编译成功")
+            return True
+        else:
+            logger.error(f"Cython模块编译失败: {stderr.decode('utf-8', errors='ignore')}")
+            return False
+    except Exception as e:
+        logger.error(f"尝试编译Cython模块时出错: {str(e)}")
+        return False
+
+
 class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
     okSignal = Signal(bool)
     childRouterSignal = Signal(str)
@@ -57,6 +110,11 @@ class DecryptControl(QWidget, Ui_decrypt_pdf_view, QCursorGif):
                         i for i in range(8)], self)
         self.setCursorTimeout(100)
         self.init_ui()
+        
+        # 如果Cython模块不可用，尝试编译
+        if not CYTHON_AVAILABLE:
+            # 在后台线程中尝试编译，避免阻塞UI
+            threading.Thread(target=compile_cython_module, daemon=True).start()
         
         # 按钮连接
         self.btn_choose_file.clicked.connect(self.open_file_dialog)
@@ -1345,7 +1403,99 @@ class DecryptThread(QThread):
             return
     
     def run_gpu_crack(self):
-        """使用GPU加速进行密码破解"""
+        """使用GPU加速进行密码破解 - 优先使用Cython优化版本"""
+        # 检查是否可以使用Cython优化的Hashcat包装器
+        if HASHCAT_WRAPPER_AVAILABLE:
+            try:
+                logger.info("使用Cython优化的Hashcat包装器进行GPU加速破解")
+                
+                # 获取设置
+                is_dict_mode = self.crack_settings.get("mode") == "dictionary"
+                selected_gpus = self.crack_settings.get("selected_gpus", [])
+                hashcat_dir = self.crack_settings.get("hashcat_path", "")
+                gpu_threads = self.crack_settings.get("gpu_threads", 8)
+                gpu_accel = self.crack_settings.get("gpu_accel", 64)
+                workload = self.crack_settings.get("workload", 3)
+                min_len = self.crack_settings.get("min_length", 4)
+                max_len = self.crack_settings.get("max_length", 8)
+                charset = self.crack_settings.get("charset", "digits")
+                dict_path = self.crack_settings.get("dict_path", "")
+                
+                # 检查hashcat路径
+                if not hashcat_dir:
+                    self.okSignal.emit((False, "未指定Hashcat目录"))
+                    return
+                
+                # 准备选项字典
+                options = {
+                    "mode": "dictionary" if is_dict_mode else "bruteforce",
+                    "hashcat_path": hashcat_dir,
+                    "selected_gpus": selected_gpus,
+                    "gpu_threads": gpu_threads,
+                    "gpu_accel": gpu_accel,
+                    "workload": workload,
+                    "min_length": min_len,
+                    "max_length": max_len,
+                    "charset": charset,
+                    "dict_path": dict_path
+                }
+                
+                # 定义回调函数更新UI
+                def update_ui(message):
+                    self.current_pwd_signal.emit(message)
+                    # 更新进度条
+                    if "进度" in message or "GPU破解进度" in message:
+                        try:
+                            if "进度" in message:
+                                progress_str = message.split("进度")[1].strip().split("%")[0]
+                            else:
+                                progress_str = message.split("GPU破解进度:")[1].strip().split("%")[0]
+                            progress = float(progress_str)
+                            self.progressSignal.emit(int(30 + progress * 0.6))
+                        except:
+                            pass
+                
+                # 初始化进度
+                self.progressSignal.emit(30)
+                
+                # 调用Cython优化的GPU破解函数
+                success, password = hashcat_wrapper.gpu_crack_pdf(
+                    self.input_file.file_path,
+                    options,
+                    update_ui
+                )
+                
+                # 处理结果
+                if success and password:
+                    try:
+                        # 验证密码
+                        self.current_pwd_signal.emit(f"验证密码: {password}")
+                        with fitz.open(self.input_file.file_path) as pdf:
+                            if pdf.authenticate(password):
+                                # 保存解密后的PDF
+                                pdf.save(self.output_path)
+                                self.progressSignal.emit(100)
+                                success_message = f"{os.path.dirname(self.output_path)}\n成功破解密码: {password}"
+                                self.okSignal.emit((True, success_message))
+                                return
+                    except Exception as e:
+                        logger.error(f"验证密码失败: {str(e)}")
+                
+                # 如果被中断
+                if self.isInterruptionRequested():
+                    logger.info("GPU破解过程被用户终止")
+                    self.okSignal.emit((False, "用户终止了破解过程"))
+                    return
+                
+                # 如果Cython优化版本失败，回退到原始实现
+                logger.info("Cython优化的GPU破解未找到密码，尝试原始方法")
+                
+            except Exception as e:
+                logger.error(f"Cython GPU破解出错: {str(e)}")
+                logger.info("回退到原始GPU破解方法")
+                # 继续使用原始实现
+        
+        # 原始实现
         try:
             # 获取设置
             is_dict_mode = self.crack_settings.get("mode") == "dictionary"
@@ -1655,17 +1805,67 @@ class DecryptThread(QThread):
             return
     
     def run_dict_crack(self):
-        """使用字典破解密码 - 多线程版本"""
+        """使用字典破解密码 - 优先使用Cython优化版本"""
         dict_path = self.crack_settings.get("dict_path", "")
         if not os.path.exists(dict_path):
             self.okSignal.emit((False, "字典文件不存在"))
             return
-            
+        
+        # 获取线程数
+        thread_count = self.crack_settings.get("threads", 4)
+        logger.info(f"使用 {thread_count} 个线程进行字典破解")
+        
+        # 使用Cython优化版本（如果可用）
+        if CYTHON_AVAILABLE:
+            try:
+                logger.info(f"使用Cython优化版本进行字典破解: {dict_path}")
+                self.current_pwd_signal.emit(f"正在使用Cython优化的多线程破解（{thread_count}线程）...")
+                
+                # 定义回调函数更新UI
+                def update_ui(message):
+                    self.current_pwd_signal.emit(message)
+                    # 更新进度条
+                    if "进度" in message:
+                        try:
+                            progress_str = message.split("进度")[1].strip().split("%")[0]
+                            progress = float(progress_str)
+                            self.progressSignal.emit(int(30 + progress * 0.6))
+                        except:
+                            pass
+                
+                # 调用Cython优化的字典破解函数
+                success, found_password = pdf_cracker.dictionary_crack(
+                    self.input_file.file_path, 
+                    dict_path, 
+                    thread_count, 
+                    update_ui
+                )
+                
+                if success:
+                    # 保存解密后的PDF
+                    with fitz.open(self.input_file.file_path) as pdf:
+                        pdf.authenticate(found_password)
+                        pdf.save(self.output_path)
+                    
+                    self.progressSignal.emit(100)
+                    success_message = f"{os.path.dirname(self.output_path)}\n成功使用密码: {found_password}"
+                    self.okSignal.emit((True, success_message))
+                    return
+                elif self.isInterruptionRequested():
+                    logger.info("字典破解过程被用户终止")
+                    self.okSignal.emit((False, "用户终止了破解过程"))
+                    return
+                else:
+                    logger.info("Cython优化版本字典破解失败，尝试原始方法")
+                    # 如果Cython版本失败，回退到原始实现
+            except Exception as e:
+                logger.error(f"Cython字典破解出错: {str(e)}")
+                logger.info("回退到原始字典破解方法")
+                # 继续使用原始实现
+        
+        # 原始多线程实现
         try:
-            logger.info(f"使用字典文件多线程破解: {dict_path}")
-            # 获取线程数
-            thread_count = self.crack_settings.get("threads", 4)
-            logger.info(f"使用 {thread_count} 个线程进行字典破解")
+            logger.info(f"使用原始多线程方法进行字典破解: {dict_path}")
             
             # 读取字典文件中的密码列表
             passwords = []
@@ -1770,7 +1970,7 @@ class DecryptThread(QThread):
             self.okSignal.emit((False, f"字典破解失败: {str(e)}"))
     
     def run_bruteforce_crack(self):
-        """使用暴力破解方式 - 多线程版本"""
+        """使用暴力破解方式 - 优先使用Cython优化版本"""
         min_len = self.crack_settings.get("min_length", 4)
         max_len = self.crack_settings.get("max_length", 8)
         charset = self.crack_settings.get("charset", "digits")
@@ -1778,6 +1978,58 @@ class DecryptThread(QThread):
         
         logger.info(f"使用 {thread_count} 个线程进行暴力破解")
         
+        # 使用Cython优化版本（如果可用）
+        if CYTHON_AVAILABLE:
+            try:
+                logger.info(f"使用Cython优化版本进行暴力破解: 字符集={charset}, 长度={min_len}-{max_len}")
+                self.current_pwd_signal.emit(f"正在使用Cython优化的多线程暴力破解（{thread_count}线程）...")
+                
+                # 定义回调函数更新UI
+                def update_ui(message):
+                    self.current_pwd_signal.emit(message)
+                    # 更新进度条
+                    if "进度" in message:
+                        try:
+                            progress_str = message.split("进度")[1].strip().split("%")[0]
+                            progress = float(progress_str)
+                            self.progressSignal.emit(int(30 + progress * 0.6))
+                        except:
+                            pass
+                
+                # 调用Cython优化的暴力破解函数
+                success, found_password = pdf_cracker.crack_pdf_password(
+                    self.input_file.file_path,
+                    min_len,
+                    max_len,
+                    charset,
+                    thread_count,
+                    1000,  # 批次大小
+                    update_ui
+                )
+                
+                if success:
+                    # 保存解密后的PDF
+                    with fitz.open(self.input_file.file_path) as pdf:
+                        pdf.authenticate(found_password)
+                        pdf.save(self.output_path)
+                    
+                    self.progressSignal.emit(100)
+                    success_message = f"{os.path.dirname(self.output_path)}\n成功破解密码: {found_password}"
+                    self.okSignal.emit((True, success_message))
+                    return
+                elif self.isInterruptionRequested():
+                    logger.info("暴力破解过程被用户终止")
+                    self.okSignal.emit((False, "用户终止了破解过程"))
+                    return
+                else:
+                    logger.info("Cython优化版本暴力破解失败，尝试原始方法")
+                    # 如果Cython版本失败，回退到原始实现
+            except Exception as e:
+                logger.error(f"Cython暴力破解出错: {str(e)}")
+                logger.info("回退到原始暴力破解方法")
+                # 继续使用原始实现
+        
+        # 原始多线程实现
         # 定义字符集
         charset_chars = ""
         if charset == "digits":
@@ -1791,7 +2043,7 @@ class DecryptThread(QThread):
         else:  # all
             charset_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?/"
         
-        logger.info(f"开始多线程暴力破解，字符集: {charset}, 长度范围: {min_len}-{max_len}")
+        logger.info(f"开始原始多线程暴力破解，字符集: {charset}, 长度范围: {min_len}-{max_len}")
         
         import itertools
         
@@ -2003,4 +2255,4 @@ if __name__ == '__main__':
     router = Router(None)
     view = DecryptControl(router)
     view.show()
-    sys.exit(app.exec()) 
+    sys.exit(app.exec())
