@@ -1,6 +1,7 @@
 from PySide6.QtCore import Signal, QThread, QSize, QFile, QIODevice, QTextStream
 from PySide6.QtWidgets import QWidget
 
+from app import config
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.global_signal import globalSignals
@@ -9,6 +10,7 @@ from app.ui.image_tools.modify_date.modify_date import ModifyDateControl
 from app.ui.pdf_tools.merge import MergeControl
 
 from app.ui.components.router import Router
+from app.ui.theme import set_theme
 
 
 class ImageToolControl(QWidget, Ui_Form, QCursorGif):
@@ -36,13 +38,8 @@ class ImageToolControl(QWidget, Ui_Form, QCursorGif):
             pixmap = QPixmap(Icon.logo_ico_path)
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
-            self.setWindowTitle('PDF工具箱')
-            style_qss_file = QFile(":/data/resources/QSS/style.qss")
-            if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
-                stream = QTextStream(style_qss_file)
-                style_content = stream.readAll()
-                self.setStyleSheet(style_content)
-                style_qss_file.close()
+            self.setWindowTitle('图片工具箱')
+            set_theme(self, config.UI_THEME)
         self.commandLinkButton_modify_date.clicked.connect(self.modify_date)
 
         self.commandLinkButton_modify_name_by_time.clicked.connect(globalSignals.not_support)

@@ -12,12 +12,14 @@ from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
 from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog, QFileSystemModel, QTreeView, \
     QTableWidgetItem
 
+from app import config
 from app.log import logger
 from app.model.file_model import ImageFile
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
 from app.ui.image_tools.modify_date.modify_date_ui import Ui_modify_date_view
 from app.ui.components.router import Router
+from app.ui.theme import set_theme
 from app.util import common
 
 
@@ -70,12 +72,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
             self.setWindowTitle('修改图片拍摄日期')
-            style_qss_file = QFile(":/data/resources/QSS/style.qss")
-            if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
-                stream = QTextStream(style_qss_file)
-                style_content = stream.readAll()
-                self.setStyleSheet(style_content)
-                style_qss_file.close()
+            set_theme(self, config.UI_THEME)
         # 创建 QFileSystemModel
         self.model = QFileSystemModel()
         self.model.setRootPath(QDir.rootPath())  # 设置根路径为系统的根目录
@@ -101,13 +98,13 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         print(index, self.comboBox_output_opt.currentText())
         if index == 1:
             self.dateTimeEdit.setVisible(True)
-            self.given_date = self.dateTimeEdit.dateTime().toPyDateTime()
+            self.given_date = self.dateTimeEdit.dateTime().toPython()
         else:
             self.given_date = None
             self.dateTimeEdit.setVisible(False)
 
     def set_given_date(self):
-        self.given_date = self.dateTimeEdit.dateTime().toPyDateTime()
+        self.given_date = self.dateTimeEdit.dateTime().toPython()
 
     def set_output_opt(self, index):
         """
@@ -251,6 +248,9 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         self.progressBar.setValue(value)
 
     def start(self):
+        self.running_flag = True
+        self.startBusy()
+        self.btn_start.setEnabled(False)
         file_fir = self.model.filePath(self.treeView.rootIndex())
         self.worker = ModifyThread(
             file_fir,
@@ -284,6 +284,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         reply.addButton("取消", QMessageBox.RejectRole)
         api = reply.exec_()
         # self.close()
+        self.running_flag = False
         self.btn_start.setEnabled(True)
         # self.list_view.clear()
         self.progressBar.setValue(0)
@@ -342,13 +343,18 @@ def modify_image(image_file: ImageFile, given_date, is_force):
             else:
                 earliest_date = given_date
             # 如果 DateTimeOriginal 已经是最早的，则无需修改
-            if date_time_original != earliest_date:
+            if date_time_original and date_time_original != earliest_date:
                 # 更新 DateTimeOriginal
                 exif_dict["Exif"][piexif.ExifIFD.DateTimeOriginal] = earliest_date.strftime("%Y:%m:%d %H:%M:%S").encode(
                     "utf-8")
-                exif_dict["0th"][piexif.ImageIFD.Make] = 'MemoTrace'.encode("utf-8")
-                exif_dict["0th"][piexif.ImageIFD.Model] = 'EasyBox'.encode("utf-8")
-                exif_dict["0th"][piexif.ImageIFD.Software] = 'EasyBox-0.1.0'.encode("utf-8")
+                if "0th" not in exif_dict:
+                    exif_dict['0th'] = {}
+                if piexif.ImageIFD.Make not in exif_dict["0th"]:
+                    exif_dict["0th"][piexif.ImageIFD.Make] = 'MemoTrace'.encode("utf-8")
+                if piexif.ImageIFD.Model not in exif_dict["0th"]:
+                    exif_dict["0th"][piexif.ImageIFD.Model] = 'EasyBox'.encode("utf-8")
+                if piexif.ImageIFD.Software not in exif_dict["0th"]:
+                    exif_dict["0th"][piexif.ImageIFD.Software] = 'EasyBox-0.1.0'.encode("utf-8")
         except:
             earliest_date = given_date
             exif_dict = {
@@ -359,9 +365,6 @@ def modify_image(image_file: ImageFile, given_date, is_force):
                 # 更新 DateTimeOriginal
                 exif_dict["Exif"][piexif.ExifIFD.DateTimeOriginal] = earliest_date.strftime("%Y:%m:%d %H:%M:%S").encode(
                     "utf-8")
-            exif_dict["0th"][piexif.ImageIFD.Make] = 'MemoTrace'.encode("utf-8")
-            exif_dict["0th"][piexif.ImageIFD.Model] = 'EasyBox'.encode("utf-8")
-            exif_dict["0th"][piexif.ImageIFD.Software] = 'EasyBox-0.1.0'.encode("utf-8")
         # 保存修改后的图片
         exif_bytes = piexif.dump(exif_dict)
         # img.save(image_file.save_path, exif=exif_bytes, quality=image_file.save_quality, subsampling=0)
@@ -370,7 +373,7 @@ def modify_image(image_file: ImageFile, given_date, is_force):
         piexif.insert(exif_bytes, image_file.save_path)
         print(f"DateTimeOriginal 已更新为最早日期：{earliest_date}")
     except Exception as e:
-        print(f"处理图片时出错：{e} {traceback.format_exc()}")
+        print(f"处理图片时出错{image_file.file_path}：{e} {traceback.format_exc()}")
 
 
 def is_image(file_path):
@@ -400,6 +403,7 @@ class ModifyThread(QThread):
             total_tasks = 0
             num_each_process = 100
             # 创建多进程任务
+            # 统计任务个数
             if not self.is_apply_child:
                 filenames = os.listdir(self.file_dir)
                 file_items = []
@@ -418,6 +422,7 @@ class ModifyThread(QThread):
                         file_items = []
                 task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
             else:
+                # 考虑子文件夹
                 file_items = []
                 for filepath, dir, filenames in os.walk(self.file_dir):
                     for filename in filenames:
@@ -426,7 +431,13 @@ class ModifyThread(QThread):
                         total_tasks += 1
                         image_file = ImageFile(os.path.join(filepath, filename))
                         if self.output_dir:
-                            image_file.save_path = os.path.join(self.output_dir, image_file.file_name)
+                            # 计算当前目录相对于源目录的相对路径
+                            relative_path = os.path.relpath(filepath, self.file_dir)
+                            # 构建目标目录中对应的路径
+                            target_path = os.path.join(self.output_dir, relative_path)
+                            # 创建目标目录中对应的子目录（如果不存在）
+                            os.makedirs(target_path, exist_ok=True)
+                            image_file.save_path = os.path.join(target_path, image_file.file_name)
                         file_items.append(
                             image_file
                         )
@@ -445,8 +456,8 @@ class ModifyThread(QThread):
 
             while completed_tasks < total_tasks_process:
                 result = result_queue.get()
+                completed_tasks += 1
                 if result["status"] == "success":
-                    completed_tasks += 1
                     progress = min(completed_tasks * 100 // total_tasks_process, 99)
                     self.progressSignal.emit(progress)
                 else:
@@ -468,13 +479,13 @@ class ModifyThread(QThread):
         while not task_queue.empty():
             try:
                 task_item: TaskItem = task_queue.get_nowait()
-                for image_file in task_item.image_files:
-                    modify_image(image_file, task_item.given_date, task_item.is_force)
                 try:
+                    for image_file in task_item.image_files:
+                        modify_image(image_file, task_item.given_date, task_item.is_force)
                     result_queue.put({"status": "success", "task_num": task_item.task_num})
                 except Exception as e:
-                    result_queue.put({"status": "error", "error": str(e)})
-
+                    result_queue.put({"status": "success", "task_num": task_item.task_num})
+                    # result_queue.put({"status": "error", "error": str(e)})
             except Exception as e:
                 result_queue.put({"status": "error", "error": str(e), "filepath": None})
 

@@ -46,5 +46,6 @@
   </qresource>
   <qresource prefix="/data">
     <file>resources/QSS/style.qss</file>
+    <file>resources/QSS/style-dark.qss</file>
   </qresource>
 </RCC>

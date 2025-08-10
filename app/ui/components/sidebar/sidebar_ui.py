@@ -23,29 +23,9 @@ class Ui_Sidebar(object):
     def setupUi(self, Sidebar):
         if not Sidebar.objectName():
             Sidebar.setObjectName(u"Sidebar")
-        Sidebar.resize(291, 807)
+        Sidebar.resize(188, 807)
         Sidebar.setAutoFillBackground(False)
-        Sidebar.setStyleSheet(u"QWidget{\n"
-"       background: rgb(235,238,241);\n"
-"	border:none;\n"
-" }\n"
-"QFrame{\n"
-"	border-right: 1px solid  rgb(227,228,222);\n"
-"}\n"
-"QListWidget {\n"
-"margin-left:0px;\n"
-"    border:none;\n"
-"}\n"
-"QListWidget::item{\n"
-"border:none;\n"
-"}\n"
-"QListWidget::item:hover {\n"
-"border:none;\n"
-"}\n"
-"/*\u88ab\u9009\u4e2d\u65f6\u7684\u80cc\u666f\u989c\u8272\u548c\u5de6\u8fb9\u6846\u989c\u8272*/\n"
-"QListWidget::item:selected {\n"
-"border:none;\n"
-"}")
+        Sidebar.setStyleSheet(u"")
         self.verticalLayout = QVBoxLayout(Sidebar)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(9, 0, 2, 9)

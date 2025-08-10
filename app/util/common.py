@@ -70,8 +70,7 @@ def extract_datetime_from_filename(filename) -> datetime | None:
         r"(\d{4})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{6})",  # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
         r"(\d{2})[ _\.-](\d{2})[ _\.-](\d{4})[ _\.-](\d{6})",  # 格式：DD-MM-YYYY_HHMMSS
         r"(\d{8})[ _\.-](\d{2})[ _\.-](\d{2})[ _\.-](\d{2})",  # 格式：YYYYMMDD_HH-MM-SS
-        r"(\d{8})[ _\.-](\d{6})"  # 格式：YYYYMMDD_HHMMSS
-        r"(\d{8})T(\d{6})",  # 格式：YYYYMMDDTHHMMSS
+        r"(\d{8})[ _T\.-](\d{6})",  # 格式：YYYYMMDD_HHMMSS
         r"(\d{14})",         # 格式：YYYYMMDDHHMMSS
         r"(\d{13}|\d{10})",  # 格式：TIMESTAMP (13位毫秒级时间戳)
     ]
@@ -115,7 +114,7 @@ def extract_datetime_from_filename(filename) -> datetime | None:
                 year, month, day, hour, minute, second = match.groups()
                 dt = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
                 return dt
-
+    print('文件名解析失败:',filename)
     return None  # 如果没有匹配到任何模式，返回 None
 
 
@@ -207,7 +206,10 @@ def get_system_desktop_dir():
 
 
 if __name__ == '__main__':
-    print(get_system_document_dir())
-    print(get_system_download_dir())
-    print(get_system_desktop_dir())
+    # print(get_system_document_dir())
+    # print(get_system_download_dir())
+    # print(get_system_desktop_dir())
+    print(extract_datetime_from_filename('IMG_20210406 155844.jpg'))
+    for filepath, dir, filenames in os.walk(r'E:\Project\Python\EasyBox\app\ui\image_tools'):
+        print(filepath,dir,filenames)
 

@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets, QtGui
 
+from app import config
 from app.ui import mainwindow
 from PySide6.QtCore import Signal, QFile, QIODevice, QTextStream, QSize, Qt
 from PySide6.QtGui import QPixmap, QIcon
@@ -15,6 +16,7 @@ from app.ui.image_tools.image_tool import ImageToolControl
 from app.ui.memotrace_enhance.enhance import EnhanceControl
 from app.ui.pdf_tools.pdf_tool import PDFToolControl
 from app.ui.setting.setting import SettingWindow
+from app.ui.theme import set_theme
 from app.ui.video_tools.video_tool import VideoToolControl
 
 
@@ -42,12 +44,7 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         icon = QIcon(pixmap)
         self.setWindowIcon(icon)
 
-        style_qss_file = QFile(":/data/resources/QSS/style.qss")
-        if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
-            stream = QTextStream(style_qss_file)
-            style_content = stream.readAll()
-            self.setStyleSheet(style_content)
-            style_qss_file.close()
+
 
         self.stackedWidget = QtWidgets.QStackedWidget(self)
         self.stackedWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # C尽可能挤压B
@@ -88,6 +85,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         # 连接信号槽：切换选中按钮样式
         self.router.route_changed.connect(self.sidebar.update_sidebar_selection)
         self.router.navigate(pdf_view.router_path)  # 初始页面
+
+        set_theme(self, config.UI_THEME)
 
     def add_widget(self, icon, text, router_path, widget):
         # """ 创建侧边栏按钮并连接路径导航 """

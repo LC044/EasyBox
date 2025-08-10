@@ -1,6 +1,7 @@
 from PySide6.QtCore import Signal, QThread, QSize, QFile, QIODevice, QTextStream
 from PySide6.QtWidgets import QWidget
 
+from app import config
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.global_signal import globalSignals
@@ -9,6 +10,7 @@ from app.ui.pdf_tools.pdf_tool_ui import Ui_Form
 from app.ui.components.router import Router
 from app.ui.pdf_tools.blank_pages.blank_pages import BlankPagesControl
 from app.ui.pdf_tools.watermark.watermark import WatermarkControl
+from app.ui.theme import set_theme
 
 
 class PDFToolControl(QWidget, Ui_Form, QCursorGif):
@@ -45,12 +47,7 @@ class PDFToolControl(QWidget, Ui_Form, QCursorGif):
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
             self.setWindowTitle('PDF工具箱')
-            style_qss_file = QFile(":/data/resources/QSS/style.qss")
-            if style_qss_file.open(QIODevice.ReadOnly | QIODevice.Text):
-                stream = QTextStream(style_qss_file)
-                style_content = stream.readAll()
-                self.setStyleSheet(style_content)
-                style_qss_file.close()
+            set_theme(self, config.UI_THEME)
         self.resize(QSize(640, 480))
 
     def merge_pdf(self):
