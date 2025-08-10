@@ -1,4 +1,4 @@
 from .scroll_bar import ScrollBar
 from .QCursorGif import QCursorGif
-from app.ui.components.sidebar.sidebar import Sidebar, SidebarButton
+from app.ui.components.sidebar.sidebar import Sidebar, SidebarItem
 from .flowlayout import FlowLayout

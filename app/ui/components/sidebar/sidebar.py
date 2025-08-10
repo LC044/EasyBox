@@ -9,11 +9,12 @@
 @Description : 
 """
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, \
-    QSizePolicy, QFrame
-from PySide6.QtCore import QSize, QRect, QPropertyAnimation, QTimer
+    QSizePolicy, QFrame, QHBoxLayout
+from PySide6.QtCore import QSize, QRect, QPropertyAnimation, QTimer, Signal
 from PySide6.QtGui import QIcon
 
 from app.ui.Icon import Icon
+from app import config
 from app.ui.components.router import Router
 
 try:
@@ -22,38 +23,41 @@ except:
     from app.ui.components.sidebar.sidebar_ui import Ui_Sidebar
 
 
-class SidebarButton(QPushButton):
+class SidebarItem(QWidget):
+    clicked = Signal(bool)
     def __init__(self, icon, text, parent=None):
-        super(SidebarButton, self).__init__(icon=icon, text=text, parent=parent)
+        super(SidebarItem, self).__init__()
+        self.button = QPushButton(icon=icon, text=text)
+        self.button.clicked.connect(self.click_item)
+        self.button.setObjectName('SideBar')
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0,0,0,0)
+        layout.setSpacing(0)
+        self.indicator = QFrame()
+        self.indicator.setObjectName('indicatorSidebar')
+        self.indicator.setFixedWidth(2)
+        layout.addWidget(self.indicator)
+        layout.addWidget(self.button)
         self._text = text
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.setStyleSheet(self.default_style())
+        self.button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        # self.setStyleSheet(self.default_style())
         self.setToolTip(text)
-        self.setObjectName('123')
+        self.setObjectName('SidebarItem')
 
     def sizeHint(self):
         return QSize(100, 50)  # 设置合适的宽高
 
     def default_style(self):
-        return """
-            QPushButton {
-                border-radius: 0px;
-                padding: 0px;
-                border: none;
-                text-align: left;
-            }
-            QPushButton:hover {
-                background-color: rgb(230,235,240);
-                border:none;
-            }
+        return f"""
+            QFrame#indicatorSidebar{{
+                background-color: {'#191919' if config.UI_THEME == config.Theme.dark else '#f7f7f7'};
+            }}
         """
 
     def selected_style(self):
         return """
-            QPushButton {
-                border-radius: 0px;
-                border-left: 2px solid rgb(133,135,138);
-                text-align: left;
+            QFrame#indicatorSidebar{
+                background-color: #3498db;
             }
         """
 
@@ -62,6 +66,12 @@ class SidebarButton(QPushButton):
             self.setStyleSheet(self.selected_style())
         else:
             self.setStyleSheet(self.default_style())
+
+    def click_item(self,flag):
+        self.clicked.emit(flag)
+
+    def setText(self,text):
+        self.button.setText(text)
 
 
 class Sidebar(QFrame, Ui_Sidebar):
@@ -78,11 +88,10 @@ class Sidebar(QFrame, Ui_Sidebar):
         self.btn_back.setWhatsThis('返回')
         # self.btn_toggle.setText('')
         self.btn_toggle.setIcon(Icon.Exp_left_Icon)
-        self.listWidget.clear()
+        self.listWidgetSidebar.clear()
         self.btn_toggle.clicked.connect(self.toggle_sidebar)
         self.setFixedWidth(self.default_width)
         self.setAutoFillBackground(False)
-        # self.toggle_sidebar()
 
     def set_turn_back_enable(self, flag):
         """
@@ -94,25 +103,25 @@ class Sidebar(QFrame, Ui_Sidebar):
 
     def add_widget(self, icon, text):
         item = QListWidgetItem()
-        button = SidebarButton(icon, text)
-        self.listWidget.addItem(item)
+        button = SidebarItem(icon, text)
+        self.listWidgetSidebar.addItem(item)
         item.setSizeHint(button.sizeHint())
-        self.listWidget.setItemWidget(item, button)
+        self.listWidgetSidebar.setItemWidget(item, button)
 
     def add_button(self, button):
         item = QListWidgetItem()
-        self.listWidget.addItem(item)
+        self.listWidgetSidebar.addItem(item)
         item.setSizeHint(button.sizeHint())
-        self.listWidget.setItemWidget(item, button)
+        self.listWidgetSidebar.setItemWidget(item, button)
 
     def add_nav_button(self, icon, text, router_path, action):
         item = QListWidgetItem()
         item.setWhatsThis(text)
-        button = SidebarButton(icon, text, self)
+        button = SidebarItem(icon, text, self)
         self.add_button(button)
         button.setWhatsThis(text)
         self.buttons.append((button, router_path))
-        self.listWidget.setItemWidget(item, button)
+        self.listWidgetSidebar.setItemWidget(item, button)
         button.clicked.connect(action)
 
     def update_sidebar_selection(self, path):
@@ -138,8 +147,8 @@ class Sidebar(QFrame, Ui_Sidebar):
             self.btn_toggle.setIcon(Icon.Exp_left_Icon)
             self.btn_setting.setText('设置')
             # 恢复文字
-            for i in range(self.listWidget.count()):
-                item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
+            for i in range(self.listWidgetSidebar.count()):
+                item_widget = self.listWidgetSidebar.itemWidget(self.listWidgetSidebar.item(i))
                 item_widget.setText(item_widget._text)
         else:
             self.btn_toggle.setText("")
@@ -148,8 +157,8 @@ class Sidebar(QFrame, Ui_Sidebar):
             # self.setFixedWidth(self.collapsed_width)
             # 隐藏文字
             self.btn_setting.setText('')
-            for i in range(self.listWidget.count()):
-                item_widget = self.listWidget.itemWidget(self.listWidget.item(i))
+            for i in range(self.listWidgetSidebar.count()):
+                item_widget = self.listWidgetSidebar.itemWidget(self.listWidgetSidebar.item(i))
                 item_widget.setText("")
 
         self.start_update_window_width()

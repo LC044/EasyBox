@@ -1,23 +1,3 @@
-QFrame#sidebar {
-    border-right: 1px solid rgb(27,28,22);
-    background-color: #121212;
-}
-
-QPushButton#sidebar{
-    background-color: #121212;
-    border-radius: 5px;
-    padding: 8px;
-}
-
-QPushButton#sidebar:hover {
-    background-color: #1e1e1e;
-}
-
-QWidget#sidebar{
-    background-color: #121212;
-}
-
-
 QWidget{
     background-color: #191919;
     color: white;
@@ -82,6 +62,7 @@ QListWidget {
     color: black;
     border:none;
 }
+
 
 QListWidget::item{
     margin:5px;
@@ -476,3 +457,41 @@ QLabel#bubble-message-voice-receive{
 QLabel#bubble-message-nickname{
     color: rgb(128,128,128);
 }
+
+/* SideBar */
+
+QWidget#Sidebar {
+    border-right: 1px solid  rgb(27,28,26);
+}
+QWidget#SidebarItem {
+    background-color: #191919;
+}
+QWidget#SidebarItem:hover {
+    background-color: #252525;
+}
+
+QListWidget#listWidgetSidebar {
+    border:none;
+}
+
+/* 列表项通用样式 */
+QListWidget#listWidgetSidebar::item {
+    height: 60px;
+}
+
+QPushButton#SideBar {
+    height: 60px;
+    background-color: #191919;
+    border-radius: 0px;
+    padding: 0px 4px;
+    border: none;
+    text-align: left;
+}
+
+QPushButton#SideBar:hover {
+    background-color: #252525;
+    border:none;
+}
+
+
+/* SideBar End */

@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QMainWindow, QListWidgetItem, QLabel, QPushButton,
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.components.router import Router
-from app.ui.components import Sidebar, SidebarButton
+from app.ui.components import Sidebar, SidebarItem
 from app.ui.doc_convert.doc_convert import DocConvertControl
 from app.ui.global_signal import globalSignals
 from app.ui.image_tools.image_tool import ImageToolControl
@@ -50,7 +50,7 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         self.stackedWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # C尽可能挤压B
 
         self.router = Router(self.stackedWidget)
-        self.sidebar = Sidebar(self.stackedWidget, parent=None)
+        self.sidebar = Sidebar(self.stackedWidget, parent=self)
         self.sidebar.btn_setting.clicked.connect(self.show_setting)
         self.sidebar.btn_back.setText('')
         self.sidebar.btn_setting.setIcon(Icon.Setting_Icon)

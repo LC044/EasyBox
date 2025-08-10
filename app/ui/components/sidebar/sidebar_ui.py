@@ -59,26 +59,26 @@ class Ui_Sidebar(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
-        self.listWidget = QListWidget(Sidebar)
-        QListWidgetItem(self.listWidget)
-        QListWidgetItem(self.listWidget)
-        QListWidgetItem(self.listWidget)
-        QListWidgetItem(self.listWidget)
-        self.listWidget.setObjectName(u"listWidget")
-        self.listWidget.setMinimumSize(QSize(0, 240))
-        self.listWidget.setStyleSheet(u"")
-        self.listWidget.setFrameShape(QFrame.Shape.NoFrame)
-        self.listWidget.setFrameShadow(QFrame.Shadow.Plain)
-        self.listWidget.setLineWidth(0)
-        self.listWidget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.listWidget.setAutoScroll(True)
-        self.listWidget.setAutoScrollMargin(16)
-        self.listWidget.setTabKeyNavigation(True)
-        self.listWidget.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.listWidget.setResizeMode(QListView.ResizeMode.Adjust)
-        self.listWidget.setViewMode(QListView.ViewMode.ListMode)
+        self.listWidgetSidebar = QListWidget(Sidebar)
+        QListWidgetItem(self.listWidgetSidebar)
+        QListWidgetItem(self.listWidgetSidebar)
+        QListWidgetItem(self.listWidgetSidebar)
+        QListWidgetItem(self.listWidgetSidebar)
+        self.listWidgetSidebar.setObjectName(u"listWidgetSidebar")
+        self.listWidgetSidebar.setMinimumSize(QSize(0, 240))
+        self.listWidgetSidebar.setStyleSheet(u"")
+        self.listWidgetSidebar.setFrameShape(QFrame.Shape.NoFrame)
+        self.listWidgetSidebar.setFrameShadow(QFrame.Shadow.Plain)
+        self.listWidgetSidebar.setLineWidth(0)
+        self.listWidgetSidebar.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.listWidgetSidebar.setAutoScroll(True)
+        self.listWidgetSidebar.setAutoScrollMargin(16)
+        self.listWidgetSidebar.setTabKeyNavigation(True)
+        self.listWidgetSidebar.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.listWidgetSidebar.setResizeMode(QListView.ResizeMode.Adjust)
+        self.listWidgetSidebar.setViewMode(QListView.ViewMode.ListMode)
 
-        self.verticalLayout.addWidget(self.listWidget)
+        self.verticalLayout.addWidget(self.listWidgetSidebar)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -102,21 +102,21 @@ class Ui_Sidebar(object):
     # setupUi
 
     def retranslateUi(self, Sidebar):
-        Sidebar.setWindowTitle(QCoreApplication.translate("Sidebar", u"Form", None))
+        Sidebar.setWindowTitle("")
         self.btn_back.setText(QCoreApplication.translate("Sidebar", u"\u8fd4\u56de", None))
         self.btn_toggle.setText(QCoreApplication.translate("Sidebar", u"\u6298\u53e0", None))
 
-        __sortingEnabled = self.listWidget.isSortingEnabled()
-        self.listWidget.setSortingEnabled(False)
-        ___qlistwidgetitem = self.listWidget.item(0)
+        __sortingEnabled = self.listWidgetSidebar.isSortingEnabled()
+        self.listWidgetSidebar.setSortingEnabled(False)
+        ___qlistwidgetitem = self.listWidgetSidebar.item(0)
         ___qlistwidgetitem.setText(QCoreApplication.translate("Sidebar", u"\u65b0\u5efa\u9879\u76ee", None));
-        ___qlistwidgetitem1 = self.listWidget.item(1)
+        ___qlistwidgetitem1 = self.listWidgetSidebar.item(1)
         ___qlistwidgetitem1.setText(QCoreApplication.translate("Sidebar", u"\u65b0\u5efa\u9879\u76ee", None));
-        ___qlistwidgetitem2 = self.listWidget.item(2)
+        ___qlistwidgetitem2 = self.listWidgetSidebar.item(2)
         ___qlistwidgetitem2.setText(QCoreApplication.translate("Sidebar", u"\u65b0\u5efa\u9879\u76ee", None));
-        ___qlistwidgetitem3 = self.listWidget.item(3)
+        ___qlistwidgetitem3 = self.listWidgetSidebar.item(3)
         ___qlistwidgetitem3.setText(QCoreApplication.translate("Sidebar", u"\u65b0\u5efa\u9879\u76ee", None));
-        self.listWidget.setSortingEnabled(__sortingEnabled)
+        self.listWidgetSidebar.setSortingEnabled(__sortingEnabled)
 
         self.btn_setting.setText(QCoreApplication.translate("Sidebar", u"\u8bbe\u7f6e", None))
     # retranslateUi
