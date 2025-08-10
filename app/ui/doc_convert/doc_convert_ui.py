@@ -25,17 +25,6 @@ class Ui_Form(object):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(448, 524)
-        Form.setStyleSheet(u"QCommandLinkButton{\n"
-"    border-radius: 10px;\n"
-"    padding: 8px;\n"
-"}\n"
-"QPushButton:hover { \n"
-"	background-color: rgb(235,237,239);\n"
-"}\n"
-"QPushButton:pressed { \n"
-"    background-color: lightgray;\n"
-"	border: 2px solid #888888;\n"
-"}")
         self.gridLayout_2 = QGridLayout(Form)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.scrollArea = QScrollArea(Form)
@@ -71,6 +60,7 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.commandLinkButton_pdf2txt.sizePolicy().hasHeightForWidth())
         self.commandLinkButton_pdf2txt.setSizePolicy(sizePolicy)
         font = QFont()
+        font.setFamilies([u"Segoe UI"])
         font.setPointSize(9)
         self.commandLinkButton_pdf2txt.setFont(font)
         self.commandLinkButton_pdf2txt.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))

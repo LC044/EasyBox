@@ -40,70 +40,8 @@ class Ui_merge_pdf_view(object):
 
         self.frame1 = QFrame(merge_pdf_view)
         self.frame1.setObjectName(u"frame1")
-        self.frame1.setStyleSheet(u"QWidget{\n"
-"	background: rgb(248,248,251);\n"
-"	border-radius: 0px;\n"
-"}\n"
-"#frame1{\n"
-"	border: 1px solid #e8e8e8;\n"
-"}\n"
-"\n"
-"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"	padding:0px;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	color: rgb(148,133,247)\n"
-"}\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border:none;\n"
-"}\n"
-"QProgressBar{\n"
-"    font-family: 'Arial Unicode MS';\n"
-"    height:22px;\n"
-"    text-align:center;\n"
-"    font-size:14px;\n"
-"    color:black;\n"
-"    border-radius:11px;\n"
-"    background:#EBEEF5;\n"
-"}\n"
-"QProgressBar::chunk{\n"
-"    border-radius:11px;\n"
-"    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);\n"
-"}\n"
-"QMessageBox QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd"
-                        "\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"QListView {\n"
-"    color: black;\n"
-"    border: none;\n"
-"}\n"
-"QListView::item {\n"
-"    margin: 0px;\n"
-"	border-bottom: 1px solid black;\n"
-"}\n"
-"QListView::item:hover {\n"
-"    background: none;\n"
-"}\n"
-"/* \u88ab\u9009\u4e2d\u65f6\u7684\u80cc\u666f\u989c\u8272\u548c\u5de6\u8fb9\u6846\u989c\u8272 */\n"
-"QListView::item:selected {\n"
-"    border-radius: 0px;\n"
-"	border-left: 0px solid rgb(62, 62, 62);\n"
-"    background: none;\n"
-"}")
-        self.frame1.setFrameShape(QFrame.Box)
-        self.frame1.setFrameShadow(QFrame.Raised)
+        self.frame1.setFrameShape(QFrame.Shape.Box)
+        self.frame1.setFrameShadow(QFrame.Shadow.Raised)
         self.frame1.setLineWidth(2)
         self.verticalLayout_2 = QVBoxLayout(self.frame1)
         self.verticalLayout_2.setSpacing(0)
@@ -155,7 +93,7 @@ class Ui_merge_pdf_view(object):
         self.label.setSizePolicy(sizePolicy1)
         self.label.setMinimumSize(QSize(50, 0))
         self.label.setMaximumSize(QSize(40, 16777215))
-        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label)
 
@@ -165,7 +103,7 @@ class Ui_merge_pdf_view(object):
         self.label_2.setSizePolicy(sizePolicy1)
         self.label_2.setMinimumSize(QSize(100, 0))
         self.label_2.setMaximumSize(QSize(100, 16777215))
-        self.label_2.setAlignment(Qt.AlignCenter)
+        self.label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label_2)
 
@@ -175,7 +113,7 @@ class Ui_merge_pdf_view(object):
         self.label_3.setSizePolicy(sizePolicy1)
         self.label_3.setMinimumSize(QSize(100, 0))
         self.label_3.setMaximumSize(QSize(100, 16777215))
-        self.label_3.setAlignment(Qt.AlignCenter)
+        self.label_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label_3)
 
@@ -185,7 +123,7 @@ class Ui_merge_pdf_view(object):
         self.label_4.setSizePolicy(sizePolicy1)
         self.label_4.setMinimumSize(QSize(100, 0))
         self.label_4.setMaximumSize(QSize(100, 16777215))
-        self.label_4.setAlignment(Qt.AlignCenter)
+        self.label_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label_4)
 
@@ -195,7 +133,7 @@ class Ui_merge_pdf_view(object):
         self.line_8 = QFrame(self.frame1)
         self.line_8.setObjectName(u"line_8")
         self.line_8.setStyleSheet(u"border-bottom: 2px solid #888888;")
-        self.line_8.setFrameShadow(QFrame.Raised)
+        self.line_8.setFrameShadow(QFrame.Shadow.Raised)
         self.line_8.setLineWidth(5)
         self.line_8.setFrameShape(QFrame.Shape.HLine)
 
@@ -206,77 +144,6 @@ class Ui_merge_pdf_view(object):
 
         self.widget1 = QWidget(merge_pdf_view)
         self.widget1.setObjectName(u"widget1")
-        self.widget1.setStyleSheet(u"#widget1{\n"
-"	background: rgb(249,250,250);\n"
-"	border-radius: 0px;\n"
-"	border-right: 0px solid rgb(245,245,245);  \n"
-"    border-bottom: 1px solid rgb(245,245,245);\n"
-"    border-left: 0px solid rgb(245,245,245); \n"
-"    border-top: 1px solid rgb(245,245,245);  \n"
-"}\n"
-"QPushButton:hover {\n"
-"	color: rgb(148,133,247)\n"
-"}\n"
-"QWidget{\n"
-"	background: rgb(238,244,249);\n"
-"	border-radius: 10px;\n"
-"}\n"
-"\n"
-"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"	padding:0px;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	color: rgb(148,133,247)\n"
-"}\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border:none;\n"
-"}\n"
-"QProgressBar{\n"
-"    font-family: 'Arial Unicode MS';\n"
-"    height:22px;\n"
-"    text-align:center;\n"
-"    font-size:14px;\n"
-"    color:black;\n"
-"    border-radius:11px;\n"
-"    background:#EBEEF5;\n"
-"}\n"
-"QProgressBar::chunk{\n"
-"    border-radius:11px;\n"
-"    background:ql"
-                        "ineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);\n"
-"}\n"
-"QMessageBox QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"QListView {\n"
-"    color: black;\n"
-"    border: none;\n"
-"}\n"
-"QListView::item {\n"
-"    margin: 0px;\n"
-"	border-bottom: 1px solid black;\n"
-"}\n"
-"QListView::item:hover {\n"
-"    background: none;\n"
-"}\n"
-"/* \u88ab\u9009\u4e2d\u65f6\u7684\u80cc\u666f\u989c\u8272\u548c\u5de6\u8fb9\u6846\u989c\u8272 */\n"
-"QListView::item:selected {\n"
-"    border-radius: 0px;\n"
-"	border-left: 0"
-                        "px solid rgb(62, 62, 62);\n"
-"    background: none;\n"
-"}")
         self.horizontalLayout_2 = QHBoxLayout(self.widget1)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -293,7 +160,7 @@ class Ui_merge_pdf_view(object):
         self.btn_choose_files = QPushButton(self.widget1)
         self.btn_choose_files.setObjectName(u"btn_choose_files")
         self.btn_choose_files.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.btn_choose_files.setLayoutDirection(Qt.LeftToRight)
+        self.btn_choose_files.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
         self.horizontalLayout_2.addWidget(self.btn_choose_files)
 

@@ -24,43 +24,11 @@ class Ui_Form(object):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(448, 292)
-        Form.setStyleSheet(u"QPushButton{\n"
-"    background-color: rgb(250,252,253);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"	font-size:12pt;\n"
-"    border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"\n"
-"\n"
-"QCommandLinkButton{\n"
-"    background-color: rgb(214,227,242);\n"
-"    border-radius: 5px;\n"
-"    padding: 8px;\n"
-"    border-right: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 1px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 0px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 0px"
-                        " solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"QPushButton:hover { \n"
-"	border-right: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-bottom: 2px solid #888888;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-left: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"    border-top: 1px solid #ffffff;  /* \u6309\u94ae\u8fb9\u6846\uff0c2px\u5bbd\uff0c\u767d\u8272 */\n"
-"}\n"
-"QPushButton:pressed { \n"
-"    background-color: lightgray;\n"
-"	border: 2px solid #888888;\n"
-"}")
         self.verticalLayout_3 = QVBoxLayout(Form)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.scrollArea = QScrollArea(Form)
         self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setFrameShape(QFrame.NoFrame)
+        self.scrollArea.setFrameShape(QFrame.Shape.NoFrame)
         self.scrollArea.setLineWidth(0)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
@@ -76,7 +44,7 @@ class Ui_Form(object):
         self.line_5 = QFrame(self.widget_4)
         self.line_5.setObjectName(u"line_5")
         self.line_5.setStyleSheet(u"border-bottom: 2px solid #888888;")
-        self.line_5.setFrameShadow(QFrame.Raised)
+        self.line_5.setFrameShadow(QFrame.Shadow.Raised)
         self.line_5.setLineWidth(5)
         self.line_5.setFrameShape(QFrame.Shape.HLine)
 
@@ -87,10 +55,10 @@ class Ui_Form(object):
         self.commandLinkButton_convert.setEnabled(True)
         self.commandLinkButton_convert.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_convert.setTabletTracking(False)
-        self.commandLinkButton_convert.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_convert.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_convert.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_convert.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_convert.setToolTipDuration(-1)
-        self.commandLinkButton_convert.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_convert.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_convert.setAutoFillBackground(False)
         icon = QIcon()
         icon.addFile(u"../../../resources/icons/strategy.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
@@ -109,10 +77,10 @@ class Ui_Form(object):
         self.commandLinkButton_screenshoot.setEnabled(True)
         self.commandLinkButton_screenshoot.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_screenshoot.setTabletTracking(False)
-        self.commandLinkButton_screenshoot.setFocusPolicy(Qt.StrongFocus)
-        self.commandLinkButton_screenshoot.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.commandLinkButton_screenshoot.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.commandLinkButton_screenshoot.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.commandLinkButton_screenshoot.setToolTipDuration(-1)
-        self.commandLinkButton_screenshoot.setLayoutDirection(Qt.LeftToRight)
+        self.commandLinkButton_screenshoot.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.commandLinkButton_screenshoot.setAutoFillBackground(False)
         icon1 = QIcon()
         icon1.addFile(u"../../../resources/icons/PDF.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)

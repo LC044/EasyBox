@@ -24,17 +24,6 @@ class Ui_Form(object):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(448, 839)
-        Form.setStyleSheet(u"QCommandLinkButton{\n"
-"    border-radius: 10px;\n"
-"    padding: 8px;\n"
-"}\n"
-"QPushButton:hover { \n"
-"	background-color: rgb(235,237,239);\n"
-"}\n"
-"QPushButton:pressed { \n"
-"    background-color: lightgray;\n"
-"	border: 2px solid #888888;\n"
-"}")
         self.verticalLayout_3 = QVBoxLayout(Form)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.scrollArea = QScrollArea(Form)
@@ -56,6 +45,7 @@ class Ui_Form(object):
         self.commandLinkButton_toc.setObjectName(u"commandLinkButton_toc")
         self.commandLinkButton_toc.setEnabled(True)
         font = QFont()
+        font.setFamilies([u"Segoe UI"])
         font.setPointSize(12)
         self.commandLinkButton_toc.setFont(font)
         self.commandLinkButton_toc.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))

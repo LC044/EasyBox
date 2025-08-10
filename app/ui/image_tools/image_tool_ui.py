@@ -27,17 +27,6 @@ class Ui_Form(object):
         font = QFont()
         font.setPointSize(12)
         Form.setFont(font)
-        Form.setStyleSheet(u"QCommandLinkButton{\n"
-"    border-radius: 10px;\n"
-"    padding: 8px;\n"
-"}\n"
-"QPushButton:hover { \n"
-"	background-color: rgb(235,237,239);\n"
-"}\n"
-"QPushButton:pressed { \n"
-"    background-color: lightgray;\n"
-"	border: 2px solid #888888;\n"
-"}")
         self.verticalLayout_3 = QVBoxLayout(Form)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.scrollArea = QScrollArea(Form)
@@ -67,7 +56,10 @@ class Ui_Form(object):
         self.commandLinkButton_modify_name_by_time = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_modify_name_by_time.setObjectName(u"commandLinkButton_modify_name_by_time")
         self.commandLinkButton_modify_name_by_time.setEnabled(True)
-        self.commandLinkButton_modify_name_by_time.setFont(font)
+        font1 = QFont()
+        font1.setFamilies([u"Segoe UI"])
+        font1.setPointSize(12)
+        self.commandLinkButton_modify_name_by_time.setFont(font1)
         self.commandLinkButton_modify_name_by_time.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_modify_name_by_time.setTabletTracking(False)
         self.commandLinkButton_modify_name_by_time.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -90,7 +82,7 @@ class Ui_Form(object):
         self.commandLinkButton_modify_date = QCommandLinkButton(self.widget_4)
         self.commandLinkButton_modify_date.setObjectName(u"commandLinkButton_modify_date")
         self.commandLinkButton_modify_date.setEnabled(True)
-        self.commandLinkButton_modify_date.setFont(font)
+        self.commandLinkButton_modify_date.setFont(font1)
         self.commandLinkButton_modify_date.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton_modify_date.setTabletTracking(False)
         self.commandLinkButton_modify_date.setFocusPolicy(Qt.FocusPolicy.StrongFocus)

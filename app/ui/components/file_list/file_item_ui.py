@@ -23,25 +23,19 @@ class Ui_file_item_widget(object):
     def setupUi(self, file_item_widget):
         if not file_item_widget.objectName():
             file_item_widget.setObjectName(u"file_item_widget")
-        file_item_widget.resize(668, 33)
+        file_item_widget.resize(668, 36)
         font = QFont()
         font.setPointSize(8)
         file_item_widget.setFont(font)
         file_item_widget.setAcceptDrops(True)
-        file_item_widget.setStyleSheet(u"QWidget{\n"
-"	background: rgb(248,248,251);\n"
-"}\n"
-"\n"
+        file_item_widget.setStyleSheet(u"\n"
 "QPushButton{\n"
 "    border-radius: 5px;\n"
 "    border:none;\n"
 "	padding:0px;\n"
 "}\n"
-"QPushButton:hover { \n"
-"    color: rgb(148,133,247)\n"
-"}\n"
+"\n"
 "QCommandLinkButton{\n"
-"    background-color: rgb(250,252,253);\n"
 "    border-radius: 5px;\n"
 "    padding: 8px;\n"
 "    border:none;\n"
@@ -53,11 +47,9 @@ class Ui_file_item_widget(object):
 "    font-size:14px;\n"
 "    color:black;\n"
 "    border-radius:11px;\n"
-"    background:#EBEEF5;\n"
 "}\n"
 "QProgressBar::chunk{\n"
 "    border-radius:11px;\n"
-"    background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #99ffff,stop:1 #9900ff);\n"
 "}")
         self.horizontalLayout_3 = QHBoxLayout(file_item_widget)
         self.horizontalLayout_3.setSpacing(0)
@@ -81,9 +73,9 @@ class Ui_file_item_widget(object):
         self.label_size.setMaximumSize(QSize(50, 16777215))
         self.label_size.setFont(font)
         self.label_size.setStyleSheet(u"")
-        self.label_size.setFrameShape(QFrame.NoFrame)
+        self.label_size.setFrameShape(QFrame.Shape.NoFrame)
         self.label_size.setScaledContents(False)
-        self.label_size.setAlignment(Qt.AlignCenter)
+        self.label_size.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label_size)
 
@@ -92,7 +84,7 @@ class Ui_file_item_widget(object):
         self.label_page_num.setMinimumSize(QSize(50, 0))
         self.label_page_num.setMaximumSize(QSize(50, 16777215))
         self.label_page_num.setFont(font)
-        self.label_page_num.setAlignment(Qt.AlignCenter)
+        self.label_page_num.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label_page_num)
 
@@ -115,8 +107,8 @@ class Ui_file_item_widget(object):
         self.spinBox_start.setMinimumSize(QSize(46, 0))
         self.spinBox_start.setMaximumSize(QSize(46, 16777215))
         self.spinBox_start.setFont(font)
-        self.spinBox_start.setAlignment(Qt.AlignCenter)
-        self.spinBox_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_start.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.spinBox_start.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
         self.spinBox_start.setMinimum(1)
 
         self.horizontalLayout_2.addWidget(self.spinBox_start)
@@ -140,8 +132,8 @@ class Ui_file_item_widget(object):
         self.spinBox_end.setMinimumSize(QSize(46, 0))
         self.spinBox_end.setMaximumSize(QSize(46, 16777215))
         self.spinBox_end.setFont(font)
-        self.spinBox_end.setAlignment(Qt.AlignCenter)
-        self.spinBox_end.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_end.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.spinBox_end.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
         self.spinBox_end.setMinimum(1)
 
         self.horizontalLayout_2.addWidget(self.spinBox_end)

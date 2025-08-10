@@ -13,19 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QCommandLinkButton{
-    border-radius: 10px;
-    padding: 8px;
-}
-QPushButton:hover { 
-	background-color: rgb(235,237,239);
-}
-QPushButton:pressed { 
-    background-color: lightgray;
-	border: 2px solid #888888;
-}</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <widget class="QScrollArea" name="scrollArea">
@@ -86,6 +73,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
+              <family>Segoe UI</family>
               <pointsize>9</pointsize>
              </font>
             </property>
@@ -159,6 +147,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
+              <family>Segoe UI</family>
               <pointsize>9</pointsize>
              </font>
             </property>
@@ -232,6 +221,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
+              <family>Segoe UI</family>
               <pointsize>9</pointsize>
              </font>
             </property>
@@ -305,6 +295,7 @@ QPushButton:pressed {
             </property>
             <property name="font">
              <font>
+              <family>Segoe UI</family>
               <pointsize>9</pointsize>
              </font>
             </property>
@@ -404,6 +395,7 @@ QPushButton:pressed {
            <widget class="QCommandLinkButton" name="commandLinkButton_web2pdf">
             <property name="font">
              <font>
+              <family>Segoe UI</family>
               <pointsize>9</pointsize>
              </font>
             </property>
