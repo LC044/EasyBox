@@ -2,7 +2,6 @@ import os.path
 import shutil
 import traceback
 from datetime import datetime
-from multiprocessing import Queue, Process
 from typing import List
 
 from PIL import Image
@@ -15,12 +14,13 @@ from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, Q
 from app import config
 from app.log import logger
 from app.model.file_model import ImageFile
-from app.ui.components.QCursorGif import QCursorGif
 from app.ui.Icon import Icon
+from app.ui.global_signal import globalSignals
 from app.ui.image_tools.modify_date.modify_date_ui import Ui_modify_date_view
 from app.ui.components.router import Router
 from app.ui.theme import set_theme
 from app.util import common
+from app.util.pyexiftool import PyExifTool
 
 
 def open_file_explorer(path):
@@ -29,12 +29,21 @@ def open_file_explorer(path):
 
 
 image_extensions = ['jpg', 'jpeg', 'bmp', 'riff', 'webp']
+video_extensions = ['mp4', 'mov', 'avi']
 image_extensions_filter = ['*.jpg', '*.jpeg', '*.bmp', '*.riff', '*.webp']
 
 exif_keys = ['DateTime', 'DateTimeOriginal', 'Make', 'Model', 'Software', 'ImageWidth', 'ImageLength']
 
 
-class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
+def is_image(file_path):
+    """判断文件是否为图片"""
+    return any(file_path.lower().endswith(ext) for ext in image_extensions)
+
+def is_video(file_path):
+    """判断文件是否为图片"""
+    return any(file_path.lower().endswith(ext) for ext in video_extensions)
+
+class ModifyDateControl(QWidget, Ui_modify_date_view):
     okSignal = Signal(bool)
     childRouterSignal = Signal(str)
 
@@ -50,10 +59,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         self.given_date = None
         self.running_flag = False
         self.setupUi(self)
-        # 设置忙碌光标图片数组
-        self.initCursor([':/icons/icons/Cursors/%d.png' %
-                         i for i in range(8)], self)
-        self.setCursorTimeout(100)
+
         self.btn_choose_folder.clicked.connect(self.show_directory_dialog)
         self.comboBox_time_opt.currentIndexChanged.connect(self.set_name_rule)
         self.comboBox_output_opt.activated.connect(self.set_output_opt)
@@ -150,12 +156,8 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         file_path = self.model.filePath(index)  # 获取文件的完整路径
 
         # 判断文件是否为图片
-        if self.is_image(file_path):
+        if is_image(file_path):
             self.display_image(file_path)
-
-    def is_image(self, file_path):
-        """判断文件是否为图片"""
-        return any(file_path.lower().endswith(ext) for ext in image_extensions)
 
     def display_image(self, file_path):
         """显示图片"""
@@ -247,9 +249,12 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
     def update_progress(self, value):
         self.progressBar.setValue(value)
 
+    def update_current_file(self,filename):
+        self.label_current_file.setText(filename)
+
     def start(self):
         self.running_flag = True
-        self.startBusy()
+        globalSignals.start_busy.emit(True)
         self.btn_start.setEnabled(False)
         file_fir = self.model.filePath(self.treeView.rootIndex())
         self.worker = ModifyThread(
@@ -261,10 +266,11 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         )
         self.worker.okSignal.connect(self.finish)
         self.worker.progressSignal.connect(self.update_progress)
+        self.worker.currentFile.connect(self.update_current_file)
         self.worker.start()
 
     def finish(self, a):
-        self.stopBusy()
+        globalSignals.stop_busy.emit(True)
         reply = QMessageBox(self)
         reply.setIcon(QMessageBox.Information)
         reply.setWindowTitle('OK')
@@ -291,99 +297,10 @@ class ModifyDateControl(QWidget, Ui_modify_date_view, QCursorGif):
         self.worker = None
 
 
-class TaskItem:
-    """
-    线程分配的单个任务，
-    包括多个image_files
-    """
-
-    def __init__(self, image_files: List[ImageFile], given_date, is_force):
-        self.image_files = image_files
-        self.task_num = len(image_files)
-        self.given_date = given_date
-        self.is_force = is_force
-
-    def __len__(self):
-        return len(self.image_files)
-
-
-def get_exif_date(exif_dict, field, key='Exif', default="Unknown"):
-    """
-    安全获取 EXIF 字段的日期，如果字段不存在或解析失败，返回默认值。
-    """
-    try:
-        date_str = exif_dict[key].get(field, b"").decode("utf-8")
-        return datetime.strptime(date_str, "%Y:%m:%d %H:%M:%S")
-    except (KeyError, ValueError, UnicodeDecodeError):
-        return default
-
-
-def modify_image(image_file: ImageFile, given_date, is_force):
-    """
-    修改图片的拍摄时间为given_date
-    :param image_file:
-    :param given_date:
-    :param is_force: 是否强制设置为given_date,否：取当前图片拍摄时间和给定时间的最小值
-    :return:
-    """
-    file_path = image_file.file_path
-    if not given_date:
-        given_date = image_file.get_file_time_by_name()
-    try:
-        # 打开图片并加载 EXIF 数据
-        img = Image.open(file_path)
-        try:
-            exif_dict = piexif.load(img.info.get("exif", b""))
-            # 获取 EXIF 日期
-            date_time_original = get_exif_date(exif_dict, piexif.ExifIFD.DateTimeOriginal, 'Exif', None)
-            if is_force:
-                modify_date = get_exif_date(exif_dict, piexif.ImageIFD.DateTime, '0th', None)
-                dates = [d for d in [date_time_original, modify_date, given_date] if d is not None]
-                earliest_date = min(dates)
-            else:
-                earliest_date = given_date
-            # 如果 DateTimeOriginal 已经是最早的，则无需修改
-            if date_time_original and date_time_original != earliest_date:
-                # 更新 DateTimeOriginal
-                exif_dict["Exif"][piexif.ExifIFD.DateTimeOriginal] = earliest_date.strftime("%Y:%m:%d %H:%M:%S").encode(
-                    "utf-8")
-                if "0th" not in exif_dict:
-                    exif_dict['0th'] = {}
-                if piexif.ImageIFD.Make not in exif_dict["0th"]:
-                    exif_dict["0th"][piexif.ImageIFD.Make] = 'MemoTrace'.encode("utf-8")
-                if piexif.ImageIFD.Model not in exif_dict["0th"]:
-                    exif_dict["0th"][piexif.ImageIFD.Model] = 'EasyBox'.encode("utf-8")
-                if piexif.ImageIFD.Software not in exif_dict["0th"]:
-                    exif_dict["0th"][piexif.ImageIFD.Software] = 'EasyBox-0.1.0'.encode("utf-8")
-        except:
-            earliest_date = given_date
-            exif_dict = {
-                '0th': {},
-                'Exif': {}
-            }
-            if earliest_date:
-                # 更新 DateTimeOriginal
-                exif_dict["Exif"][piexif.ExifIFD.DateTimeOriginal] = earliest_date.strftime("%Y:%m:%d %H:%M:%S").encode(
-                    "utf-8")
-        # 保存修改后的图片
-        exif_bytes = piexif.dump(exif_dict)
-        # img.save(image_file.save_path, exif=exif_bytes, quality=image_file.save_quality, subsampling=0)
-        if image_file.save_path != image_file.file_path:
-            shutil.copy(file_path, image_file.save_path)
-        piexif.insert(exif_bytes, image_file.save_path)
-        print(f"DateTimeOriginal 已更新为最早日期：{earliest_date}")
-    except Exception as e:
-        print(f"处理图片时出错{image_file.file_path}：{e} {traceback.format_exc()}")
-
-
-def is_image(file_path):
-    """判断文件是否为图片"""
-    return any(file_path.lower().endswith(ext) for ext in image_extensions)
-
-
 class ModifyThread(QThread):
     okSignal = Signal(bool)
     progressSignal = Signal(int)
+    currentFile = Signal(str)
 
     def __init__(self, file_dir, output_dir, is_apply_child, given_date=None, is_force=False):
         super().__init__()
@@ -393,101 +310,82 @@ class ModifyThread(QThread):
         self.given_date = given_date
         self.is_force = is_force
 
-    def run(self):
-        task_queue = Queue()
-        result_queue = Queue()
-        processes = []
+    def scan_files(self) -> List[ImageFile]:
+        file_items = []
         if self.output_dir and not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir, exist_ok=True)
-        try:
-            total_tasks = 0
-            num_each_process = 100
-            # 创建多进程任务
-            # 统计任务个数
-            if not self.is_apply_child:
-                filenames = os.listdir(self.file_dir)
-                file_items = []
-                for file in filenames:
-                    if not is_image(file):
+        # 统计任务个数
+        if not self.is_apply_child:
+            filenames = os.listdir(self.file_dir)
+            for file in filenames:
+                if not is_image(file):
+                    continue
+                image_file = ImageFile(os.path.join(self.file_dir, file))
+                if self.output_dir:
+                    image_file.save_path = os.path.join(self.output_dir, image_file.file_name)
+                file_items.append(
+                    image_file
+                )
+        else:
+            # 考虑子文件夹
+            for filepath, dir, filenames in os.walk(self.file_dir):
+                for filename in filenames:
+                    if not is_image(filename):
                         continue
-                    total_tasks += 1
-                    image_file = ImageFile(os.path.join(self.file_dir, file))
+                    image_file = ImageFile(os.path.join(filepath, filename))
                     if self.output_dir:
-                        image_file.save_path = os.path.join(self.output_dir, image_file.file_name)
+                        # 计算当前目录相对于源目录的相对路径
+                        relative_path = os.path.relpath(filepath, self.file_dir)
+                        # 构建目标目录中对应的路径
+                        target_path = os.path.join(self.output_dir, relative_path)
+                        # 创建目标目录中对应的子目录（如果不存在）
+                        os.makedirs(target_path, exist_ok=True)
+                        image_file.save_path = os.path.join(target_path, image_file.file_name)
                     file_items.append(
                         image_file
                     )
-                    if total_tasks % num_each_process == 0:
-                        task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
-                        file_items = []
-                task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
-            else:
-                # 考虑子文件夹
-                file_items = []
-                for filepath, dir, filenames in os.walk(self.file_dir):
-                    for filename in filenames:
-                        if not is_image(filename):
-                            continue
-                        total_tasks += 1
-                        image_file = ImageFile(os.path.join(filepath, filename))
-                        if self.output_dir:
-                            # 计算当前目录相对于源目录的相对路径
-                            relative_path = os.path.relpath(filepath, self.file_dir)
-                            # 构建目标目录中对应的路径
-                            target_path = os.path.join(self.output_dir, relative_path)
-                            # 创建目标目录中对应的子目录（如果不存在）
-                            os.makedirs(target_path, exist_ok=True)
-                            image_file.save_path = os.path.join(target_path, image_file.file_name)
-                        file_items.append(
-                            image_file
-                        )
-                        if total_tasks % num_each_process == 0:
-                            task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
-                            file_items = []
-                task_queue.put(TaskItem(file_items, self.given_date, self.is_force))
-            total_tasks_process = total_tasks // num_each_process + 1
-            num_processes = min(total_tasks_process, os.cpu_count())
-            for _ in range(num_processes):
-                p = Process(target=self.process_task, args=(task_queue, result_queue))
-                p.start()
-                processes.append(p)
+        return file_items
 
-            completed_tasks = 0
-
-            while completed_tasks < total_tasks_process:
-                result = result_queue.get()
-                completed_tasks += 1
-                if result["status"] == "success":
-                    progress = min(completed_tasks * 100 // total_tasks_process, 99)
-                    self.progressSignal.emit(progress)
-                else:
-                    print(f"处理文件出错: {result['error']} 文件: {result['filepath']}")
-
+    def run(self):
+        try:
+            self.progressSignal.emit(1)
+            files = self.scan_files()
+            exiftool = PyExifTool(r".\resources\third_party\exiftool-13.33_64\exiftool(-k).exe",overwrite_original=True)
+            progress = 1
+            total_task = len(files)
+            for index,file in enumerate(files):
+                try:
+                    new_progress = (index + 1)*100 // total_task
+                    if new_progress > progress:
+                        progress = new_progress
+                        self.progressSignal.emit(progress)
+                    if index % 10 == 0:
+                        self.currentFile.emit(file.file_name)
+                    if not self.given_date:
+                        new_datetime = file.get_file_time_by_name()
+                    else:
+                        new_datetime = self.given_date
+                    if not new_datetime:
+                        continue
+                    if not os.path.exists(file.save_path):
+                        shutil.copy(file.file_path,file.save_path)
+                    if not self.is_force:
+                        file_time = exiftool.get_file_time(file.save_path)
+                        if file_time and new_datetime < file_time:
+                            new_datetime = file_time
+                            exiftool.modify_image_time(new_datetime, file.save_path)
+                    else:
+                        exiftool.modify_image_time(new_datetime, file.save_path)
+                except Exception as e:
+                    print(e)
+                    print(traceback.format_exc())
+            exiftool.close()
             self.progressSignal.emit(100)
             print(f"处理完成，已生成文件")
-
         except Exception as e:
-            print(f"处理过程中出错: {e}")
+            print(f"处理过程中出错: {e}\n{traceback.format_exc()}")
         finally:
-            for p in processes:
-                p.join()
-
-        self.okSignal.emit(True)
-
-    @staticmethod
-    def process_task(task_queue: Queue, result_queue: Queue):
-        while not task_queue.empty():
-            try:
-                task_item: TaskItem = task_queue.get_nowait()
-                try:
-                    for image_file in task_item.image_files:
-                        modify_image(image_file, task_item.given_date, task_item.is_force)
-                    result_queue.put({"status": "success", "task_num": task_item.task_num})
-                except Exception as e:
-                    result_queue.put({"status": "success", "task_num": task_item.task_num})
-                    # result_queue.put({"status": "error", "error": str(e)})
-            except Exception as e:
-                result_queue.put({"status": "error", "error": str(e), "filepath": None})
+            self.okSignal.emit(True)
 
 
 if __name__ == '__main__':

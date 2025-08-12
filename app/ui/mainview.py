@@ -35,16 +35,16 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
         # self.setWindowFlag(Qt.FramelessWindowHint)
         globalSignals.not_support.connect(self.show_not_support)
         globalSignals.information.connect(self.show_information)
+        globalSignals.start_busy.connect(self.start_busy)
+        globalSignals.stop_busy.connect(self.stop_busy)
 
     def init_ui(self):
-        self.initCursor([':/icons/icons/Cursors/%d.png' %
+        self.initCursor([':/icons/resources/icons/Cursors/%d.png' %
                          i for i in range(8)], self)
         self.setCursorTimeout(100)
         pixmap = QPixmap(Icon.logo_ico_path)
         icon = QIcon(pixmap)
         self.setWindowIcon(icon)
-
-
 
         self.stackedWidget = QtWidgets.QStackedWidget(self)
         self.stackedWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # C尽可能挤压B
@@ -90,7 +90,6 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
     def add_widget(self, icon, text, router_path, widget):
         # """ 创建侧边栏按钮并连接路径导航 """
-
         self.sidebar.add_nav_button(icon, text, router_path, action=lambda: self.router.navigate(router_path))
         index = self.router.add_route(router_path, widget)
 
@@ -102,3 +101,8 @@ class MainWinController(QMainWindow, mainwindow.Ui_MainWindow, QCursorGif):
 
     def show_information(self, msg):
         QMessageBox.information(self, '温馨提示', msg)
+
+    def start_busy(self, flag):
+        self.startBusy()
+    def stop_busy(self, flag):
+        self.stopBusy()

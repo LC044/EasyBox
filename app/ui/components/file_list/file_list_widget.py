@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/8 22:38 
 @Author      : SiYuan 
-@Email       : siyuan044@qq.com 
+@Email       : sixyuan044@gmail.com 
 @File        : EasyBox-file_list_widget.py 
 @Description : 
 """

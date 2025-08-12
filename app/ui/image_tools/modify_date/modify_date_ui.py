@@ -17,9 +17,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QCheckBox, QComboBox,
     QDateTimeEdit, QFrame, QHBoxLayout, QHeaderView,
-    QLabel, QProgressBar, QPushButton, QSizePolicy,
-    QSpacerItem, QSplitter, QTabWidget, QTableWidget,
-    QTableWidgetItem, QTreeView, QVBoxLayout, QWidget)
+    QLabel, QListWidget, QListWidgetItem, QProgressBar,
+    QPushButton, QSizePolicy, QSpacerItem, QSplitter,
+    QTabWidget, QTableWidget, QTableWidgetItem, QTreeView,
+    QVBoxLayout, QWidget)
 
 class Ui_modify_date_view(object):
     def setupUi(self, modify_date_view):
@@ -161,6 +162,27 @@ class Ui_modify_date_view(object):
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
+        self.verticalLayout_5 = QVBoxLayout(self.tab_2)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.label_2 = QLabel(self.tab_2)
+        self.label_2.setObjectName(u"label_2")
+
+        self.verticalLayout_4.addWidget(self.label_2)
+
+        self.listWidget = QListWidget(self.tab_2)
+        QListWidgetItem(self.listWidget)
+        QListWidgetItem(self.listWidget)
+        QListWidgetItem(self.listWidget)
+        QListWidgetItem(self.listWidget)
+        self.listWidget.setObjectName(u"listWidget")
+
+        self.verticalLayout_4.addWidget(self.listWidget)
+
+
+        self.verticalLayout_5.addLayout(self.verticalLayout_4)
+
         self.tabWidget.addTab(self.tab_2, "")
         self.splitter_3.addWidget(self.tabWidget)
 
@@ -234,6 +256,12 @@ class Ui_modify_date_view(object):
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(-1, 9, -1, -1)
+        self.label_current_file = QLabel(modify_date_view)
+        self.label_current_file.setObjectName(u"label_current_file")
+        self.label_current_file.setMaximumSize(QSize(400, 16777215))
+
+        self.horizontalLayout.addWidget(self.label_current_file)
+
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
@@ -273,6 +301,20 @@ class Ui_modify_date_view(object):
         ___qtablewidgetitem2 = self.tableWidget.horizontalHeaderItem(2)
         ___qtablewidgetitem2.setText(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u540e", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("modify_date_view", u"  \u7ed3\u679c\u9884\u89c8", None))
+        self.label_2.setText(QCoreApplication.translate("modify_date_view", u"\u5f85\u5b9e\u73b0\u529f\u80fd", None))
+
+        __sortingEnabled = self.listWidget.isSortingEnabled()
+        self.listWidget.setSortingEnabled(False)
+        ___qlistwidgetitem = self.listWidget.item(0)
+        ___qlistwidgetitem.setText(QCoreApplication.translate("modify_date_view", u"\u652f\u6301\u4fee\u6539GPS\u6570\u636e", None));
+        ___qlistwidgetitem1 = self.listWidget.item(1)
+        ___qlistwidgetitem1.setText(QCoreApplication.translate("modify_date_view", u"\u652f\u6301\u66f4\u591a\u6587\u4ef6\u7c7b\u578b", None));
+        ___qlistwidgetitem2 = self.listWidget.item(2)
+        ___qlistwidgetitem2.setText(QCoreApplication.translate("modify_date_view", u"\u652f\u6301\u4fee\u6539\u62cd\u6444\u8bbe\u5907", None));
+        ___qlistwidgetitem3 = self.listWidget.item(3)
+        ___qlistwidgetitem3.setText(QCoreApplication.translate("modify_date_view", u"\u652f\u6301\u5bfc\u51fa\u62cd\u6444\u53c2\u6570", None));
+        self.listWidget.setSortingEnabled(__sortingEnabled)
+
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("modify_date_view", u"\u8bbe\u7f6e", None))
 #if QT_CONFIG(tooltip)
         self.checkBox_apply_child.setToolTip(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u5f53\u524d\u6587\u4ef6\u5939\u53ca\u5176\u5b50\u6587\u4ef6\u5939\u4e0b\u7684\u6240\u6709\u56fe\u7247", None))
@@ -280,7 +322,7 @@ class Ui_modify_date_view(object):
         self.checkBox_apply_child.setText(QCoreApplication.translate("modify_date_view", u" \u5e94\u7528\u5230\u5b50\u6587\u4ef6\u5939", None))
         self.checkBox_compress.setText(QCoreApplication.translate("modify_date_view", u"\u56fe\u7247\u538b\u7f29", None))
 #if QT_CONFIG(tooltip)
-        self.checkBox_force_modify.setToolTip(QCoreApplication.translate("modify_date_view", u"\u9ed8\u8ba4\u53d6\u539f\u62cd\u6444\u65f6\u95f4\u548c\u8bbe\u5b9a\u62cd\u6444\u65f6\u95f4\u7684\u6700\u65e9\u65f6\u95f4", None))
+        self.checkBox_force_modify.setToolTip(QCoreApplication.translate("modify_date_view", u"\u9ed8\u8ba4\u53d6\u539f\u62cd\u6444\u65f6\u95f4\u548c\u8bbe\u5b9a\u62cd\u6444\u65f6\u95f4\u7684\u6700\u65e9\u65f6\u95f4\uff0c\u542f\u7528\u8be5\u9009\u9879\u5c06\u5f3a\u5236\u4fee\u6539\u4e3a\u6307\u5b9a\u503c", None))
 #endif // QT_CONFIG(tooltip)
         self.checkBox_force_modify.setText(QCoreApplication.translate("modify_date_view", u" \u5f3a\u5236\u4fee\u6539", None))
         self.label.setText(QCoreApplication.translate("modify_date_view", u"\u8f93\u51fa\u4f4d\u7f6e\uff1a", None))
@@ -288,6 +330,7 @@ class Ui_modify_date_view(object):
         self.comboBox_output_opt.setItemText(1, QCoreApplication.translate("modify_date_view", u"\u8f93\u51fa\u5230\u65b0\u6587\u4ef6\u5939", None))
 
         self.label_output_dir.setText("")
+        self.label_current_file.setText("")
         self.btn_start.setText(QCoreApplication.translate("modify_date_view", u"\u5f00\u59cb", None))
     # retranslateUi
 

@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/7 10:50 
 @Author      : SiYuan 
-@Email       : siyuan044@qq.com 
+@Email       : sixyuan044@gmail.com 
 @File        : EasyBox-sidebar.py 
 @Description : 
 """

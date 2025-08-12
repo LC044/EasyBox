@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/8 2:04 
 @Author      : SiYuan 
-@Email       : siyuan044@qq.com 
+@Email       : sixyuan044@gmail.com 
 @File        : EasyBox-__init__.py.py 
 @Description : PySide6实现的自定义文件列表，可自由拖拽排序，点击上下移动
 """

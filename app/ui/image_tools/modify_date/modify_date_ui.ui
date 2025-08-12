@@ -265,6 +265,43 @@
        <attribute name="title">
         <string>设置</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>待实现功能</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="listWidget">
+            <item>
+             <property name="text">
+              <string>支持修改GPS数据</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>支持更多文件类型</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>支持修改拍摄设备</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>支持导出拍摄参数</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>
@@ -294,7 +331,7 @@
      <item>
       <widget class="QCheckBox" name="checkBox_force_modify">
        <property name="toolTip">
-        <string>默认取原拍摄时间和设定拍摄时间的最早时间</string>
+        <string>默认取原拍摄时间和设定拍摄时间的最早时间，启用该选项将强制修改为指定值</string>
        </property>
        <property name="text">
         <string> 强制修改</string>
@@ -378,6 +415,19 @@
      <property name="topMargin">
       <number>9</number>
      </property>
+     <item>
+      <widget class="QLabel" name="label_current_file">
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

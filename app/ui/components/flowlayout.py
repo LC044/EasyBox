@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/30 19:26 
 @Author      : SiYuan 
-@Email       : siyuan044@qq.com 
+@Email       : sixyuan044@gmail.com 
 @File        : EasyBox-flowlayout.py 
 @Description : 
 """

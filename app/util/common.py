@@ -4,7 +4,7 @@
 """
 @Time        : 2024/11/9 16:36 
 @Author      : SiYuan 
-@Email       : siyuan044@qq.com 
+@Email       : sixyuan044@gmail.com 
 @File        : EasyBox-common.py 
 @Description : 
 """
@@ -74,48 +74,59 @@ def extract_datetime_from_filename(filename) -> datetime | None:
         r"(\d{14})",         # 格式：YYYYMMDDHHMMSS
         r"(\d{13}|\d{10})",  # 格式：TIMESTAMP (13位毫秒级时间戳)
     ]
-    for pattern in patterns:
-        match = re.search(pattern, filename)
-        if match:
-            # 根据匹配的模式提取日期和时间
-            if len(match.groups()) == 2:  # 格式：YYYYMMDD_HHMMSS
-                date_str = match.group(1)
-                time_str = match.group(2)
-                dt = datetime.strptime(f"{date_str} {time_str}", "%Y%m%d %H%M%S")
-                return dt
-            elif len(match.groups()) == 1:  # 格式：TIMESTAMP
-                timestamp = match.group(1)
-                try:
-                    if len(timestamp) == 14:
-                        datetime_str = match.group(1)
-                        dt = datetime.strptime(datetime_str, "%Y%m%d%H%M%S")
-                        return dt
-                    elif len(timestamp) == 13:
-                        result = datetime.fromtimestamp(int(timestamp) / 1000)  # 转换为秒
-                        return valid_time(result)
+    try:
+        for pattern in patterns:
+            match = re.search(pattern, filename)
+            if match:
+                # 根据匹配的模式提取日期和时间
+                if len(match.groups()) == 2:  # 格式：YYYYMMDD_HHMMSS
+                    date_str = match.group(1)
+                    time_str = match.group(2)
+                    dt = datetime.strptime(f"{date_str} {time_str}", "%Y%m%d %H%M%S")
+                    return dt
+                elif len(match.groups()) == 1:  # 格式：TIMESTAMP
+                    timestamp = match.group(1)
+                    try:
+                        if len(timestamp) == 14:
+                            datetime_str = match.group(1)
+                            dt = datetime.strptime(datetime_str, "%Y%m%d%H%M%S")
+                            return dt
+                        elif len(timestamp) == 13:
+                            result = datetime.fromtimestamp(int(timestamp) / 1000)  # 转换为秒
+                            return valid_time(result)
+                        else:
+                            result = datetime.fromtimestamp(int(timestamp))  # 转换为秒
+                            return valid_time(result)
+                    except (ValueError, OverflowError):
+                        try:
+                            # 取前十位当做时间戳
+                            if timestamp.startswith('1'):
+                                timestamp = timestamp[:10]
+                                result = datetime.fromtimestamp(int(timestamp))  # 转换为秒
+                                return valid_time(result)
+                        except (ValueError, OverflowError):
+                            continue
+                elif len(match.groups()) == 4:  # 格式：YYYY-MM-DD HHMMSS
+                    year, month, day, time_str = match.groups()
+                    if len(year) == 4:
+                        # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
+                        dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%Y-%m-%d %H%M%S")
+                    elif len(year) == 8:
+                        # 格式：YYYYMMDD_HH-MM-SS
+                        dt = datetime.strptime(f"{year} {month}-{day}-{time_str}", "%Y%m%d %H-%-M-%S")
                     else:
-                        result = datetime.fromtimestamp(int(timestamp))  # 转换为秒
-                        return valid_time(result)
-                except (ValueError, OverflowError):
-                    continue
-            elif len(match.groups()) == 4:  # 格式：YYYY-MM-DD HHMMSS
-                year, month, day, time_str = match.groups()
-                if len(year) == 4:
-                    # 格式：YYYY-MM-DD_HHMMSS YYYY-MM-DD HHMMSS
-                    dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%Y-%m-%d %H%M%S")
-                elif len(year) == 8:
-                    # 格式：YYYYMMDD_HH-MM-SS
-                    dt = datetime.strptime(f"{year} {month}-{day}-{time_str}", "%Y%m%d %H-%-M-%S")
-                else:
-                    # DD-MM-YYYY_HHMMSS
-                    dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%m-%d-%Y %H%M%S")
-                return dt
-            elif len(match.groups()) == 6:  # 格式：YYYY_MM_DD_HH-MM-SS
-                year, month, day, hour, minute, second = match.groups()
-                dt = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
-                return dt
-    print('文件名解析失败:',filename)
-    return None  # 如果没有匹配到任何模式，返回 None
+                        # DD-MM-YYYY_HHMMSS
+                        dt = datetime.strptime(f"{year}-{month}-{day} {time_str}", "%m-%d-%Y %H%M%S")
+                    return dt
+                elif len(match.groups()) == 6:  # 格式：YYYY_MM_DD_HH-MM-SS
+                    year, month, day, hour, minute, second = match.groups()
+                    dt = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
+                    return dt
+        print('文件名解析失败:', filename)
+        return None  # 如果没有匹配到任何模式，返回 None
+    except:
+        print('文件名解析失败:',filename)
+        return None  # 如果没有匹配到任何模式，返回 None
 
 
 import os
@@ -209,7 +220,7 @@ if __name__ == '__main__':
     # print(get_system_document_dir())
     # print(get_system_download_dir())
     # print(get_system_desktop_dir())
-    print(extract_datetime_from_filename('IMG_20210406 155844.jpg'))
-    for filepath, dir, filenames in os.walk(r'E:\Project\Python\EasyBox\app\ui\image_tools'):
-        print(filepath,dir,filenames)
+    print(extract_datetime_from_filename(r"XHS_XHS_1695343810123_7e4d6be9-0108-409e-ac15-a15603498b0201695343961777.jpg"))
+    # for filepath, dir, filenames in os.walk(r'E:\Project\Python\EasyBox\app\ui\image_tools'):
+    #     print(filepath,dir,filenames)
 

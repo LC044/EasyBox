@@ -40,7 +40,7 @@ class SplitControl(QWidget, Ui_split_pdf_view, QCursorGif):
         self.running_flag = False
         self.setupUi(self)
         # 设置忙碌光标图片数组
-        self.initCursor([':/icons/icons/Cursors/%d.png' %
+        self.initCursor([':/icons/resources/icons/Cursors/%d.png' %
                         i for i in range(8)], self)
         self.setCursorTimeout(100)
         self.init_ui()
