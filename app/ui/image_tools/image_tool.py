@@ -1,17 +1,14 @@
 from PySide6.QtCore import Signal, QThread, QSize, QFile, QIODevice, QTextStream
 from PySide6.QtWidgets import QWidget
 
-from app import config
 from app.ui.Icon import Icon
 from app.ui.components.QCursorGif import QCursorGif
 from app.ui.global_signal import globalSignals
 from app.ui.image_tools.image_tool_ui import Ui_Form
 from app.ui.image_tools.modify_date.modify_date import ModifyDateControl
-from app.ui.pdf_tools.merge import MergeControl
-
 from app.ui.components.router import Router
 from app.ui.theme import set_theme
-
+from app import config
 
 class ImageToolControl(QWidget, Ui_Form, QCursorGif):
     DecryptSignal = Signal(str)
@@ -27,10 +24,6 @@ class ImageToolControl(QWidget, Ui_Form, QCursorGif):
         self.merge_view = None
         self.running_flag = False
         self.setupUi(self)
-        # 设置忙碌光标图片数组
-        self.initCursor([':/icons/resources/icons/Cursors/%d.png' %
-                         i for i in range(8)], self)
-        self.setCursorTimeout(100)
         self.init_ui()
 
     def init_ui(self):
@@ -43,8 +36,6 @@ class ImageToolControl(QWidget, Ui_Form, QCursorGif):
         self.commandLinkButton_modify_date.clicked.connect(self.modify_date)
 
         self.commandLinkButton_modify_name_by_time.clicked.connect(globalSignals.not_support)
-
-
         self.resize(QSize(640, 480))
 
     def modify_date(self):
@@ -79,4 +70,4 @@ if __name__ == '__main__':
     router = Router(None)
     view = ImageToolControl(router)
     view.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

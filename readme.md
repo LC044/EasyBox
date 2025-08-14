@@ -12,7 +12,7 @@
   * PDF转图片
   * 网页转PDF
 * 图片工具
-  * 根据文件名修改图片拍摄时间
+  * 根据文件名修改图片、视频的拍摄时间
 
 ## 相关文章
 
@@ -85,7 +85,7 @@ python main.py
 
 ```shell
 pip install pyinstaller
-pyinstaller main1.spec
+pyinstaller ./pyinstaller_specs/main.spec
 ```
 
 ## 证书

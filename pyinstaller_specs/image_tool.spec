@@ -2,14 +2,13 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['../app/ui/image_tools/image_tool.py'],
     pathex=[],
     binaries=[],
     datas=[
-    (".\\.venv\\Lib\\site-packages\\docxcompose\\templates",'docxcompose/templates/'),
-    ("./resources/third_party",'resources/third_party/'),
+        ("../resources/third_party",'resources/third_party/'),
     ],
-    hiddenimports=['cv2'],
+    hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -24,7 +23,7 @@ exe1 = EXE(
     [],
     exclude_binaries=True,
     uac_admin=False,
-    name='EasyBox',
+    name='ImageTool',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -37,7 +36,7 @@ exe1 = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['./resources/images/logo.png'],
+    icon=['../resources/images/logo.png'],
     version='version.txt',
 )
 
@@ -48,14 +47,14 @@ coll2 = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='EasyBox',
+    name='ImageTool',
 )
 
 import os
 import shutil
 
 # 删除 dist 目录中的 opengl32sw.dll
-dist_dir = './dist/EasyBox/_internal'  # 替换成你的应用程序路径
+dist_dir = '../dist/EasyBox/_internal'  # 替换成你的应用程序路径
 del_path = [
     ['PySide6', 'opengl32sw.dll'],
     ['cv2', 'opencv_videoio_ffmpeg4100_64.dll']

@@ -1,6 +1,6 @@
 
 a3 = Analysis(
-    ['./app/ui/pdf_tools/merge/merge.py'],
+    ['../app/ui/pdf_tools/merge/merge.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -31,14 +31,14 @@ exe3 = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['./resources/logo.png'],
+    icon=['../resources/images/logo.png'],
     version='version.txt',
 )
 
 coll2 = COLLECT(
-    exe1,exe2,
-    a2.binaries,
-    a2.datas,
+    exe3,
+    a3.binaries,
+    a3.datas,
     strip=False,
     upx=True,
     upx_exclude=[],

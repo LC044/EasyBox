@@ -18,6 +18,7 @@ from datetime import datetime
 
 def format_tag(tag_dict):
     return [f"-{tag}={value}".encode('utf-8') for tag, value in tag_dict.items()]
+
 def get_file_type(filepath):
     fmt:str = os.path.basename(filepath).split('.')[-1]
     return fmt.lower()

@@ -1,15 +1,14 @@
-import os.path
+import os
 import sys as sys_
 import shutil
 import traceback
-from datetime import datetime
 from typing import List
 
 from PIL import Image
 import piexif
-from PySide6.QtCore import Signal, QThread, QUrl, Qt, QFile, QIODevice, QTextStream, QDir, QSortFilterProxyModel
-from PySide6.QtGui import QDesktopServices, QPixmap, QIcon, QFont, QFontMetrics
-from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QApplication, QDialog, QFileSystemModel, QTreeView, \
+from PySide6.QtCore import Signal, QThread, QUrl, QDir
+from PySide6.QtGui import QDesktopServices, QFontMetrics, QPixmap, QIcon
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QFileSystemModel, QTreeView, \
     QTableWidgetItem
 
 from app import config
@@ -432,7 +431,7 @@ class ModifyThread(QThread):
 if __name__ == '__main__':
     from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PySide6.QtGui import QFont, QPixmap, QIcon
+    from PySide6.QtGui import QFont
     from PySide6.QtCore import Qt
 
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -442,4 +441,4 @@ if __name__ == '__main__':
     app.setFont(font)
     view = ModifyDateControl(None)
     view.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
