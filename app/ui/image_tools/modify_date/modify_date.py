@@ -1,4 +1,5 @@
 import os.path
+import sys as sys_
 import shutil
 import traceback
 from datetime import datetime
@@ -39,9 +40,11 @@ def is_image(file_path):
     """判断文件是否为图片"""
     return any(file_path.lower().endswith(ext) for ext in image_extensions)
 
+
 def is_video(file_path):
     """判断文件是否为图片"""
     return any(file_path.lower().endswith(ext) for ext in video_extensions)
+
 
 class ModifyDateControl(QWidget, Ui_modify_date_view):
     okSignal = Signal(bool)
@@ -249,7 +252,7 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
     def update_progress(self, value):
         self.progressBar.setValue(value)
 
-    def update_current_file(self,filename):
+    def update_current_file(self, filename):
         self.label_current_file.setText(filename)
 
     def start(self):
@@ -257,10 +260,16 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
         globalSignals.start_busy.emit(True)
         self.btn_start.setEnabled(False)
         file_fir = self.model.filePath(self.treeView.rootIndex())
+        file_fmt = []
+        if self.checkBox_image.isChecked():
+            file_fmt += image_extensions
+        if self.checkBox_video.isChecked():
+            file_fmt += video_extensions
         self.worker = ModifyThread(
             file_fir,
             self.output_dir,
             self.checkBox_apply_child.isChecked(),
+            file_fmt,
             self.given_date,
             self.checkBox_force_modify.isChecked()
         )
@@ -297,18 +306,35 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
         self.worker = None
 
 
+def print_error(err_msg):
+    logger.error(err_msg)
+
+
 class ModifyThread(QThread):
     okSignal = Signal(bool)
     progressSignal = Signal(int)
     currentFile = Signal(str)
 
-    def __init__(self, file_dir, output_dir, is_apply_child, given_date=None, is_force=False):
+    def __init__(self, file_dir, output_dir, is_apply_child, file_fmt, given_date=None, is_force=False):
+        """
+
+        :param file_dir:
+        :param output_dir:
+        :param is_apply_child:
+        :param file_fmt: 文件后缀类型
+        :param given_date:
+        :param is_force:
+        """
         super().__init__()
         self.file_dir = file_dir
         self.output_dir = output_dir
         self.is_apply_child = is_apply_child
         self.given_date = given_date
         self.is_force = is_force
+        self.file_fmt = file_fmt
+
+    def is_select(self, filename):
+        return any(filename.lower().endswith(ext) for ext in self.file_fmt)
 
     def scan_files(self) -> List[ImageFile]:
         file_items = []
@@ -318,7 +344,7 @@ class ModifyThread(QThread):
         if not self.is_apply_child:
             filenames = os.listdir(self.file_dir)
             for file in filenames:
-                if not is_image(file):
+                if not self.is_select(file):
                     continue
                 image_file = ImageFile(os.path.join(self.file_dir, file))
                 if self.output_dir:
@@ -330,7 +356,7 @@ class ModifyThread(QThread):
             # 考虑子文件夹
             for filepath, dir, filenames in os.walk(self.file_dir):
                 for filename in filenames:
-                    if not is_image(filename):
+                    if not self.is_select(filename):
                         continue
                     image_file = ImageFile(os.path.join(filepath, filename))
                     if self.output_dir:
@@ -346,16 +372,31 @@ class ModifyThread(QThread):
                     )
         return file_items
 
+    def get_exiftool_path(self):
+        if os.path.exists(r".\resources\third_party\exiftool-13.33_64\exiftool(-k).exe"):
+            return r".\resources\third_party\exiftool-13.33_64\exiftool(-k).exe"
+        else:
+            resource_dir = getattr(sys_, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+            file_path = os.path.join(resource_dir, 'resources', 'third_party', 'exiftool-13.33_64',
+                                     'exiftool(-k).exe')
+            if os.path.exists(file_path):
+                return file_path
+        return ''
+
     def run(self):
         try:
             self.progressSignal.emit(1)
             files = self.scan_files()
-            exiftool = PyExifTool(r".\resources\third_party\exiftool-13.33_64\exiftool(-k).exe",overwrite_original=True)
+            exiftool_path = self.get_exiftool_path()
+            if not exiftool_path:
+                globalSignals.information.emit('ExifTool工具未找到')
+                return
+            exiftool = PyExifTool(exiftool_path, overwrite_original=True, error_callback=print_error)
             progress = 1
             total_task = len(files)
-            for index,file in enumerate(files):
+            for index, file in enumerate(files):
                 try:
-                    new_progress = (index + 1)*100 // total_task
+                    new_progress = (index + 1) * 100 // total_task
                     if new_progress > progress:
                         progress = new_progress
                         self.progressSignal.emit(progress)
@@ -368,14 +409,14 @@ class ModifyThread(QThread):
                     if not new_datetime:
                         continue
                     if not os.path.exists(file.save_path):
-                        shutil.copy(file.file_path,file.save_path)
+                        shutil.copy(file.file_path, file.save_path)
                     if not self.is_force:
                         file_time = exiftool.get_file_time(file.save_path)
                         if file_time and new_datetime < file_time:
                             new_datetime = file_time
-                            exiftool.modify_image_time(new_datetime, file.save_path)
+                            exiftool.modify_file_time(new_datetime, file.save_path)
                     else:
-                        exiftool.modify_image_time(new_datetime, file.save_path)
+                        exiftool.modify_file_time(new_datetime, file.save_path)
                 except Exception as e:
                     print(e)
                     print(traceback.format_exc())
@@ -383,7 +424,7 @@ class ModifyThread(QThread):
             self.progressSignal.emit(100)
             print(f"处理完成，已生成文件")
         except Exception as e:
-            print(f"处理过程中出错: {e}\n{traceback.format_exc()}")
+            logger.error(f"处理过程中出错: {e}\n{traceback.format_exc()}")
         finally:
             self.okSignal.emit(True)
 

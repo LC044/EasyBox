@@ -16,11 +16,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QCheckBox, QComboBox,
-    QDateTimeEdit, QFrame, QHBoxLayout, QHeaderView,
-    QLabel, QListWidget, QListWidgetItem, QProgressBar,
-    QPushButton, QSizePolicy, QSpacerItem, QSplitter,
-    QTabWidget, QTableWidget, QTableWidgetItem, QTreeView,
-    QVBoxLayout, QWidget)
+    QDateTimeEdit, QFrame, QGroupBox, QHBoxLayout,
+    QHeaderView, QLabel, QListWidget, QListWidgetItem,
+    QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
+    QSplitter, QTabWidget, QTableWidget, QTableWidgetItem,
+    QTreeView, QVBoxLayout, QWidget)
 
 class Ui_modify_date_view(object):
     def setupUi(self, modify_date_view):
@@ -28,9 +28,9 @@ class Ui_modify_date_view(object):
             modify_date_view.setObjectName(u"modify_date_view")
         modify_date_view.resize(600, 662)
         modify_date_view.setStyleSheet(u"")
-        self.verticalLayout = QVBoxLayout(modify_date_view)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout_6 = QVBoxLayout(modify_date_view)
+        self.verticalLayout_6.setSpacing(0)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.label_8 = QLabel(modify_date_view)
@@ -63,7 +63,7 @@ class Ui_modify_date_view(object):
         self.horizontalLayout_2.addWidget(self.comboBox_time_opt)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.verticalLayout_6.addLayout(self.horizontalLayout_2)
 
         self.splitter_3 = QSplitter(modify_date_view)
         self.splitter_3.setObjectName(u"splitter_3")
@@ -72,7 +72,7 @@ class Ui_modify_date_view(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.splitter_3.sizePolicy().hasHeightForWidth())
         self.splitter_3.setSizePolicy(sizePolicy)
-        self.splitter_3.setFrameShape(QFrame.Shape.Box)
+        self.splitter_3.setFrameShape(QFrame.Shape.NoFrame)
         self.splitter_3.setOrientation(Qt.Orientation.Horizontal)
         self.widget_2 = QWidget(self.splitter_3)
         self.widget_2.setObjectName(u"widget_2")
@@ -186,25 +186,29 @@ class Ui_modify_date_view(object):
         self.tabWidget.addTab(self.tab_2, "")
         self.splitter_3.addWidget(self.tabWidget)
 
-        self.verticalLayout.addWidget(self.splitter_3)
+        self.verticalLayout_6.addWidget(self.splitter_3)
 
+        self.groupBox = QGroupBox(modify_date_view)
+        self.groupBox.setObjectName(u"groupBox")
+        self.verticalLayout = QVBoxLayout(self.groupBox)
+        self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.checkBox_apply_child = QCheckBox(modify_date_view)
+        self.checkBox_apply_child = QCheckBox(self.groupBox)
         self.checkBox_apply_child.setObjectName(u"checkBox_apply_child")
         self.checkBox_apply_child.setChecked(True)
 
         self.horizontalLayout_3.addWidget(self.checkBox_apply_child)
 
-        self.checkBox_compress = QCheckBox(modify_date_view)
-        self.checkBox_compress.setObjectName(u"checkBox_compress")
-
-        self.horizontalLayout_3.addWidget(self.checkBox_compress)
-
-        self.checkBox_force_modify = QCheckBox(modify_date_view)
+        self.checkBox_force_modify = QCheckBox(self.groupBox)
         self.checkBox_force_modify.setObjectName(u"checkBox_force_modify")
 
         self.horizontalLayout_3.addWidget(self.checkBox_force_modify)
+
+        self.checkBox_compress = QCheckBox(self.groupBox)
+        self.checkBox_compress.setObjectName(u"checkBox_compress")
+
+        self.horizontalLayout_3.addWidget(self.checkBox_compress)
 
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -213,9 +217,35 @@ class Ui_modify_date_view(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
 
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.label_3 = QLabel(self.groupBox)
+        self.label_3.setObjectName(u"label_3")
+
+        self.horizontalLayout_6.addWidget(self.label_3)
+
+        self.checkBox_image = QCheckBox(self.groupBox)
+        self.checkBox_image.setObjectName(u"checkBox_image")
+        self.checkBox_image.setEnabled(True)
+        self.checkBox_image.setChecked(True)
+
+        self.horizontalLayout_6.addWidget(self.checkBox_image)
+
+        self.checkBox_video = QCheckBox(self.groupBox)
+        self.checkBox_video.setObjectName(u"checkBox_video")
+
+        self.horizontalLayout_6.addWidget(self.checkBox_video)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_4)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_6)
+
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.label = QLabel(modify_date_view)
+        self.label = QLabel(self.groupBox)
         self.label.setObjectName(u"label")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
         sizePolicy3.setHorizontalStretch(0)
@@ -225,7 +255,7 @@ class Ui_modify_date_view(object):
 
         self.horizontalLayout_5.addWidget(self.label)
 
-        self.comboBox_output_opt = QComboBox(modify_date_view)
+        self.comboBox_output_opt = QComboBox(self.groupBox)
         self.comboBox_output_opt.addItem("")
         self.comboBox_output_opt.addItem("")
         self.comboBox_output_opt.setObjectName(u"comboBox_output_opt")
@@ -237,7 +267,7 @@ class Ui_modify_date_view(object):
 
         self.horizontalLayout_5.addWidget(self.comboBox_output_opt)
 
-        self.label_output_dir = QLabel(modify_date_view)
+        self.label_output_dir = QLabel(self.groupBox)
         self.label_output_dir.setObjectName(u"label_output_dir")
         sizePolicy2.setHeightForWidth(self.label_output_dir.sizePolicy().hasHeightForWidth())
         self.label_output_dir.setSizePolicy(sizePolicy2)
@@ -247,15 +277,17 @@ class Ui_modify_date_view(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_5)
 
+
+        self.verticalLayout_6.addWidget(self.groupBox)
+
         self.progressBar = QProgressBar(modify_date_view)
         self.progressBar.setObjectName(u"progressBar")
         self.progressBar.setValue(0)
 
-        self.verticalLayout.addWidget(self.progressBar)
+        self.verticalLayout_6.addWidget(self.progressBar)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(-1, 9, -1, -1)
         self.label_current_file = QLabel(modify_date_view)
         self.label_current_file.setObjectName(u"label_current_file")
         self.label_current_file.setMaximumSize(QSize(400, 16777215))
@@ -273,7 +305,7 @@ class Ui_modify_date_view(object):
         self.horizontalLayout.addWidget(self.btn_start)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout_6.addLayout(self.horizontalLayout)
 
 
         self.retranslateUi(modify_date_view)
@@ -291,7 +323,7 @@ class Ui_modify_date_view(object):
         self.comboBox_time_opt.setItemText(0, QCoreApplication.translate("modify_date_view", u"\u6839\u636e\u6587\u4ef6\u540d\u4fee\u6539", None))
         self.comboBox_time_opt.setItemText(1, QCoreApplication.translate("modify_date_view", u"\u81ea\u5b9a\u4e49\u65f6\u95f4", None))
 
-        self.btn_choose_folder.setText(QCoreApplication.translate("modify_date_view", u"\u9009\u62e9\u76ee\u5f55", None))
+        self.btn_choose_folder.setText(QCoreApplication.translate("modify_date_view", u"\u9009\u62e9\u56fe\u7247\u6587\u4ef6\u5939", None))
         self.label_input_folder.setText("")
         self.label_preview.setText(QCoreApplication.translate("modify_date_view", u"\u9884\u89c8", None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
@@ -316,21 +348,25 @@ class Ui_modify_date_view(object):
         self.listWidget.setSortingEnabled(__sortingEnabled)
 
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("modify_date_view", u"\u8bbe\u7f6e", None))
+        self.groupBox.setTitle(QCoreApplication.translate("modify_date_view", u"\u914d\u7f6e\u9879", None))
 #if QT_CONFIG(tooltip)
         self.checkBox_apply_child.setToolTip(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u5f53\u524d\u6587\u4ef6\u5939\u53ca\u5176\u5b50\u6587\u4ef6\u5939\u4e0b\u7684\u6240\u6709\u56fe\u7247", None))
 #endif // QT_CONFIG(tooltip)
         self.checkBox_apply_child.setText(QCoreApplication.translate("modify_date_view", u" \u5e94\u7528\u5230\u5b50\u6587\u4ef6\u5939", None))
-        self.checkBox_compress.setText(QCoreApplication.translate("modify_date_view", u"\u56fe\u7247\u538b\u7f29", None))
 #if QT_CONFIG(tooltip)
         self.checkBox_force_modify.setToolTip(QCoreApplication.translate("modify_date_view", u"\u9ed8\u8ba4\u53d6\u539f\u62cd\u6444\u65f6\u95f4\u548c\u8bbe\u5b9a\u62cd\u6444\u65f6\u95f4\u7684\u6700\u65e9\u65f6\u95f4\uff0c\u542f\u7528\u8be5\u9009\u9879\u5c06\u5f3a\u5236\u4fee\u6539\u4e3a\u6307\u5b9a\u503c", None))
 #endif // QT_CONFIG(tooltip)
         self.checkBox_force_modify.setText(QCoreApplication.translate("modify_date_view", u" \u5f3a\u5236\u4fee\u6539", None))
+        self.checkBox_compress.setText(QCoreApplication.translate("modify_date_view", u"\u56fe\u7247\u538b\u7f29", None))
+        self.label_3.setText(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u7c7b\u578b\uff1a", None))
+        self.checkBox_image.setText(QCoreApplication.translate("modify_date_view", u"\u56fe\u7247", None))
+        self.checkBox_video.setText(QCoreApplication.translate("modify_date_view", u"\u89c6\u9891", None))
         self.label.setText(QCoreApplication.translate("modify_date_view", u"\u8f93\u51fa\u4f4d\u7f6e\uff1a", None))
         self.comboBox_output_opt.setItemText(0, QCoreApplication.translate("modify_date_view", u"\u8986\u76d6\u539f\u56fe", None))
         self.comboBox_output_opt.setItemText(1, QCoreApplication.translate("modify_date_view", u"\u8f93\u51fa\u5230\u65b0\u6587\u4ef6\u5939", None))
 
         self.label_output_dir.setText("")
-        self.label_current_file.setText("")
+        self.label_current_file.setText(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u4e4b\u524d\u8bf7\u505a\u597d\u6570\u636e\u5907\u4efd\u4ee5\u9632\u6570\u636e\u4e22\u5931", None))
         self.btn_start.setText(QCoreApplication.translate("modify_date_view", u"\u5f00\u59cb", None))
     # retranslateUi
 

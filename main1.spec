@@ -7,6 +7,7 @@ a = Analysis(
     binaries=[],
     datas=[
     (".\\.venv\\Lib\\site-packages\\docxcompose\\templates",'docxcompose/templates/'),
+    ("./resources/third_party",'resources/third_party/'),
     ],
     hiddenimports=['cv2'],
     hookspath=[],
