@@ -336,6 +336,8 @@ if __name__ == '__main__':
     from PySide6.QtGui import QFont, QPixmap, QIcon
     from PySide6.QtCore import Qt
 
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)

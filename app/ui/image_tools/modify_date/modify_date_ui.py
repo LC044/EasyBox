@@ -19,27 +19,27 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QCheckBox, QCo
     QDateTimeEdit, QFrame, QGroupBox, QHBoxLayout,
     QHeaderView, QLabel, QListWidget, QListWidgetItem,
     QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
-    QSplitter, QTabWidget, QTableWidget, QTableWidgetItem,
-    QTreeView, QVBoxLayout, QWidget)
+    QSplitter, QStackedWidget, QTabWidget, QTableWidget,
+    QTableWidgetItem, QTreeView, QVBoxLayout, QWidget)
+import resource_rc
 
 class Ui_modify_date_view(object):
     def setupUi(self, modify_date_view):
         if not modify_date_view.objectName():
             modify_date_view.setObjectName(u"modify_date_view")
-        modify_date_view.resize(600, 662)
+        modify_date_view.resize(550, 667)
         modify_date_view.setStyleSheet(u"")
         self.verticalLayout_6 = QVBoxLayout(modify_date_view)
-        self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_8 = QLabel(modify_date_view)
-        self.label_8.setObjectName(u"label_8")
+        self.btn_help = QPushButton(modify_date_view)
+        self.btn_help.setObjectName(u"btn_help")
         font = QFont()
-        font.setPointSize(20)
-        self.label_8.setFont(font)
+        font.setPointSize(15)
+        self.btn_help.setFont(font)
 
-        self.horizontalLayout_2.addWidget(self.label_8)
+        self.horizontalLayout_2.addWidget(self.btn_help)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -65,7 +65,84 @@ class Ui_modify_date_view(object):
 
         self.verticalLayout_6.addLayout(self.horizontalLayout_2)
 
-        self.splitter_3 = QSplitter(modify_date_view)
+        self.stackedWidget = QStackedWidget(modify_date_view)
+        self.stackedWidget.setObjectName(u"stackedWidget")
+        self.page_2 = QWidget()
+        self.page_2.setObjectName(u"page_2")
+        self.horizontalLayout_9 = QHBoxLayout(self.page_2)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalSpacer_5 = QSpacerItem(163, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_5)
+
+        self.verticalLayout_8 = QVBoxLayout()
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer)
+
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_7)
+
+        self.label_4 = QLabel(self.page_2)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setMinimumSize(QSize(64, 64))
+        self.label_4.setMaximumSize(QSize(64, 64))
+        self.label_4.setAutoFillBackground(False)
+        self.label_4.setPixmap(QPixmap(u":/icons/resources/icons/\u6279\u91cf\u6dfb\u52a0.svg"))
+
+        self.horizontalLayout_7.addWidget(self.label_4)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_8)
+
+
+        self.verticalLayout_8.addLayout(self.horizontalLayout_7)
+
+        self.label_5 = QLabel(self.page_2)
+        self.label_5.setObjectName(u"label_5")
+
+        self.verticalLayout_8.addWidget(self.label_5)
+
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_9)
+
+        self.btn_choose_dir = QPushButton(self.page_2)
+        self.btn_choose_dir.setObjectName(u"btn_choose_dir")
+
+        self.horizontalLayout_8.addWidget(self.btn_choose_dir)
+
+        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_10)
+
+
+        self.verticalLayout_8.addLayout(self.horizontalLayout_8)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer_2)
+
+
+        self.horizontalLayout_9.addLayout(self.verticalLayout_8)
+
+        self.horizontalSpacer_6 = QSpacerItem(162, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_6)
+
+        self.stackedWidget.addWidget(self.page_2)
+        self.page = QWidget()
+        self.page.setObjectName(u"page")
+        self.verticalLayout_7 = QVBoxLayout(self.page)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.splitter_3 = QSplitter(self.page)
         self.splitter_3.setObjectName(u"splitter_3")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -151,7 +228,7 @@ class Ui_modify_date_view(object):
         font1.setPointSize(8)
         self.tableWidget.setFont(font1)
         self.tableWidget.setFrameShape(QFrame.Shape.NoFrame)
-        self.tableWidget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.tableWidget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
         self.tableWidget.horizontalHeader().setVisible(True)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(80)
@@ -186,7 +263,11 @@ class Ui_modify_date_view(object):
         self.tabWidget.addTab(self.tab_2, "")
         self.splitter_3.addWidget(self.tabWidget)
 
-        self.verticalLayout_6.addWidget(self.splitter_3)
+        self.verticalLayout_7.addWidget(self.splitter_3)
+
+        self.stackedWidget.addWidget(self.page)
+
+        self.verticalLayout_6.addWidget(self.stackedWidget)
 
         self.groupBox = QGroupBox(modify_date_view)
         self.groupBox.setObjectName(u"groupBox")
@@ -318,12 +399,15 @@ class Ui_modify_date_view(object):
 
     def retranslateUi(self, modify_date_view):
         modify_date_view.setWindowTitle(QCoreApplication.translate("modify_date_view", u"Form", None))
-        self.label_8.setText(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u56fe\u7247\u62cd\u6444\u65e5\u671f", None))
+        self.btn_help.setText(QCoreApplication.translate("modify_date_view", u"\u4fee\u6539\u56fe\u7247\u62cd\u6444\u65e5\u671f", None))
         self.dateTimeEdit.setDisplayFormat(QCoreApplication.translate("modify_date_view", u"yyyy/M/d HH:mm:ss", None))
         self.comboBox_time_opt.setItemText(0, QCoreApplication.translate("modify_date_view", u"\u6839\u636e\u6587\u4ef6\u540d\u4fee\u6539", None))
         self.comboBox_time_opt.setItemText(1, QCoreApplication.translate("modify_date_view", u"\u81ea\u5b9a\u4e49\u65f6\u95f4", None))
 
-        self.btn_choose_folder.setText(QCoreApplication.translate("modify_date_view", u"\u9009\u62e9\u56fe\u7247\u6587\u4ef6\u5939", None))
+        self.label_4.setText("")
+        self.label_5.setText(QCoreApplication.translate("modify_date_view", u"\u652f\u6301\u4fee\u6539\u56fe\u7247\u3001\u89c6\u9891\u7684\u62cd\u6444\u65e5\u671f", None))
+        self.btn_choose_dir.setText(QCoreApplication.translate("modify_date_view", u"\u9009\u62e9\u6587\u4ef6\u5939", None))
+        self.btn_choose_folder.setText(QCoreApplication.translate("modify_date_view", u"\u9009\u62e9\u6587\u4ef6\u5939", None))
         self.label_input_folder.setText("")
         self.label_preview.setText(QCoreApplication.translate("modify_date_view", u"\u9884\u89c8", None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)

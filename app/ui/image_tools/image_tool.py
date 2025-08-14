@@ -1,4 +1,5 @@
-from PySide6.QtCore import Signal, QThread, QSize, QFile, QIODevice, QTextStream
+from PySide6.QtGui import QFont, QPixmap, QIcon
+from PySide6.QtCore import Signal, QThread, QSize, QFile, QIODevice, QTextStream, Qt
 from PySide6.QtWidgets import QWidget
 
 from app.ui.Icon import Icon
@@ -59,11 +60,8 @@ class ImageToolControl(QWidget, Ui_Form, QCursorGif):
 if __name__ == '__main__':
     from PySide6.QtWidgets import QWidget, QApplication
     import sys
-    from PySide6.QtGui import QFont, QPixmap, QIcon
-    from PySide6.QtCore import Qt
-
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)

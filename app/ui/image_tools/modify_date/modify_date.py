@@ -6,7 +6,7 @@ from typing import List
 
 from PIL import Image
 import piexif
-from PySide6.QtCore import Signal, QThread, QUrl, QDir
+from PySide6.QtCore import Signal, QThread, QUrl, QDir, Qt
 from PySide6.QtGui import QDesktopServices, QFontMetrics, QPixmap, QIcon
 from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QFileSystemModel, QTreeView, \
     QTableWidgetItem
@@ -34,6 +34,18 @@ image_extensions_filter = ['*.jpg', '*.jpeg', '*.bmp', '*.riff', '*.webp']
 
 exif_keys = ['DateTime', 'DateTimeOriginal', 'Make', 'Model', 'Software', 'ImageWidth', 'ImageLength']
 
+help_info = '''
+<h3>支持识别的格式</h3>
+注意！YYYY表示年份，MM表示月份，DD表示天，HH表示小时，mm表示分钟，ss表示秒，其中分隔符可以是短横线'-',下划线'_',点'.',空格' '四种的任意一个
+<li>1. YYYY_MM_DD_HH-mm-ss</li>
+<li>2. YYYY-MM-DD_HHmmss</li>
+<li>3. DD-MM-YYYY_HHmms</li>
+<li>4. YYYYMMDD_HH-mm-ss</li>
+<li>5. YYYYMMDD_HHmmss</li>
+<li>6. YYYYMMDDHHmmss</li>
+<li>7. TIMESTAMP (13位毫秒级时间戳)</li>
+<li>8. TIMESTAMP (10位秒级时间戳)</li>
+'''
 
 def is_image(file_path):
     """判断文件是否为图片"""
@@ -63,6 +75,8 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
         self.setupUi(self)
 
         self.btn_choose_folder.clicked.connect(self.show_directory_dialog)
+        self.btn_choose_dir.clicked.connect(self.show_directory_dialog)
+        self.btn_help.clicked.connect(self.show_help)
         self.comboBox_time_opt.currentIndexChanged.connect(self.set_name_rule)
         self.comboBox_output_opt.activated.connect(self.set_output_opt)
         self.dateTimeEdit.dateTimeChanged.connect(self.set_given_date)
@@ -71,7 +85,9 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
     def init_ui(self):
         self.btn_start.setObjectName('border')
         self.btn_choose_folder.setObjectName('border')
+        self.btn_choose_dir.setObjectName('border')
         self.btn_start.clicked.connect(self.start)
+        self.btn_start.setEnabled(False)
         self.btn_choose_folder.setIcon(Icon.PDF_Icon)
         self.dateTimeEdit.setVisible(False)
         # self.label_input_folder.s
@@ -99,6 +115,8 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
 
         # self.label_preview.setScaledContents(True)
 
+    def show_help(self):
+        QMessageBox.information(self, '使用说明', help_info)
     def set_name_rule(self, index):
         """
         :return:
@@ -130,6 +148,8 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
                 # 使用 elidedText 根据按钮宽度生成省略文字
                 elided_text = font_metrics.elidedText(folder, Qt.ElideRight, self.label_output_dir.width() - 10)
                 self.label_output_dir.setText(elided_text)
+            else:
+                self.comboBox_output_opt.setCurrentIndex(0)
         else:
             self.output_dir = ''
             self.label_output_dir.setText('')
@@ -142,6 +162,8 @@ class ModifyDateControl(QWidget, Ui_modify_date_view):
         """显示目录选择对话框并在 QTreeView 中显示该目录的内容"""
         folder = QFileDialog.getExistingDirectory(self, "选择目录")
         if folder:
+            self.stackedWidget.setCurrentIndex(1)
+            self.btn_start.setEnabled(True)
             # 设置 QTreeView 的根目录为用户选择的目录
             self.treeView.setRootIndex(self.model.index(folder))
             # self.label_output_dir.setText(folder)
@@ -432,10 +454,9 @@ if __name__ == '__main__':
     from PySide6.QtWidgets import QWidget, QApplication
     import sys
     from PySide6.QtGui import QFont
-    from PySide6.QtCore import Qt
 
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QApplication(sys.argv)
     font = QFont('微软雅黑', 10)  # 使用 Times New Roman 字体，字体大小为 14
     app.setFont(font)
