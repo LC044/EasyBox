@@ -14,6 +14,7 @@ from typing import List
 
 import exiftool
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 def format_tag(tag_dict):
@@ -112,12 +113,18 @@ class PyExifTool:
         self.execute(metadata_dict, filepath)
 
     def modify_video_time(self, dt_str, filepath):
+        # 自动识别系统时区
+        local_tz = datetime.now().astimezone().tzinfo
+        # MP4: 转换为UTC时间
+        new_datetime = datetime.strptime(dt_str,"%Y:%m:%d %H:%M:%S")
+        utc_time = new_datetime.replace(tzinfo=local_tz).astimezone(ZoneInfo("UTC"))
+        utc_dt_str = utc_time.strftime("%Y:%m:%d %H:%M:%S")
         metadata_dict = {
-            "CreateDate": dt_str,
-            "ModifyDate": dt_str,
-            "MediaCreateDate": dt_str,
-            "TrackCreateDate": dt_str,
-            "TrackModifyDate": dt_str
+            "CreateDate": utc_dt_str,
+            "ModifyDate": utc_dt_str,
+            "MediaCreateDate": utc_dt_str,
+            "TrackCreateDate": utc_dt_str,
+            "TrackModifyDate": utc_dt_str
         }
         self.execute(metadata_dict, filepath)
 
