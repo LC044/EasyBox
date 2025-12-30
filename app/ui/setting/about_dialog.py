@@ -11,7 +11,7 @@ from app import config
 
 version = '2.0.x'
 contact = '701805520'
-github = 'https://github.com/LC044/WeChatMsg'
+github = 'https://github.com/LC044/EasyBox'
 website = 'https://memotrace.cn/tools/'
 copyright = '© 2022-2024 忆墨痕'
 license = 'GPLv3'
@@ -24,6 +24,7 @@ about = f'''
     版本：{config.version}<br>
     QQ交流群:请关注微信公众号回复：联系方式<br>
     官网：<a href='{website}'>{website}</a><br>
+    开源地址：<a href='{github}'>{github}</a><br>
     新特性:<br>{''.join(['' + i for i in description])}<br>
     Copyright {copyright}
 '''

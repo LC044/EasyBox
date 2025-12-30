@@ -71,7 +71,7 @@
 
 ```shell
 git clone https://github.com/LC044/EasyBox.git
-cd EaseBox
+cd EasyBox
 pip install -r requirements.txt
 ```
 

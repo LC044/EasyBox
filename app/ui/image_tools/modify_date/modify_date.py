@@ -400,6 +400,7 @@ class ModifyThread(QThread):
             resource_dir = getattr(sys_, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
             file_path = os.path.join(resource_dir, 'resources', 'third_party', 'exiftool-13.33_64',
                                      'exiftool(-k).exe')
+            logger.info(f'exiftool path:{file_path}')
             if os.path.exists(file_path):
                 return file_path
         return ''
@@ -428,6 +429,7 @@ class ModifyThread(QThread):
                     else:
                         new_datetime = self.given_date
                     if not new_datetime:
+                        logger.error(f'{file.file_path} 修改失败（格式错误）')
                         continue
                     if not os.path.exists(file.save_path):
                         shutil.copy(file.file_path, file.save_path)
@@ -439,8 +441,8 @@ class ModifyThread(QThread):
                     else:
                         exiftool.modify_file_time(new_datetime, file.save_path)
                 except Exception as e:
-                    print(e)
-                    print(traceback.format_exc())
+                    logger.error(traceback.format_exc())
+                    logger.error(f'{file.file_path} 修改失败')
             exiftool.close()
             self.progressSignal.emit(100)
             print(f"处理完成，已生成文件")
